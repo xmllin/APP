@@ -49,12 +49,15 @@ namespace WpfApp1.Pages
 			SetPanelVisibility(ExplorerSettingsPanel, showAll || category == "Проводник");
 			SetPanelVisibility(DesktopSettingsPanel, showAll || category == "Рабочий стол");
 			SetPanelVisibility(TaskbarSettingsPanel, showAll || category == "Панель задач");
-			SetPanelVisibility(PowerSettingsPanel, showAll || category == "Энергопотребление");
+			SetPanelVisibility(PowerSettingsPanel, showAll || category == "Питание");
 			SetPanelVisibility(MouseSettingsPanel, showAll || category == "Мышь");
 			SetPanelVisibility(WindowsUpdateSettingsPanel, showAll || category == "Windows Update");
-			SetPanelVisibility(PrivacySettingsPanel, false);
-			SetPanelVisibility(_additionalSettingsPanel, showAll || category == "Дополнительные настройки");
+			SetPanelVisibility(_startSearchSettingsPanel, showAll || category == "Пуск и поиск");
+			SetPanelVisibility(_gamingSettingsPanel, showAll || category == "Игры и производительность");
+			SetPanelVisibility(_systemSettingsPanel, showAll || category == "Система");
 			SetPanelVisibility(_securityBehaviorPanel, showAll || category == "Безопасность и конфиденциальность");
+			SetPanelVisibility(PrivacySettingsPanel, false);
+			SetPanelVisibility(_additionalSettingsPanel, false);
 		}
 
 		private static void SetPanelVisibility(FrameworkElement panel, bool visible)
