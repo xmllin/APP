@@ -977,10 +977,23 @@ namespace WpfApp1.Pages
 		private static void SetTaskbarComboSelection(ComboBox combo, string value, int fallbackIndex)
 		{
 			if (combo == null || combo.IsKeyboardFocusWithin) return;
+
+			if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var index)
+				&& index >= 0 && index < combo.Items.Count)
+			{
+				combo.SelectedIndex = index;
+				return;
+			}
+
 			var item = combo.Items.Cast<object>()
 				.FirstOrDefault(candidate => string.Equals(candidate?.ToString(), value, StringComparison.OrdinalIgnoreCase));
-			combo.SelectedItem = item;
-			if (item == null && fallbackIndex >= 0 && fallbackIndex < combo.Items.Count)
+			if (item != null)
+			{
+				combo.SelectedItem = item;
+				return;
+			}
+
+			if (fallbackIndex >= 0 && fallbackIndex < combo.Items.Count)
 				combo.SelectedIndex = fallbackIndex;
 		}
 
