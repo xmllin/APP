@@ -77,23 +77,53 @@ namespace WpfApp1.Services.WindowsSettings
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
 
+        private const string PowerSessionPath = @"SYSTEM\CurrentControlSet\Control\Session Manager\Power";
+        private const string HibernateEnabledValue = "HibernateEnabled";
+        private const string HiberbootEnabledValue = "HiberbootEnabled";
+
         public bool IsHibernationDisabled()
         {
-            return _registry.ReadLocalMachine(@"SYSTEM\CurrentControlSet\Control\Session Manager\Power", "HibernateEnabled").Value is object value
-                && Convert.ToInt32(value) == 0;
+            var hibernate = _registry.ReadLocalMachine(PowerSessionPath, HibernateEnabledValue).Value;
+            var fastStartup = _registry.ReadLocalMachine(PowerSessionPath, HiberbootEnabledValue).Value;
+
+            var hibernateDisabled = hibernate != null && Convert.ToInt32(hibernate) == 0;
+            var fastStartupDisabled = fastStartup != null && Convert.ToInt32(fastStartup) == 0;
+            return hibernateDisabled && fastStartupDisabled;
         }
 
         public async Task<SettingOperationResult> SetHibernationAsync(bool disabled, CancellationToken token)
         {
             try
             {
-                var result = await _processes.RunElevatedAsync("powercfg.exe", disabled ? "/h off" : "/h on", token, 60).ConfigureAwait(false);
-                if (result.ExitCode != 0)
-                    return SettingOperationResult.Fail(string.IsNullOrWhiteSpace(result.StandardError) ? "powercfg завершился с ошибкой." : result.StandardError.Trim());
+                _backup.BackupLocalMachineOnce("Hibernation_HibernateEnabled", PowerSessionPath, HibernateEnabledValue);
+                _backup.BackupLocalMachineOnce("Hibernation_HiberbootEnabled", PowerSessionPath, HiberbootEnabledValue);
+
+                if (disabled)
+                {
+                    _registry.WriteLocalMachine(PowerSessionPath, HiberbootEnabledValue, 0, Microsoft.Win32.RegistryValueKind.DWord);
+                    _registry.WriteLocalMachine(PowerSessionPath, HibernateEnabledValue, 0, Microsoft.Win32.RegistryValueKind.DWord);
+
+                    var result = await _processes.RunElevatedAsync("powercfg.exe", "/h off", token, 60).ConfigureAwait(false);
+                    if (result.ExitCode != 0)
+                        return SettingOperationResult.Fail(string.IsNullOrWhiteSpace(result.StandardError)
+                            ? "Не удалось отключить гибернацию."
+                            : result.StandardError.Trim());
+                }
+                else
+                {
+                    var result = await _processes.RunElevatedAsync("powercfg.exe", "/h on", token, 60).ConfigureAwait(false);
+                    if (result.ExitCode != 0)
+                        return SettingOperationResult.Fail(string.IsNullOrWhiteSpace(result.StandardError)
+                            ? "Не удалось включить гибернацию."
+                            : result.StandardError.Trim());
+
+                    _registry.WriteLocalMachine(PowerSessionPath, HibernateEnabledValue, 1, Microsoft.Win32.RegistryValueKind.DWord);
+                    _registry.WriteLocalMachine(PowerSessionPath, HiberbootEnabledValue, 1, Microsoft.Win32.RegistryValueKind.DWord);
+                }
 
                 return IsHibernationDisabled() == disabled
-                    ? SettingOperationResult.Ok(disabled ? "Гибернация и быстрый запуск отключены." : "Гибернация включена.")
-                    : SettingOperationResult.Fail("Windows не подтвердила состояние гибернации.");
+                    ? SettingOperationResult.Ok(disabled ? "Гибернация и быстрый запуск отключены." : "Гибернация и быстрый запуск включены.")
+                    : SettingOperationResult.Fail("Windows не подтвердила состояние гибернации и быстрого запуска.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
