@@ -190,6 +190,7 @@ namespace WpfApp1.Pages
 			MoveTaskbarSettings();
 			AttachMovedSettingsRows();
 			MoveAdditionalSettingsToBottom();
+			RemoveObsoleteSettingRows();
 			LoadExplorerSettings();
 			ApplyAdminToggleLockState();
 		}
