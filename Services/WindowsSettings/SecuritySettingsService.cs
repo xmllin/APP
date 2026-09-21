@@ -38,10 +38,22 @@ namespace WpfApp1.Services.WindowsSettings
                 BackupMachine(SystemPolicyPath, "ConsentPromptBehaviorAdmin");
                 BackupMachine(SystemPolicyPath, "ConsentPromptBehaviorUser");
                 BackupMachine(SystemPolicyPath, "PromptOnSecureDesktop");
-                WriteMachine(SystemPolicyPath, "EnableLUA", 1);
-                WriteMachine(SystemPolicyPath, "ConsentPromptBehaviorAdmin", enabled ? 0 : 5);
-                WriteMachine(SystemPolicyPath, "ConsentPromptBehaviorUser", enabled ? 0 : 3);
-                WriteMachine(SystemPolicyPath, "PromptOnSecureDesktop", enabled ? 0 : 1);
+
+                if (enabled)
+                {
+                    WriteMachine(SystemPolicyPath, "EnableLUA", 1);
+                    WriteMachine(SystemPolicyPath, "ConsentPromptBehaviorAdmin", 0);
+                    WriteMachine(SystemPolicyPath, "ConsentPromptBehaviorUser", 0);
+                    WriteMachine(SystemPolicyPath, "PromptOnSecureDesktop", 0);
+                }
+                else
+                {
+                    RestoreBackedUpMachine(SystemPolicyPath, "EnableLUA", 1);
+                    RestoreBackedUpMachine(SystemPolicyPath, "ConsentPromptBehaviorAdmin", 5);
+                    RestoreBackedUpMachine(SystemPolicyPath, "ConsentPromptBehaviorUser", 3);
+                    RestoreBackedUpMachine(SystemPolicyPath, "PromptOnSecureDesktop", 1);
+                }
+
                 return IsUacNeverNotify() == enabled
                     ? SettingOperationResult.Ok("Настройка UAC сохранена.", true)
                     : SettingOperationResult.Fail("Windows не сохранила настройку UAC.");
@@ -115,6 +127,25 @@ namespace WpfApp1.Services.WindowsSettings
 
         private void BackupMachine(string path, string name) => _backup.BackupLocalMachineOnce("Security_" + path + "_" + name, path, name);
         private void WriteMachine(string path, string name, int value) => _registry.WriteLocalMachine(path, name, value, RegistryValueKind.DWord);
+
+        private void RestoreBackedUpMachine(string path, string name, int fallback)
+        {
+            if (!_backup.TryRestoreLocalMachine("Security_" + path + "_" + name, path, name))
+                WriteMachine(path, name, fallback);
+        }
+
+        private void RestoreSnapshot(RegistryValueSnapshot snapshot, bool machine, string path, string name)
+        {
+            if (!snapshot.Exists)
+            {
+                if (machine) _registry.DeleteLocalMachine(path, name);
+                else _registry.DeleteCurrentUser(path, name);
+                return;
+            }
+
+            if (machine) _registry.WriteLocalMachine(path, name, snapshot.Value, snapshot.Kind);
+            else _registry.WriteCurrentUser(path, name, snapshot.Value, snapshot.Kind);
+        }
 
         private int ReadMachineInt(string path, string name, int fallback)
         {
