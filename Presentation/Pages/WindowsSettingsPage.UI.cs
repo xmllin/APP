@@ -691,7 +691,7 @@ namespace WpfApp1.Pages
 					ReadMachineDword(SpeechPolicyPath, "AllowSpeechModelUpdate", 1) == 0);
 				SetToggle(DisableStickyKeysToggle, AreStickyKeysDisabled());
 				SetToggle(DisableBingSearchToggle, IsBingSearchDisabled());
-				SetToggle(DisableHibernationToggle, ReadMachineDword(PowerPolicyPath, "HibernateEnabled", 1) == 0);
+				SetToggle(DisableHibernationToggle, _powerSettings.IsHibernationDisabled());
 				SetToggle(DisableSmartScreenToggle,
 					ReadMachineDword(SystemPolicyPath, "EnableSmartScreen", 1) == 0 ||
 					ReadString(ExplorerPolicyPath, "SmartScreenEnabled", "Warn").Equals("Off", StringComparison.OrdinalIgnoreCase));
@@ -738,6 +738,8 @@ namespace WpfApp1.Pages
 				SetManagedToggleState("DisableContentDeliveryManager");
 				SetManagedToggleState("DisableFindMyDevice");
 				SetManagedToggleState("DisableDeliveryOptimization");
+				SetManagedToggle("DisableSystemThrottling", _powerSettings.IsSystemPowerThrottlingDisabled());
+				SetManagedToggle("DisableUSBPowerSaving", await _powerSettings.IsUsbPowerSavingDisabledAsync(CancellationToken.None));
 				var taskbar = _taskbarSettings.ReadState();
 				SetToggle(_taskbarEndTaskToggle, taskbar.EndTask);
 				SetToggle(_taskbarAutoHideToggle, taskbar.AutoHide);
@@ -914,10 +916,22 @@ namespace WpfApp1.Pages
 			if (_managedToggles.TryGetValue(tag, out var toggle))
 			{
 				bool value;
-				if (tag == "DisableHibernation")
-					value = _powerSettings.IsHibernationDisabled();
-				else if (tag == "DisableSystemThrottling")
+				if (tag == "DisableSystemThrottling")
 					value = _powerSettings.IsSystemPowerThrottlingDisabled();
+				else if (tag == "DisableUSBPowerSaving")
+					value = false;
+				else if (tag == "DisableErrorReporting"
+					|| tag == "DisableAdvertisingAndSuggestions"
+					|| tag == "DisableNewsAndInterests"
+					|| tag == "HideMeetNowButton"
+					|| tag == "DisableLocationAndSensors"
+					|| tag == "DisableAutoLogger"
+					|| tag == "DisableCortana"
+					|| tag == "DisableCopilot"
+					|| tag == "DisableContentDeliveryManager"
+					|| tag == "DisableFindMyDevice"
+					|| tag == "DisableDeliveryOptimization")
+					value = _privacySettings.IsDisabled(tag);
 				else
 					value = _interfaceSettings.IsEnabled(tag);
 				SetToggle(toggle, value);
