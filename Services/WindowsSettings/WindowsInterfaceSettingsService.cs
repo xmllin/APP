@@ -305,7 +305,7 @@ namespace WpfApp1.Services.WindowsSettings
             catch { return fallback; }
         }
 
-        private int ReadUserString(string path, string name, string fallback)
+        private string ReadUserString(string path, string name, string fallback)
         {
             var snapshot = _registry.ReadCurrentUser(path, name);
             return snapshot.Exists && snapshot.Value != null ? Convert.ToString(snapshot.Value) ?? fallback : fallback;
