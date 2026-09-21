@@ -203,7 +203,10 @@ namespace WpfApp1.Pages
 			if (_powerShellScriptsToggle == null) return;
 			try
 			{
-				var policy = await _libraryInstallation.GetPowerShellScriptsPolicyAsync(CancellationToken.None);
+				var policy = ReadPowerShellScriptsPolicyFromRegistry();
+				if (string.IsNullOrWhiteSpace(policy))
+					policy = await _libraryInstallation.GetPowerShellScriptsPolicyAsync(CancellationToken.None);
+
 				var enabled = IsPowerShellScriptsEnabled(policy);
 				_loadingExplorerSettings = true;
 				SetToggle(_powerShellScriptsToggle, enabled);
@@ -218,6 +221,16 @@ namespace WpfApp1.Pages
 				_loadingExplorerSettings = false;
 				ApplyPowerShellScriptsAdminState();
 			}
+		}
+
+		private string ReadPowerShellScriptsPolicyFromRegistry()
+		{
+			var snapshot = _registryStore.ReadCurrentUser(
+				@"SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell",
+				"ExecutionPolicy");
+			return snapshot.Exists && snapshot.Value != null
+				? Convert.ToString(snapshot.Value)
+				: string.Empty;
 		}
 
 		private async void PowerShellScriptsToggle_Changed(object sender, RoutedEventArgs e)
