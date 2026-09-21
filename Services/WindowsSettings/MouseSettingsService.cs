@@ -52,9 +52,17 @@ namespace WpfApp1.Services.WindowsSettings
                 value = Math.Clamp(value, 1, 20);
                 _backup.BackupCurrentUserOnce("MouseSpeed_MouseSensitivity", MousePath, "MouseSensitivity");
                 var native = value;
-                if (!SystemParametersInfo(SPI_SETMOUSESPEED, 0, ref native, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE))
-                    throw new InvalidOperationException("Windows не приняла скорость указателя.");
+                var spiSucceeded = SystemParametersInfo(SPI_SETMOUSESPEED, 0, ref native, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
+
+                // MouseSensitivity — штатное пользовательское значение Windows.
+                // Сохраняем его и как fallback, потому что на некоторых системах
+                // SPI_SETMOUSESPEED может вернуть FALSE даже для допустимого 1..20.
+                _registry.WriteCurrentUser(MousePath, "MouseSensitivity", value.ToString(), RegistryValueKind.String);
+                BroadcastSettingChange();
+
                 VerifySpeed(value);
+                if (!spiSucceeded && GetSpeed() != value)
+                    throw new InvalidOperationException("Windows не сохранила скорость указателя.");
                 return SettingOperationResult.Ok("Скорость указателя применена.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
@@ -66,12 +74,18 @@ namespace WpfApp1.Services.WindowsSettings
             {
                 value = Math.Clamp(value, 1, 100);
                 _backup.BackupCurrentUserOnce("MouseScroll_WheelScrollLines", DesktopPath, "WheelScrollLines");
-                if (!SystemParametersInfo(SPI_SETWHEELSCROLLLINES, (uint)value, IntPtr.Zero, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE))
-                    throw new InvalidOperationException("Windows не приняла количество строк прокрутки.");
+                var spiSucceeded = SystemParametersInfo(SPI_SETWHEELSCROLLLINES, (uint)value, IntPtr.Zero, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
+
+                _registry.WriteCurrentUser(DesktopPath, "WheelScrollLines", value.ToString(), RegistryValueKind.String);
+                BroadcastSettingChange();
+
                 var state = GetScrollLines();
                 return state == value
                     ? SettingOperationResult.Ok("Прокрутка применена.")
-                    : SettingOperationResult.Fail("Windows не сохранила количество строк прокрутки.");
+                    : SettingOperationResult.Fail(
+                        spiSucceeded
+                            ? "Windows не сохранила количество строк прокрутки."
+                            : "Windows не приняла количество строк прокрутки.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
@@ -185,10 +199,36 @@ namespace WpfApp1.Services.WindowsSettings
             if (native != expected) throw new InvalidOperationException("Windows не сохранила скорость указателя.");
         }
 
-        [DllImport("user32.dll", SetLastError = true)]
+        private static void BroadcastSettingChange()
+        {
+            SendMessageTimeout(
+                HWND_BROADCAST,
+                WM_SETTINGCHANGE,
+                UIntPtr.Zero,
+                IntPtr.Zero,
+                SMTO_ABORTIFHUNG,
+                2000,
+                out _);
+        }
+
+        private static readonly IntPtr HWND_BROADCAST = new IntPtr(0xffff);
+        private const uint WM_SETTINGCHANGE = 0x001A;
+        private const uint SMTO_ABORTIFHUNG = 0x0002;
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, ref int pvParam, uint fWinIni);
 
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, IntPtr pvParam, uint fWinIni);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr SendMessageTimeout(
+            IntPtr hWnd,
+            uint msg,
+            UIntPtr wParam,
+            IntPtr lParam,
+            uint flags,
+            uint timeout,
+            out UIntPtr result);
     }
 }
