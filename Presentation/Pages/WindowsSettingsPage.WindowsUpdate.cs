@@ -31,6 +31,8 @@ namespace WpfApp1.Pages
 		{
 			try
 			{
+				var limitResult = _windowsUpdate.MaximizePauseLimit();
+				if (!limitResult.Success) throw new InvalidOperationException(limitResult.Error);
 				_windowsUpdate.PauseUntil(new DateTime(2077, 1, 1, 0, 0, 0, DateTimeKind.Utc));
 				UpdatePauseStatus();
 			}
