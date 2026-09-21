@@ -102,7 +102,7 @@ namespace WpfApp1.Pages
         {
             CategoryComboBox.ItemsSource = new[] { "Все категории" }.Concat(_items.Select(x => x.Definition.Category).Distinct(StringComparer.OrdinalIgnoreCase)).ToList();
             CategoryComboBox.SelectedIndex = 0;
-            StatusComboBox.ItemsSource = new[] { "Все статусы", "Установлено", "Не установлено", "Рекомендуемые" };
+            StatusComboBox.ItemsSource = new[] { "Все статусы", "Установлено", "Не установлено", "Доступно обновление", "Ручная установка", "Рекомендуемые" };
             StatusComboBox.SelectedIndex = 0;
         }
 
