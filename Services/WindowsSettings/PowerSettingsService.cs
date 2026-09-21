@@ -48,7 +48,20 @@ namespace WpfApp1.Services.WindowsSettings
                         "/change standby-timeout-ac 0", "/change standby-timeout-dc 0",
                         "/change disk-timeout-ac 0", "/change disk-timeout-dc 0"
                     })
-                        await _processes.RunAsync("powercfg.exe", command, token, false, 30).ConfigureAwait(false);
+                    {
+                        var timeoutResult = await _processes.RunAsync("powercfg.exe", command, token, false, 30).ConfigureAwait(false);
+                        if (timeoutResult.ExitCode != 0)
+                        {
+                            var error = string.IsNullOrWhiteSpace(timeoutResult.StandardError)
+                                ? "powercfg завершился с ошибкой при настройке таймеров."
+                                : timeoutResult.StandardError.Trim();
+                            return SettingOperationResult.Fail("Схема высокой производительности включена, но не удалось применить все таймеры: " + error);
+                        }
+                    }
+
+                    var activeGuid = await GetActiveSchemeGuidAsync(token).ConfigureAwait(false);
+                    if (!string.Equals(activeGuid, guid, StringComparison.OrdinalIgnoreCase))
+                        return SettingOperationResult.Fail("Схема электропитания не стала активной после применения.");
                 }
                 return SettingOperationResult.Ok("Схема электропитания применена.");
             }
