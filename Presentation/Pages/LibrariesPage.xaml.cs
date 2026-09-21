@@ -313,8 +313,16 @@ namespace WpfApp1.Pages
                     await _installation.UninstallWindowsFeatureAsync(item.Definition, CancellationToken.None);
                 else
                     await _installation.UninstallAsync(item.Definition, CancellationToken.None);
+
+                var detected = _detection.Detect(item.Definition);
+                item.Status = detected.Status;
+                item.InstalledVersion = detected.InstalledVersion;
+                item.IsSelected = false;
                 item.IsBusy = false;
                 item.IsDeleting = false;
+                item.Notify(nameof(item.Status));
+                item.Notify(nameof(item.InstalledVersion));
+                item.Notify(nameof(item.IsSelected));
                 item.Notify(nameof(item.IsDeleting));
                 item.Notify(nameof(item.IsBusy));
                 InstallStatusText.Text = "Удаление завершено: " + item.Definition.Name;
