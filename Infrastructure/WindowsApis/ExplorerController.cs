@@ -17,8 +17,6 @@ namespace WpfApp1.Infrastructure.WindowsApis
 
         public async Task RestartAsync(CancellationToken token)
         {
-            try
-            {
                 var kill = await _processes.RunAsync(
                     "taskkill.exe",
                     "/F /IM explorer.exe",
@@ -63,7 +61,6 @@ namespace WpfApp1.Infrastructure.WindowsApis
                 }
 
                 throw new InvalidOperationException("explorer.exe не появился после перезапуска.");
-            }
         }
     }
 }
