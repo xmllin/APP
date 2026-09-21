@@ -54,7 +54,7 @@ namespace WpfApp1.Pages
 			SetPanelVisibility(WindowsUpdateSettingsPanel, showAll || category == "Windows Update");
 			SetPanelVisibility(PrivacySettingsPanel, showAll || category == "Конфиденциальность");
 			SetPanelVisibility(_additionalSettingsPanel, showAll || category == "Дополнительные настройки");
-			SetPanelVisibility(_securityBehaviorPanel, showAll || category == "Безопасность и поведение");
+			SetPanelVisibility(_securityBehaviorPanel, showAll || category == "Безопасность и поведение" || category == "Конфиденциальность");
 		}
 
 		private static void SetPanelVisibility(FrameworkElement panel, bool visible)
@@ -651,7 +651,7 @@ namespace WpfApp1.Pages
 			{
 				SetToggle(ShowHiddenFilesToggle, ReadDword(ExplorerAdvancedPath, "Hidden", 2) == 1);
 				SetToggle(ShowFileExtensionsToggle, ReadDword(ExplorerAdvancedPath, "HideFileExt", 1) == 0);
-				SetToggle(OpenThisPcToggle, ReadDword(ExplorerAdvancedPath, "LaunchTo", 2) == 1);
+				SetToggle(OpenThisPcToggle, _explorerSettings.IsLaunchToThisPc());
 				SetToggle(ExplorerHomeToggle, !_explorerSettings.IsHomeVisible());
 				SetToggle(ShowRecentFilesToggle, IsRecentFilesEnabled());
 				SetToggle(ShowFrequentFoldersToggle, IsFrequentFoldersEnabled());
@@ -701,6 +701,41 @@ namespace WpfApp1.Pages
 				SetStatusLabel(DisableUacLabel, uacNeverNotify ? "Включено" : "Отключено", uacNeverNotify);
 				SetToggle(DisablePageFileToggle, IsPageFileDisabled());
 				SetToggle(DisableBitLockerAutoEncryptionToggle, ReadMachineDword(BitLockerPath, "PreventDeviceEncryption", 0) == 1);
+				SetManagedToggleState("ShowUserFiles");
+				SetManagedToggleState("ShowNetworkIcon");
+				SetManagedToggleState("ShowControlPanel");
+				SetManagedToggleState("ShowDesktopIcons");
+				SetManagedToggleState("ShortcutArrow");
+				SetManagedToggleState("ToastNotifications");
+				SetManagedToggleState("ClassicContextMenu");
+				SetManagedToggleState("ExplorerItemCheckboxes");
+				SetManagedToggleState("ExplorerSyncNotifications");
+				SetManagedToggleState("SystemSuggestions");
+				SetManagedToggleState("ExplorerCompactMode");
+				SetManagedToggleState("SnapAssistFlyout");
+				SetManagedToggleState("WindowShake");
+				SetManagedToggleState("GameBar");
+				SetManagedToggleState("BackgroundRecording");
+				SetManagedToggleState("FullscreenOptimizations");
+				SetManagedToggleState("DeveloperMode");
+				SetManagedToggleState("LongPathsEnabled");
+				SetManagedToggleState("NumLockOnBoot");
+				SetManagedToggleState("SpeedUpExplorerAndMenus");
+				SetManagedToggleState("DisableStartMenuWebSearch");
+				SetManagedToggleState("DisableStartRecommended");
+				SetManagedToggleState("DisableSettings365Ads");
+				SetManagedToggleState("DisablePreinstalledApps");
+				SetManagedToggleState("DisableErrorReporting");
+				SetManagedToggleState("DisableAdvertisingAndSuggestions");
+				SetManagedToggleState("DisableNewsAndInterests");
+				SetManagedToggleState("HideMeetNowButton");
+				SetManagedToggleState("DisableLocationAndSensors");
+				SetManagedToggleState("DisableAutoLogger");
+				SetManagedToggleState("DisableCortana");
+				SetManagedToggleState("DisableCopilot");
+				SetManagedToggleState("DisableContentDeliveryManager");
+				SetManagedToggleState("DisableFindMyDevice");
+				SetManagedToggleState("DisableDeliveryOptimization");
 				var taskbar = _taskbarSettings.ReadState();
 				SetToggle(_taskbarEndTaskToggle, taskbar.EndTask);
 				SetToggle(_taskbarAutoHideToggle, taskbar.AutoHide);
@@ -709,6 +744,11 @@ namespace WpfApp1.Pages
 				SetToggle(_taskbarMultiMonitorToggle, taskbar.MultiMonitor);
 				SetToggle(_taskbarShareWindowToggle, taskbar.ShareWindow);
 				SetToggle(_taskbarShowDesktopToggle, taskbar.ShowDesktop);
+				SetManagedToggle("TaskbarWidgets", taskbar.Widgets);
+				SetManagedToggle("TaskbarTaskViewButton", taskbar.TaskViewButton);
+				SetManagedToggle("TaskbarLastActiveClick", taskbar.LastActiveClick);
+				SetManagedComboIndex("SearchBoxTaskbarMode", taskbar.SearchBoxTaskbarMode, 3);
+
 				SetTaskbarComboSelection(_taskbarAlignmentCombo, taskbar.Alignment.ToString(CultureInfo.InvariantCulture), 2);
 				SetTaskbarComboSelection(_taskbarMultiMonitorModeCombo, taskbar.MultiMonitorMode.ToString(CultureInfo.InvariantCulture), 3);
 				SetTaskbarComboSelection(_taskbarGlomCombo, taskbar.GroupingMode.ToString(CultureInfo.InvariantCulture), 3);
@@ -859,6 +899,35 @@ namespace WpfApp1.Pages
 				foreach (var nested in GetAllToggleButtons(VisualTreeHelper.GetChild(root, i)))
 					yield return nested;
 			}
+		}
+
+		private void SetManagedToggle(string tag, bool value)
+		{
+			if (_managedToggles.TryGetValue(tag, out var toggle))
+				SetToggle(toggle, value);
+		}
+
+		private void SetManagedToggleState(string tag)
+		{
+			if (_managedToggles.TryGetValue(tag, out var toggle))
+			{
+				bool value;
+				if (tag == "DisableHibernation")
+					value = _powerSettings.IsHibernationDisabled();
+				else if (tag == "DisableSystemThrottling")
+					value = _powerSettings.IsSystemPowerThrottlingDisabled();
+				else
+					value = _interfaceSettings.IsEnabled(tag);
+				SetToggle(toggle, value);
+			}
+		}
+
+		private void SetManagedComboIndex(string tag, int value, int fallback)
+		{
+			if (!_managedCombos.TryGetValue(tag, out var combo) || combo.IsKeyboardFocusWithin)
+				return;
+			if (value >= 0 && value < combo.Items.Count) combo.SelectedIndex = value;
+			else if (fallback >= 0 && fallback < combo.Items.Count) combo.SelectedIndex = fallback;
 		}
 
 		private static void SetTaskbarComboSelection(ComboBox combo, string value, int fallbackIndex)
