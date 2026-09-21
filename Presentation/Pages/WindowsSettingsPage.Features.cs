@@ -528,9 +528,9 @@ namespace WpfApp1.Pages
 
 		private static bool AreStickyKeysDisabled()
 		{
-			return ReadUserString(AccessibilityStickyKeysPath, "Flags", string.Empty) == "26"
-				&& ReadUserString(AccessibilityKeyboardResponsePath, "Flags", string.Empty) == "2"
-				&& ReadUserString(AccessibilityToggleKeysPath, "Flags", string.Empty) == "34";
+			return ReadUserString(AccessibilityStickyKeysPath, "Flags", string.Empty) == "506"
+				&& ReadUserString(AccessibilityKeyboardResponsePath, "Flags", string.Empty) == "122"
+				&& ReadUserString(AccessibilityToggleKeysPath, "Flags", string.Empty) == "58";
 		}
 
 		private static void SetStickyKeysDisabled(bool disabled)
@@ -540,9 +540,9 @@ namespace WpfApp1.Pages
 				BackupUserString(AccessibilityStickyKeysPath, "Flags", "StickyKeys");
 				BackupUserString(AccessibilityKeyboardResponsePath, "Flags", "KeyboardResponse");
 				BackupUserString(AccessibilityToggleKeysPath, "Flags", "ToggleKeys");
-				WriteUserString(AccessibilityStickyKeysPath, "Flags", "26");
-				WriteUserString(AccessibilityKeyboardResponsePath, "Flags", "2");
-				WriteUserString(AccessibilityToggleKeysPath, "Flags", "34");
+				WriteUserString(AccessibilityStickyKeysPath, "Flags", "506");
+				WriteUserString(AccessibilityKeyboardResponsePath, "Flags", "122");
+				WriteUserString(AccessibilityToggleKeysPath, "Flags", "58");
 				return;
 			}
 
