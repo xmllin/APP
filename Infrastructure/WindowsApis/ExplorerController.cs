@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using WpfApp1.Infrastructure.Processes;
@@ -18,29 +17,27 @@ namespace WpfApp1.Infrastructure.WindowsApis
 
         public async Task RestartAsync(CancellationToken token)
         {
-            var killResult = await _processes.RunAsync("taskkill.exe", "/F /IM explorer.exe", token, false, 30).ConfigureAwait(false);
-            if (killResult.ExitCode != 0 && Process.GetProcessesByName("explorer").Length > 0)
-                throw new InvalidOperationException("Не удалось завершить процесс Проводника. Код: " + killResult.ExitCode + ".");
-            for (var i = 0; i < 30; i++)
-            {
-                token.ThrowIfCancellationRequested();
-                if (Process.GetProcessesByName("explorer").Length == 0) break;
-                await Task.Delay(100, token).ConfigureAwait(false);
-            }
-            await Task.Delay(250, token).ConfigureAwait(false);
-            var process = Process.Start(new ProcessStartInfo
-            {
-                FileName = Path.Combine(Environment.SystemDirectory, "explorer.exe"),
-                UseShellExecute = true,
-                WorkingDirectory = Environment.SystemDirectory
-            });
-            if (process == null)
-                throw new InvalidOperationException("Не удалось запустить explorer.exe.");
+            // OptimizerDuck 2.27.6 перезапускает shell через cmd:
+            // taskkill ... && start explorer.exe. Важный момент — Explorer
+            // стартует через shell, а не как прямой дочерний процесс нашего
+            // elevated-приложения.
+            var result = await _processes.RunAsync(
+                "cmd.exe",
+                "/c taskkill /f /im explorer.exe && start explorer.exe",
+                token,
+                false,
+                30).ConfigureAwait(false);
+
+            if (result.ExitCode != 0)
+                throw new InvalidOperationException(
+                    "Команда перезапуска Проводника завершилась с кодом " + result.ExitCode + ".");
 
             for (var i = 0; i < 50; i++)
             {
                 token.ThrowIfCancellationRequested();
-                if (Process.GetProcessesByName("explorer").Length > 0) return;
+                if (Process.GetProcessesByName("explorer").Length > 0)
+                    return;
+
                 await Task.Delay(100, token).ConfigureAwait(false);
             }
 
