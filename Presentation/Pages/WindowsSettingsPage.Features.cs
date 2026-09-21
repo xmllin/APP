@@ -109,7 +109,16 @@ namespace WpfApp1.Pages
 		private static bool RequiresAdministratorAccess(string tag)
 		{
 			if (string.IsNullOrEmpty(tag)) return false;
-			return tag == "HardwareGpuScheduling"
+			return tag == "ShortcutArrow"
+				|| tag == "BackgroundRecording"
+				|| tag == "DeveloperMode"
+				|| tag == "LongPathsEnabled"
+				|| tag == "NumLockOnBoot"
+				|| tag == "DisableHibernation"
+				|| tag == "DisableUSBPowerSaving"
+				|| tag == "DisableSystemThrottling"
+				|| tag == "DisableSettings365Ads"
+				|| tag == "HardwareGpuScheduling"
 				|| tag == "PowerShellScripts"
 				|| tag == "AutoGameModeEnabled"
 				|| tag == "UacNeverNotify"
