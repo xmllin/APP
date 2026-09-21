@@ -107,14 +107,14 @@ namespace WpfApp1.Services.WindowsSettings
                     else if (bytes[8] == 2 || bytes[8] == 3)
                         bytes[8] = (byte)(enabled ? 3 : 2);
                     else
-                        throw new InvalidOperationException("Не распознан формат бинарных настроек автоскрытия панели задач.");
+                        throw new InvalidOperationException("РќРµ СЂР°СЃРїРѕР·РЅР°РЅ С„РѕСЂРјР°С‚ Р±РёРЅР°СЂРЅС‹С… РЅР°СЃС‚СЂРѕРµРє Р°РІС‚РѕСЃРєСЂС‹С‚РёСЏ РїР°РЅРµР»Рё Р·Р°РґР°С‡.");
                     _registry.WriteCurrentUser(AutoHidePath, name, bytes, RegistryValueKind.Binary);
                     found = true;
                 }
 
-                if (!found) return SettingOperationResult.Fail("Не найден поддерживаемый бинарный блок автоскрытия панели задач.");
-                if (ReadAutoHide() != enabled) return SettingOperationResult.Fail("Windows не сохранила выбранное состояние автоскрытия панели задач.");
-                return SettingOperationResult.Ok("Автоскрытие панели задач сохранено.", true);
+                if (!found) return SettingOperationResult.Fail("РќРµ РЅР°Р№РґРµРЅ РїРѕРґРґРµСЂР¶РёРІР°РµРјС‹Р№ Р±РёРЅР°СЂРЅС‹Р№ Р±Р»РѕРє Р°РІС‚РѕСЃРєСЂС‹С‚РёСЏ РїР°РЅРµР»Рё Р·Р°РґР°С‡.");
+                if (ReadAutoHide() != enabled) return SettingOperationResult.Fail("Windows РЅРµ СЃРѕС…СЂР°РЅРёР»Р° РІС‹Р±СЂР°РЅРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РІС‚РѕСЃРєСЂС‹С‚РёСЏ РїР°РЅРµР»Рё Р·Р°РґР°С‡.");
+                return SettingOperationResult.Ok("РђРІС‚РѕСЃРєСЂС‹С‚РёРµ РїР°РЅРµР»Рё Р·Р°РґР°С‡ СЃРѕС…СЂР°РЅРµРЅРѕ.", true);
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
@@ -138,8 +138,8 @@ namespace WpfApp1.Services.WindowsSettings
                 _backup.BackupCurrentUserOnce("TaskbarMultiMonitor_Legacy", MultiMonitorPath, "MMTaskbarEnabled");
                 _registry.WriteCurrentUser(MultiMonitorPath, "MMTaskbarEnabled", enabled ? 1 : 0, RegistryValueKind.DWord);
                 return VerifyBool(MultiMonitorPath, new[] { "SystemSettings_Taskbar_MultiMon", "SystemSettings_DesktopTaskbar_MultiMon" }, enabled)
-                    ? SettingOperationResult.Ok("Показ панели задач на всех дисплеях сохранён.", true)
-                    : SettingOperationResult.Fail("Windows не сохранила настройку нескольких дисплеев.");
+                    ? SettingOperationResult.Ok("РџРѕРєР°Р· РїР°РЅРµР»Рё Р·Р°РґР°С‡ РЅР° РІСЃРµС… РґРёСЃРїР»РµСЏС… СЃРѕС…СЂР°РЅР€РЅ.", true)
+                    : SettingOperationResult.Fail("Windows РЅРµ СЃРѕС…СЂР°РЅРёР»Р° РЅР°СЃС‚СЂРѕР№РєСѓ РЅРµСЃРєРѕР»СЊРєРёС… РґРёСЃРїР»РµРµРІ.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
@@ -187,8 +187,8 @@ namespace WpfApp1.Services.WindowsSettings
                 _registry.WriteCurrentUser(DeveloperPath, "TaskbarEndTask", enabled ? 1 : 0, RegistryValueKind.DWord);
                 var value = _registry.ReadCurrentUser(DeveloperPath, "TaskbarEndTask").Value;
                 return Convert.ToInt32(value ?? 0) == (enabled ? 1 : 0)
-                    ? SettingOperationResult.Ok("Завершение задач из панели задач сохранено.")
-                    : SettingOperationResult.Fail("Windows не сохранила настройку завершения задач.");
+                    ? SettingOperationResult.Ok("Р—Р°РІРµСЂС€РµРЅРёРµ Р·Р°РґР°С‡ РёР· РїР°РЅРµР»Рё Р·Р°РґР°С‡ СЃРѕС…СЂР°РЅРµРЅРѕ.")
+                    : SettingOperationResult.Fail("Windows РЅРµ СЃРѕС…СЂР°РЅРёР»Р° РЅР°СЃС‚СЂРѕР№РєСѓ Р·Р°РІРµСЂС€РµРЅРёСЏ Р·Р°РґР°С‡.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
@@ -201,8 +201,8 @@ namespace WpfApp1.Services.WindowsSettings
                 _registry.WriteCurrentUser(path, name, value, RegistryValueKind.DWord);
                 var actual = _registry.ReadCurrentUser(path, name).Value;
                 return ConvertToInt(actual, int.MinValue) == value
-                    ? SettingOperationResult.Ok("Настройка панели задач сохранена.", restart)
-                    : SettingOperationResult.Fail("Windows не сохранила выбранное значение панели задач.");
+                    ? SettingOperationResult.Ok("РќР°СЃС‚СЂРѕР№РєР° РїР°РЅРµР»Рё Р·Р°РґР°С‡ СЃРѕС…СЂР°РЅРµРЅР°.", restart)
+                    : SettingOperationResult.Fail("Windows РЅРµ СЃРѕС…СЂР°РЅРёР»Р° РІС‹Р±СЂР°РЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ РїР°РЅРµР»Рё Р·Р°РґР°С‡.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
@@ -220,8 +220,8 @@ namespace WpfApp1.Services.WindowsSettings
                 }
                 var state = ReadIntString(path, primaryName, -1, secondaryName);
                 return state == value
-                    ? SettingOperationResult.Ok("Настройка панели задач сохранена.", restart)
-                    : SettingOperationResult.Fail("Windows не сохранила выбранное значение панели задач.");
+                    ? SettingOperationResult.Ok("РќР°СЃС‚СЂРѕР№РєР° РїР°РЅРµР»Рё Р·Р°РґР°С‡ СЃРѕС…СЂР°РЅРµРЅР°.", restart)
+                    : SettingOperationResult.Fail("Windows РЅРµ СЃРѕС…СЂР°РЅРёР»Р° РІС‹Р±СЂР°РЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ РїР°РЅРµР»Рё Р·Р°РґР°С‡.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
@@ -251,8 +251,8 @@ namespace WpfApp1.Services.WindowsSettings
                     _registry.WriteCurrentUser(path, name, enabled ? "1" : "0", RegistryValueKind.String);
                 }
                 return VerifyBool(path, names, enabled)
-                    ? SettingOperationResult.Ok("Настройка панели задач сохранена.", true)
-                    : SettingOperationResult.Fail("Windows не сохранила выбранное состояние панели задач.");
+                    ? SettingOperationResult.Ok("РќР°СЃС‚СЂРѕР№РєР° РїР°РЅРµР»Рё Р·Р°РґР°С‡ СЃРѕС…СЂР°РЅРµРЅР°.", true)
+                    : SettingOperationResult.Fail("Windows РЅРµ СЃРѕС…СЂР°РЅРёР»Р° РІС‹Р±СЂР°РЅРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ РїР°РЅРµР»Рё Р·Р°РґР°С‡.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
