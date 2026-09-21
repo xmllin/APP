@@ -35,8 +35,10 @@ namespace WpfApp1.Pages
 			try
 			{
 				var mouse = _mouseSettings.ReadState();
-				if (_mouseSpeedSlider != null) _mouseSpeedSlider.Value = mouse.Speed;
-				if (_mouseScrollSlider != null) _mouseScrollSlider.Value = mouse.ScrollLines;
+				if (_mouseSpeedSlider != null && !_mouseSpeedSlider.IsMouseCaptured && !_mouseSpeedSlider.IsKeyboardFocusWithin)
+					_mouseSpeedSlider.Value = mouse.Speed;
+				if (_mouseScrollSlider != null && !_mouseScrollSlider.IsMouseCaptured && !_mouseScrollSlider.IsKeyboardFocusWithin)
+					_mouseScrollSlider.Value = mouse.ScrollLines;
 				if (_mouseAccelerationToggle != null)
 				{
 					_mouseAccelerationToggle.IsChecked = !mouse.AccelerationEnabled;
@@ -91,8 +93,7 @@ namespace WpfApp1.Pages
 				if (!result.Success)
 					throw new InvalidOperationException(result.Error);
 
-				SetStatusLabelForMouseSlider(isSpeed, requestedValue);
-			}
+				}
 			catch (OperationCanceledException)
 			{
 				// Новое положение ползунка отменяет предыдущее применение.
@@ -115,11 +116,6 @@ namespace WpfApp1.Pages
 			}
 		}
 
-		private void SetStatusLabelForMouseSlider(bool isSpeed, int value)
-		{
-			// Value is already rendered by the Slider binding; this method is kept
-			// intentionally lightweight so applying a value never triggers a reload.
-		}
 
 		private void MouseAccelerationToggle_Changed(object sender, RoutedEventArgs e)
 		{
