@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WpfApp1.Domain.WindowsSettings;
 using WpfApp1.Infrastructure.Processes;
+using WpfApp1.Infrastructure.Registry;
 
 namespace WpfApp1.Services.WindowsSettings
 {
@@ -18,10 +19,17 @@ namespace WpfApp1.Services.WindowsSettings
         };
 
         private readonly SystemProcessRunner _processes;
+        private readonly RegistrySettingsStore _registry;
+        private readonly SettingBackupService _backup;
 
-        public PowerSettingsService(SystemProcessRunner processes = null)
+        public PowerSettingsService(
+            SystemProcessRunner processes = null,
+            RegistrySettingsStore registry = null,
+            SettingBackupService backup = null)
         {
             _processes = processes ?? new SystemProcessRunner();
+            _registry = registry ?? new RegistrySettingsStore();
+            _backup = backup ?? new SettingBackupService(_registry);
         }
 
         public async Task<string> GetActiveSchemeGuidAsync(CancellationToken token)
