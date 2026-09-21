@@ -398,46 +398,117 @@ namespace WpfApp1.Pages
 			SettingOperationResult result;
 			switch (tag)
 			{
-				case "HardwareGpuScheduling": return _securitySettings.SetHardwareGpuScheduling(disabled);
-				case "DisableWindowsUpdate": return await _windowsUpdate.SetDisabledAsync(disabled, CancellationToken.None);
-				case "DisableDriverUpdates": WriteMachineDword(WindowsUpdateDriverPath, "ExcludeWUDriversInQualityUpdate", disabled ? 1 : 0); return SettingOperationResult.Ok("Обновление драйверов через Windows Update сохранено.", true);
-				case "DisableReservedStorage":
-					using (var reserveKey = Registry.LocalMachine.CreateSubKey(ReserveManagerPath)) reserveKey?.SetValue("ShippedWithReserves", disabled ? 0 : 1, RegistryValueKind.DWord);
-					return SettingOperationResult.Ok("Зарезервированное хранилище сохранено.", true);
+				case "OpenThisPc": return _explorerSettings.SetLaunchToThisPc(disabled);
+				case "ExplorerItemCheckboxes": return _explorerSettings.SetItemCheckboxes(disabled);
+				case "TaskbarWidgets": return _taskbarSettings.SetWidgets(disabled);
+				case "TaskbarTaskViewButton": return _taskbarSettings.SetTaskViewButton(disabled);
+				case "TaskbarLastActiveClick": return _taskbarSettings.SetLastActiveClick(disabled);
+				case "ShowUserFiles":
+				case "ShowNetworkIcon":
+				case "ShowControlPanel":
+				case "ShowDesktopIcons":
+				case "ShortcutArrow":
+				case "ToastNotifications":
+				case "ClassicContextMenu":
+				case "SystemSuggestions":
+				case "ExplorerSyncNotifications":
+				case "ExplorerCompactMode":
+				case "SnapAssistFlyout":
+				case "ClipboardHistory":
+				case "WindowShake":
+				case "GameBar":
+				case "BackgroundRecording":
+				case "FullscreenOptimizations":
+				case "NumLockOnBoot":
+				case "DeveloperMode":
+				case "LongPathsEnabled":
+				case "SpeedUpExplorerAndMenus":
+				case "DisableStartMenuWebSearch":
+				case "DisableStartRecommended":
+				case "DisableSettings365Ads":
+				case "DisablePreinstalledApps":
+					return _interfaceSettings.Apply(tag, disabled);
+
+				case "DisableHibernation":
+					return await _powerSettings.SetHibernationAsync(disabled, CancellationToken.None);
+				case "DisableUSBPowerSaving":
+					return await _powerSettings.SetUsbPowerSavingDisabledAsync(disabled, CancellationToken.None);
+				case "DisableSystemThrottling":
+					return _powerSettings.SetSystemPowerThrottlingDisabled(disabled);
+
 				case "DisableTelemetry":
 				case "DisableAppDiagnostics":
 				case "DisableActivity":
 				case "DisablePerformance":
 				case "DisableKeystrokes":
 				case "DisableVoiceData":
+				case "DisableErrorReporting":
+				case "DisableAdvertisingAndSuggestions":
+				case "DisableNewsAndInterests":
+				case "HideMeetNowButton":
+				case "DisableLocationAndSensors":
+				case "DisableAutoLogger":
+				case "DisableCortana":
+				case "DisableCopilot":
+				case "DisableContentDeliveryManager":
+				case "DisableFindMyDevice":
+				case "DisableDeliveryOptimization":
 					result = _privacySettings.Apply(tag, disabled);
 					return result ?? SettingOperationResult.Fail("Не удалось обработать настройку конфиденциальности.");
-				case "DisableStickyKeys": SetStickyKeysDisabled(disabled); return SettingOperationResult.Ok("Sticky Keys сохранено.");
-				case "DisableBingSearch": SetBingSearchDisabled(disabled); return SettingOperationResult.Ok("Поиск Windows сохранён.");
-				case "DisableHibernation": return await _powerSettings.SetHibernationAsync(disabled, CancellationToken.None);
-				case "DisableSmartScreen": return _securitySettings.SetSmartScreenDisabled(disabled);
-				case "DisableMemoryIntegrity": return _securitySettings.SetMemoryIntegrityDisabled(disabled);
-				case "DisableVbs": return _securitySettings.SetVbsDisabled(disabled);
-				case "EnableTaskbarEndTask": return _taskbarSettings.SetEndTask(disabled);
-				case "TaskbarAutoHide": return _taskbarSettings.SetAutoHide(disabled);
-				case "TaskbarBadges": return _taskbarSettings.SetBadges(disabled);
-				case "TaskbarFlashing": return _taskbarSettings.SetFlashing(disabled);
-				case "TaskbarMultiMonitor": return _taskbarSettings.SetMultiMonitor(disabled);
-				case "TaskbarShareWindow": return _taskbarSettings.SetShareWindow(disabled);
-				case "TaskbarShowDesktop": return _taskbarSettings.SetShowDesktop(disabled);
-				case "DisableLockScreenBlur": return _securitySettings.SetLockScreenBlurDisabled(disabled);
+
+				case "DisableStickyKeys":
+					SetStickyKeysDisabled(disabled);
+					return SettingOperationResult.Ok("Залипание клавиш сохранено.");
+				case "DisableBingSearch":
+					SetBingSearchDisabled(disabled);
+					return SettingOperationResult.Ok("Поиск Windows сохранён.");
+				case "DisableSmartScreen":
+					return _securitySettings.SetSmartScreenDisabled(disabled);
+				case "DisableMemoryIntegrity":
+					return _securitySettings.SetMemoryIntegrityDisabled(disabled);
+				case "DisableVbs":
+					return _securitySettings.SetVbsDisabled(disabled);
+				case "EnableTaskbarEndTask":
+					return _taskbarSettings.SetEndTask(disabled);
+				case "TaskbarAutoHide":
+					return _taskbarSettings.SetAutoHide(disabled);
+				case "TaskbarBadges":
+					return _taskbarSettings.SetBadges(disabled);
+				case "TaskbarFlashing":
+					return _taskbarSettings.SetFlashing(disabled);
+				case "TaskbarMultiMonitor":
+					return _taskbarSettings.SetMultiMonitor(disabled);
+				case "TaskbarShareWindow":
+					return _taskbarSettings.SetShareWindow(disabled);
+				case "TaskbarShowDesktop":
+					return _taskbarSettings.SetShowDesktop(disabled);
+				case "DisableLockScreenBlur":
+					return _securitySettings.SetLockScreenBlurDisabled(disabled);
 				case "EnableDarkTheme":
 					WriteDword(ThemePersonalizePath, "AppsUseLightTheme", disabled ? 0 : 1);
 					WriteDword(ThemePersonalizePath, "SystemUsesLightTheme", disabled ? 0 : 1);
 					return SettingOperationResult.Ok("Тёмная тема сохранена.");
-				case "ReduceContextMenuDelay": WriteUserString(DesktopSettingsPath, "MenuShowDelay", disabled ? "50" : "400"); return SettingOperationResult.Ok("Задержка контекстного меню сохранена.");
-				case "EnableClipboard": WriteDword(ClipboardPath, "EnableClipboardHistory", disabled ? 1 : 0); return SettingOperationResult.Ok("История буфера обмена сохранена.");
-				case "DisableWindowsAds": SetWindowsAdsDisabled(disabled); return SettingOperationResult.Ok("Рекламные предложения Windows сохранены.");
-				case "AutoGameModeEnabled": WriteDword(@"Software\Microsoft\GameBar", "AutoGameModeEnabled", disabled ? 1 : 0); return SettingOperationResult.Ok("Игровой режим сохранён.");
-				case "UacNeverNotify": return _securitySettings.SetUacNeverNotify(disabled);
-				case "DisablePageFile": SetPageFileDisabled(disabled); return SettingOperationResult.Ok("Файл подкачки сохранён.", true);
-				case "DisableBitLockerAutoEncryption": return _securitySettings.SetBitLockerAutoEncryptionDisabled(disabled);
-				default: return SettingOperationResult.Ok("Настройка сохранена.");
+				case "ReduceContextMenuDelay":
+					WriteUserString(DesktopSettingsPath, "MenuShowDelay", disabled ? "50" : "400");
+					return SettingOperationResult.Ok("Задержка контекстного меню сохранена.");
+				case "EnableClipboard":
+					WriteDword(ClipboardPath, "EnableClipboardHistory", disabled ? 1 : 0);
+					return SettingOperationResult.Ok("История буфера обмена сохранена.");
+				case "DisableWindowsAds":
+					SetWindowsAdsDisabled(disabled);
+					return SettingOperationResult.Ok("Рекламные предложения Windows сохранены.");
+				case "AutoGameModeEnabled":
+					WriteDword(@"SoftwareMicrosoftGameBar", "AutoGameModeEnabled", disabled ? 1 : 0);
+					return SettingOperationResult.Ok("Игровой режим сохранён.");
+				case "UacNeverNotify":
+					return _securitySettings.SetUacNeverNotify(disabled);
+				case "DisablePageFile":
+					SetPageFileDisabled(disabled);
+					return SettingOperationResult.Ok("Файл подкачки сохранён.", true);
+				case "DisableBitLockerAutoEncryption":
+					return _securitySettings.SetBitLockerAutoEncryptionDisabled(disabled);
+				default:
+					return SettingOperationResult.Ok("Настройка сохранена.");
 			}
 		}
 
@@ -450,9 +521,9 @@ namespace WpfApp1.Pages
 
 		private static bool AreStickyKeysDisabled()
 		{
-			return ReadUserString(AccessibilityStickyKeysPath, "Flags", "510") == "506"
-				&& ReadUserString(AccessibilityKeyboardResponsePath, "Flags", "126") == "122"
-				&& ReadUserString(AccessibilityToggleKeysPath, "Flags", "62") == "58";
+			return ReadUserString(AccessibilityStickyKeysPath, "Flags", "26") == "26"
+				&& ReadUserString(AccessibilityKeyboardResponsePath, "Flags", "2") == "2"
+				&& ReadUserString(AccessibilityToggleKeysPath, "Flags", "34") == "34";
 		}
 
 		private static void SetStickyKeysDisabled(bool disabled)
@@ -462,9 +533,9 @@ namespace WpfApp1.Pages
 				BackupUserString(AccessibilityStickyKeysPath, "Flags", "StickyKeys");
 				BackupUserString(AccessibilityKeyboardResponsePath, "Flags", "KeyboardResponse");
 				BackupUserString(AccessibilityToggleKeysPath, "Flags", "ToggleKeys");
-				WriteUserString(AccessibilityStickyKeysPath, "Flags", "506");
-				WriteUserString(AccessibilityKeyboardResponsePath, "Flags", "122");
-				WriteUserString(AccessibilityToggleKeysPath, "Flags", "58");
+				WriteUserString(AccessibilityStickyKeysPath, "Flags", "26");
+				WriteUserString(AccessibilityKeyboardResponsePath, "Flags", "2");
+				WriteUserString(AccessibilityToggleKeysPath, "Flags", "34");
 				return;
 			}
 
