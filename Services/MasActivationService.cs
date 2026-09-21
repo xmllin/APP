@@ -223,8 +223,23 @@ namespace WpfApp1.Services
             if (stream == null)
                 throw new FileNotFoundException($"Не удалось открыть поток ресурса '{resourceName}'.");
 
-            await using var fileStream = File.Create(destinationPath);
-            await stream.CopyToAsync(fileStream);
+            // MAS проверяет CRLF через findstr и ожидает пустую строку
+            // после последней строки. Текстовые ресурсы из git могут приехать
+            // с LF, поэтому нормализуем скрипт перед запуском.
+            using (var reader = new StreamReader(stream, new System.Text.UTF8Encoding(false), true))
+            {
+                var script = await reader.ReadToEndAsync();
+                script = script
+                    .Replace("\r\n", "\n")
+                    .Replace("\r", "\n")
+                    .Replace("\n", "\r\n")
+                    .TrimEnd('\r', '\n') + "\r\n\r\n";
+
+                await File.WriteAllTextAsync(
+                    destinationPath,
+                    script,
+                    new System.Text.UTF8Encoding(false));
+            }
         }
     }
 
