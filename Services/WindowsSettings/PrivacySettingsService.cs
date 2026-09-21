@@ -442,6 +442,18 @@ namespace WpfApp1.Services.WindowsSettings
             };
         }
 
+        private static RegistryChange UserString(string path, string name, string value)
+        {
+            return new RegistryChange
+            {
+                Machine = false,
+                Path = path,
+                Name = name,
+                NewValue = value,
+                Kind = RegistryValueKind.String
+            };
+        }
+
         private static RegistryChange UserDword(string path, string name, int value)
         {
             return new RegistryChange
