@@ -148,6 +148,9 @@ namespace WpfApp1.Pages
 		private readonly ExplorerSettingsService _explorerSettings;
 		private readonly SystemProcessRunner _processRunner;
 		private readonly ExplorerController _explorerController;
+		private readonly WindowsInterfaceSettingsService _interfaceSettings;
+		private readonly Dictionary<string, ToggleButton> _managedToggles = new Dictionary<string, ToggleButton>(StringComparer.Ordinal);
+		private readonly Dictionary<string, ComboBox> _managedCombos = new Dictionary<string, ComboBox>(StringComparer.Ordinal);
 		private bool _powerShellScriptsBusy;
 		private ComboBox _highlightColorCombo;
 		private Button _highlightColorApplyButton;
@@ -167,6 +170,7 @@ namespace WpfApp1.Pages
 			_mouseSettings = new MouseSettingsService(_registryStore, _settingBackup);
 			_processRunner = new SystemProcessRunner();
 			_explorerController = new ExplorerController(_processRunner);
+			_interfaceSettings = new WindowsInterfaceSettingsService(_registryStore, _settingBackup);
 			_powerSettings = new PowerSettingsService(_processRunner);
 			_windowsUpdate = new WindowsUpdateService(_registryStore, _settingBackup, null, _processRunner);
 			_securitySettings = new SecuritySettingsService(_registryStore, _settingBackup);
