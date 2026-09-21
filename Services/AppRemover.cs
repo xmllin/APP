@@ -118,9 +118,11 @@ try {{ if (-not $found) {{ $found = @(Get-AppxProvisionedPackage -Online -ErrorA
         {
             var literals = string.Join(",", packageNames.Select(x => "'" + (x ?? string.Empty).Replace("'", "''") + "'"));
             var script = "$ErrorActionPreference='Stop'; $names=@(" + literals + "); foreach($name in $names){ " +
+                "Get-AppxPackage -Name $name -ErrorAction SilentlyContinue | ForEach-Object { Remove-AppxPackage -Package $_.PackageFullName -ErrorAction Stop }; " +
                 "Get-AppxPackage -AllUsers -Name $name -ErrorAction SilentlyContinue | ForEach-Object { Remove-AppxPackage -AllUsers -Package $_.PackageFullName -ErrorAction Stop }; " +
-                "Get-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -eq $name } | ForEach-Object { Remove-AppxProvisionedPackage -Online -PackageName $_.PackageName -ErrorAction Stop | Out-Null }" +
-                " }";
+                "Get-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -eq $name } | ForEach-Object { Remove-AppxProvisionedPackage -Online -PackageName $_.PackageName -ErrorAction Stop | Out-Null }; " +
+                "if(@(Get-AppxPackage -Name $name -ErrorAction SilentlyContinue).Count -gt 0 -or @(Get-AppxPackage -AllUsers -Name $name -ErrorAction SilentlyContinue).Count -gt 0 -or @(Get-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -eq $name }).Count -gt 0){ throw ('Пакет ' + $name + ' всё ещё установлен или подготовлен.') } " +
+                "}";
             await _powershell.RunAsync(script, token, true, 180).ConfigureAwait(false);
         }
 
