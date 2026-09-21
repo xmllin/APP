@@ -318,10 +318,6 @@
                     </Grid>
                 </Border>
 
-                <StackPanel Visibility="Collapsed">
-                    <TextBlock x:Name="WebSearchStatusText"/>
-                    <Button x:Name="WebSearchToggleButton" Click="WebSearchToggleButton_Click"/>
-                </StackPanel>
                 <Border x:Name="WindowsSettingsBanner" Height="150" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="28">
                     <Border.Background>
                         <ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/>
@@ -355,8 +351,17 @@
                     <ComboBoxItem Tag="Панель задач">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-apps-list.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Панель задач"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Энергопотребление">
-                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/cpu.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Энергопотребление"/></StackPanel>
+                    <ComboBoxItem Tag="Пуск и поиск">
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-search.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Пуск и поиск"/></StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="Игры и производительность">
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/xbox-controller.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Игры и производительность"/></StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="Система">
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Система"/></StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="Питание">
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/cpu.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Питание"/></StackPanel>
                     </ComboBoxItem>
                     <ComboBoxItem Tag="Мышь">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Мышь"/></StackPanel>
@@ -366,12 +371,6 @@
                     </ComboBoxItem>
                     <ComboBoxItem Tag="Безопасность и конфиденциальность">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-shield.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Безопасность и конфиденциальность"/></StackPanel>
-                    </ComboBoxItem>
-                    <ComboBoxItem Tag="Дополнительные настройки">
-                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Доп. настройки"/></StackPanel>
-                    </ComboBoxItem>
-                    <ComboBoxItem Tag="Безопасность и поведение">
-                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-shield.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Безопасность и поведение"/></StackPanel>
                     </ComboBoxItem>
                 </ComboBox>
                 <StackPanel>
@@ -630,7 +629,7 @@
                     <Border x:Name="PowerSettingsPanel" Background="#0A1D39" BorderBrush="#173A61" BorderThickness="1,0,1,0" CornerRadius="11" Padding="0,4" Margin="0,10,0,0">
                         <StackPanel>
                             <Border Style="{StaticResource CategoryHeader}">
-                                <TextBlock Text="Энергопотребление" FontSize="24" FontWeight="SemiBold"/>
+                                <TextBlock Text="Питание" FontSize="24" FontWeight="SemiBold"/>
                             </Border>
                             <Border Style="{StaticResource SettingRow}">
                                 <Grid>
@@ -835,6 +834,7 @@
                     <Image Source="{local:SvgImage Source=interface/white/info-circle.svg}" Width="27" Height="23" Margin="0,0,8,0" VerticalAlignment="Center"/>
                     <TextBlock Text="Для применения некоторых настроек требуется перезапуск проводника" Foreground="#85A8D2" FontSize="13" VerticalAlignment="Center"/>
                 </StackPanel>
+                <Button x:Name="RestartSystemButton" Content="Перезапустить Windows" Click="RestartSystemButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" DockPanel.Dock="Right" Padding="10,5" FontSize="12" Margin="18,0,0,0" Width="160"/>
                 <Button x:Name="RestartExplorerButton" Content="Перезапустить проводник" Click="RestartExplorerButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" DockPanel.Dock="Right" Padding="10,5" FontSize="12" Margin="18,0,0,0" Width="170"/>
                 <Button x:Name="RestartAsAdminButton" Content="Перезапустить от администратора" Click="RestartAsAdminButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" DockPanel.Dock="Right" Padding="10,5" FontSize="12" Margin="18,0,0,0" Height="30" Width="220"/>
             </DockPanel>
