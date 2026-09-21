@@ -43,7 +43,12 @@ namespace WpfApp1.Services.WindowsSettings
                         && MachineEquals(@"SOFTWARE\Policies\Microsoft\Windows\CloudContent", "DisableTailoredExperiencesWithDiagnosticData", 1)
                         && MachineEquals(@"SOFTWARE\Policies\Microsoft\Windows\CloudContent", "DisableWindowsConsumerFeatures", 1)
                         && MachineEquals(@"SOFTWARE\Policies\Microsoft\Windows\CloudContent", "DisableSoftLanding", 1)
-                        && MachineEquals(@"SOFTWARE\Policies\Microsoft\Windows\CloudContent", "DisableThirdPartySuggestions", 1);
+                        && MachineEquals(@"SOFTWARE\Policies\Microsoft\Windows\CloudContent", "DisableThirdPartySuggestions", 1)
+                        && UserEquals(@"SOFTWARE\Microsoft\Windows\CurrentVersion\UserProfileEngagement", "ScoobeSystemSettingEnabled", 0)
+                        && UserEquals(@"SOFTWARE\Microsoft\InputPersonalization", "RestrictImplicitInkCollection", 1)
+                        && UserEquals(@"SOFTWARE\Microsoft\InputPersonalization", "RestrictImplicitTextCollection", 1)
+                        && UserEquals(@"SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore", "HarvestContacts", 0)
+                        && UserEquals(@"Control Panel\International\User Profile", "HttpAcceptLanguageOptOut", 1);
                 case "DisableNewsAndInterests":
                     return MachineEquals(@"SOFTWARE\Policies\Microsoft\Dsh", "AllowNewsAndInterests", 0)
                         && UserEquals(@"Software\Microsoft\Windows\CurrentVersion\Feeds", "ShellFeedsTaskbarViewMode", 0);
@@ -58,8 +63,13 @@ namespace WpfApp1.Services.WindowsSettings
                     return MachineEquals(@"SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors", "DisableLocation", 1)
                         && MachineEquals(@"SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors", "DisableSensors", 1)
                         && MachineEquals(@"SYSTEM\Maps", "AutoUpdateEnabled", 0)
+                        && UserEquals(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Permissions\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}", "SensorPermissionState", 0)
                         && UserEquals(@"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location", "Value", "Deny")
-                        && MachineEquals(@"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location", "Value", "Deny");
+                        && MachineEquals(@"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location", "Value", "Deny")
+                        && UserEquals(@"Software\Microsoft\Windows\CurrentVersion\Geolocation", "Status", 0)
+                        && MachineEquals(@"SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration", "Status", 0)
+                        && MachineEquals(@"Software\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting", "Value", 0)
+                        && MachineEquals(@"Software\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots", "Value", 0);
                 case "DisableAutoLogger":
                     foreach (var name in new[] { "AppModel", "Cellcore", "CloudExperienceHostOobe", "DataMarket", "DiagLog", "Diagtrack-Listener", "LwtNetLog", "SQMLogger", "WdiContextLog", "WiFiSession" })
                         if (!MachineEquals(@"SYSTEM\CurrentControlSet\Control\WMI\Autologger\" + name, "Start", 0)) return false;
