@@ -353,10 +353,53 @@ namespace WpfApp1.Pages
 
 		private async void RestartExplorerButton_Click(object sender, RoutedEventArgs e)
 		{
-			try { await RestartExplorerAsync(); }
+			if (RestartExplorerButton == null || RestartExplorerButton.IsEnabled == false) return;
+
+			try
+			{
+				RestartExplorerButton.IsEnabled = false;
+				RestartExplorerButton.Content = "Перезапуск…";
+				await RestartExplorerAsync();
+				ShowToast("Проводник перезапущен.");
+			}
 			catch (Exception exception)
 			{
 				MessageBox.Show("Не удалось перезапустить Проводник: " + exception.Message, "Проводник", MessageBoxButton.OK, MessageBoxImage.Warning);
+			}
+			finally
+			{
+				if (RestartExplorerButton != null)
+				{
+					RestartExplorerButton.Content = "Перезапустить проводник";
+					RestartExplorerButton.IsEnabled = true;
+				}
+			}
+		}
+
+		private void RestartSystemButton_Click(object sender, RoutedEventArgs e)
+		{
+			var result = MessageBox.Show(
+				"Перезапустить Windows сейчас?",
+				"Перезапуск системы",
+				MessageBoxButton.YesNo,
+				MessageBoxImage.Warning);
+
+			if (result != MessageBoxResult.Yes) return;
+
+			try
+			{
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = "shutdown.exe",
+					Arguments = "/r /t 0",
+					UseShellExecute = true,
+					WorkingDirectory = Environment.SystemDirectory,
+					WindowStyle = ProcessWindowStyle.Hidden
+				});
+			}
+			catch (Exception exception)
+			{
+				MessageBox.Show("Не удалось запустить перезапуск Windows: " + exception.Message, "Перезапуск системы", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
 		}
 
@@ -392,71 +435,6 @@ namespace WpfApp1.Pages
 		}
 
 
-		private async void WebSearchToggleButton_Click(object sender, RoutedEventArgs e)
-		{
-			try
-			{
-				using (var key = Registry.CurrentUser.CreateSubKey(SearchRegistryPath))
-				{
-					if (key == null)
-					{
-						WebSearchStatusText.Text = "Не удалось открыть настройки поиска.";
-						return;
-					}
-
-					var currentValue = key.GetValue(SearchRegistryValue, 1);
-					var isEnabled = Convert.ToInt32(currentValue) != 0;
-					var value = isEnabled ? 0 : 1;
-					key.SetValue(SearchRegistryValue, value, RegistryValueKind.DWord);
-					key.SetValue(CortanaConsentValue, value, RegistryValueKind.DWord);
-					key.SetValue(ConnectedSearchUseWebValue, value, RegistryValueKind.DWord);
-				}
-
-				await RestartWindowsSearchAsync();
-				UpdateWebSearchStatus();
-			}
-			catch (Exception exception)
-			{
-				WebSearchStatusText.Text = "Не удалось изменить параметр поиска.";
-				MessageBox.Show(
-					"Не удалось изменить поиск Windows: " + exception.Message,
-					"Настройки Windows",
-					MessageBoxButton.OK,
-					MessageBoxImage.Warning);
-			}
-		}
-
-		private void UpdateWebSearchStatus()
-		{
-			try
-			{
-				using (var key = Registry.CurrentUser.OpenSubKey(SearchRegistryPath))
-				{
-					var value = key?.GetValue(SearchRegistryValue, 1);
-					var enabled = Convert.ToInt32(value) != 0;
-					WebSearchStatusText.Text = enabled
-						? "Сейчас включён"
-						: "Сейчас отключён";
-					WebSearchToggleButton.Content = enabled
-						? "Отключить поиск в интернете"
-						: "Включить поиск в интернете";
-				}
-			}
-			catch
-			{
-				WebSearchStatusText.Text = "Состояние недоступно";
-				WebSearchToggleButton.Content = "Изменить параметр";
-			}
-		}
-
-		private async Task RestartWindowsSearchAsync()
-		{
-			try
-			{
-				await _processRunner.RunAsync("taskkill.exe", "/F /IM SearchHost.exe", CancellationToken.None, false, 10);
-			}
-			catch { }
-		}
 
 		private void MouseSettingsButton_Click(object sender, RoutedEventArgs e)
 		{
