@@ -77,6 +77,29 @@ namespace WpfApp1.Pages
 			RefreshMouseSettings();
 			ApplyAdminToggleLockState();
 			await LoadPowerShellScriptsStateAsync();
+			await UpdateGameBarAvailabilityAsync();
+		}
+
+		private async Task UpdateGameBarAvailabilityAsync()
+		{
+			try
+			{
+				_gameBarAvailable = await _uwpPackageService.IsPackageInstalledAsync("Microsoft.XboxGamingOverlay", CancellationToken.None);
+			}
+			catch
+			{
+				_gameBarAvailable = false;
+			}
+
+			if (_managedToggles.TryGetValue("GameBar", out var toggle))
+			{
+				if (!_gameBarAvailable)
+				{
+					SetToggle(toggle, false);
+					SetAdditionalStatusLabel("GameBar", "Недоступно: Xbox Game Bar не установлен", false);
+				}
+				ApplyAdminToggleLockState();
+			}
 		}
 
 		private void WindowsSettingsPage_Unloaded(object sender, RoutedEventArgs e)
@@ -213,10 +236,6 @@ namespace WpfApp1.Pages
 			foreach (var tag in new[]
 			{
 				"DisableTelemetry",
-				"DisableAppDiagnostics",
-				"DisablePerformance",
-				"DisableKeystrokes",
-				"DisableVoiceData",
 				"DisableErrorReporting",
 				"DisableAdvertisingAndSuggestions",
 				"DisableNewsAndInterests",
@@ -246,7 +265,7 @@ namespace WpfApp1.Pages
 					"DisableActivityHistory" => "Отключить историю активности",
 					"DisableLocationAndSensors" => "Отключить геолокацию и датчики",
 					"DisableAutoLogger" => "Отключить WMI AutoLogger",
-					"DisableCortana" => "Отключить Cortana и облачный поиск",
+					"DisableCortana" => "Отключить Cortana и облачный поиск (Windows 10)",
 					"DisableCopilot" => "Отключить Windows Copilot",
 					"DisableContentDeliveryManager" => "Отключить доставку контента Windows",
 					"DisableFindMyDevice" => "Отключить «Найти устройство»",
@@ -575,8 +594,6 @@ namespace WpfApp1.Pages
 				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ExplorerSyncNotifications"), "Уведомления поставщиков синхронизации", "Показывать уведомления OneDrive и других поставщиков файлов"));
 				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ExplorerCompactMode"), "Компактный режим Проводника", "Уменьшить интервалы между элементами Проводника"));
 				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("SnapAssistFlyout"), "Подсказки Snap", "Показывать раскладку Snap при наведении на кнопку разворачивания"));
-				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("WindowShake"), "Встряхивание окна", "Разрешить встряхивание окна для сворачивания остальных окон"));
-				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ToastNotifications"), "Всплывающие уведомления", "Разрешить системные toast-уведомления Windows"));
 				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ClassicContextMenu"), "Классическое контекстное меню", "Использовать классическое меню Windows 10 вместо компактного меню Windows 11"));
 				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("SpeedUpExplorerAndMenus"), "Ускорить Проводник и меню", "Уменьшить задержку запуска Проводника и отображения меню Windows"));
 			}
