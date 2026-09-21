@@ -65,21 +65,35 @@ namespace WpfApp1.Models
         {
             get
             {
-                return Status == LibraryInstallStatus.Installed ? "Установлено" : "Не установлено";
+                switch (Status)
+                {
+                    case LibraryInstallStatus.Installed: return "Установлено";
+                    case LibraryInstallStatus.UpdateAvailable: return "Доступно обновление";
+                    case LibraryInstallStatus.Manual: return "Ручная установка";
+                    default: return "Не установлено";
+                }
             }
         }
         public Brush StatusBrush
         {
             get
             {
-                return Status == LibraryInstallStatus.Installed
-                    ? new SolidColorBrush(Color.FromRgb(97, 214, 128))
-                    : new SolidColorBrush(Color.FromRgb(244, 92, 92));
+                switch (Status)
+                {
+                    case LibraryInstallStatus.Installed:
+                        return new SolidColorBrush(Color.FromRgb(97, 214, 128));
+                    case LibraryInstallStatus.UpdateAvailable:
+                        return new SolidColorBrush(Color.FromRgb(255, 196, 90));
+                    case LibraryInstallStatus.Manual:
+                        return new SolidColorBrush(Color.FromRgb(130, 165, 207));
+                    default:
+                        return new SolidColorBrush(Color.FromRgb(244, 92, 92));
+                }
             }
         }
         public string DetailsText => "Подробнее";
         public bool IsInstalled => Status == LibraryInstallStatus.Installed;
-        public bool IsMissing => Status != LibraryInstallStatus.Installed;
+        public bool IsMissing => Status == LibraryInstallStatus.Missing;
 
         public LibraryItem(LibraryDefinition definition, LibraryInstallStatus status, string installedVersion)
         {
