@@ -138,7 +138,7 @@ namespace WpfApp1.Services.WindowsSettings
                 _backup.BackupCurrentUserOnce("TaskbarMultiMonitor_Legacy", MultiMonitorPath, "MMTaskbarEnabled");
                 _registry.WriteCurrentUser(MultiMonitorPath, "MMTaskbarEnabled", enabled ? 1 : 0, RegistryValueKind.DWord);
                 return VerifyBool(MultiMonitorPath, new[] { "SystemSettings_Taskbar_MultiMon", "SystemSettings_DesktopTaskbar_MultiMon" }, enabled)
-                    ? SettingOperationResult.Ok("Показ панели задач на всех дисплеях сохранЈн.", true)
+                    ? SettingOperationResult.Ok("Показ панели задач на всех дисплеях сохранён.", true)
                     : SettingOperationResult.Fail("Windows не сохранила настройку нескольких дисплеев.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
