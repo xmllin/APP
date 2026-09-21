@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Win32;
 using WpfApp1.Domain.WindowsSettings;
 using WpfApp1.Infrastructure.Registry;
@@ -72,8 +73,7 @@ namespace WpfApp1.Services.WindowsSettings
                         && MachineEquals(@"SYSTEM\CurrentControlSet\Services\DiagTrack", "Start", 4)
                         && MachineEquals(@"SYSTEM\CurrentControlSet\Services\dmwappushservice", "Start", 4)
                         && MachineEquals(@"SYSTEM\CurrentControlSet\Services\DcpSvc", "Start", 4)
-                        && MachineEquals(@"SYSTEM\CurrentControlSet\Services\diagnosticshub.standardcollector.service", "Start", 4)
-                        && !HasUserValue(@"Software\Microsoft\Siuf\Rules", "PeriodInNanoSeconds");
+                        && MachineEquals(@"SYSTEM\CurrentControlSet\Services\diagnosticshub.standardcollector.service", "Start", 4);
                 case "DisableAppDiagnostics":
                     return MachineEquals(AppPrivacy, "LetAppsGetDiagnosticInfo", 2)
                         && MachineEquals(AppPrivacy, "LetAppsAccessDiagnosticInfo", 2)
@@ -522,11 +522,6 @@ namespace WpfApp1.Services.WindowsSettings
                     : SettingOperationResult.Fail("Windows íå ñîõðàíèëà âûáðàííóþ íàñòðîéêó.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
-        }
-
-        private bool HasUserValue(string path, string name)
-        {
-            return _registry.ReadCurrentUser(path, name).Exists;
         }
 
         private bool MachineEquals(string path, string name, object expected)
