@@ -199,7 +199,7 @@ namespace WpfApp1.Services.WindowsSettings
                             UserDword2(@"Software\Microsoft\Windows\CurrentVersion\Feeds", "ShellFeedsTaskbarViewMode", disabled ? 0 : 1)
                         }, "Новости и интересы сохранены.");
                     case "HideMeetNowButton":
-                        return SetUserDword("HideMeetNowButton", @"Software\Microsoft\Windows\CurrentVersion\Policies\Explorer", "HideSCAMeetNow", disabled ? 1 : 0);
+                        return SetUserDword(@"Software\Microsoft\Windows\CurrentVersion\Policies\Explorer", "HideSCAMeetNow", disabled ? 1 : 0);
                     case "DisableActivityHistory":
                         return ApplyRegistryGroup(new[]
                         {
