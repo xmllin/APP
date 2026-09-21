@@ -99,15 +99,13 @@ namespace WpfApp1.Services.WindowsSettings
                 _backup.BackupCurrentUserOnce("MouseAcceleration_Threshold2", MousePath, "MouseThreshold2");
 
                 var values = GetAccelerationValues();
-                if (values.Length < 3) values = new[] { 6, 10, enabled ? 1 : 0 };
                 if (enabled)
                 {
-                    if (values[0] == 0 && values[1] == 0) { values[0] = 6; values[1] = 10; }
-                    values[2] = 1;
+                    values = new[] { 6, 10, 1 };
                 }
                 else
                 {
-                    values[2] = 0;
+                    values = new[] { 0, 0, 0 };
                 }
 
                 var handle = GCHandle.Alloc(values, GCHandleType.Pinned);
@@ -161,7 +159,7 @@ namespace WpfApp1.Services.WindowsSettings
         private bool GetAcceleration()
         {
             var values = GetAccelerationValues();
-            return values.Length >= 3 && values[2] != 0;
+            return values.Length >= 3 && (values[0] != 0 || values[1] != 0 || values[2] != 0);
         }
 
         private int[] GetAccelerationValues()
