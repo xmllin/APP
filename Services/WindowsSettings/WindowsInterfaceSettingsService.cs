@@ -258,7 +258,6 @@ namespace WpfApp1.Services.WindowsSettings
         private SettingOperationResult SetClassicContextMenu(bool enabled)
         {
             const string basePath = @"SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}";
-            const string inproc = basePath + @"\InprocServer32";
             if (enabled)
             {
                 _registry.WriteCurrentUser(basePath + @"\InprocServer32", "", "", RegistryValueKind.String);
