@@ -70,6 +70,11 @@ namespace WpfApp1.Pages
 			var isScroll = ReferenceEquals(sender, _mouseScrollSlider);
 			if (!isSpeed && !isScroll) return;
 
+			// Capture the requested value immediately. Do not read Slider.Value after
+			// the debounce delay because a settings refresh can otherwise put it back
+			// to the previous value (commonly 10) while the delayed task is running.
+			var requestedValue = (int)Math.Round(e.NewValue);
+
 			_mouseSliderApplyCts?.Cancel();
 			_mouseSliderApplyCts?.Dispose();
 			var cts = new CancellationTokenSource();
@@ -77,14 +82,16 @@ namespace WpfApp1.Pages
 
 			try
 			{
-				await Task.Delay(140, cts.Token);
+				await Task.Delay(100, cts.Token);
 
-				SettingOperationResult result = isSpeed
-					? _mouseSettings.SetSpeed((int)Math.Round(_mouseSpeedSlider.Value))
-					: _mouseSettings.SetScrollLines((int)Math.Round(_mouseScrollSlider.Value));
+				var result = isSpeed
+					? _mouseSettings.SetSpeed(requestedValue)
+					: _mouseSettings.SetScrollLines(requestedValue);
 
 				if (!result.Success)
 					throw new InvalidOperationException(result.Error);
+
+				SetStatusLabelForMouseSlider(isSpeed, requestedValue);
 			}
 			catch (OperationCanceledException)
 			{
@@ -106,6 +113,12 @@ namespace WpfApp1.Pages
 					cts.Dispose();
 				}
 			}
+		}
+
+		private void SetStatusLabelForMouseSlider(bool isSpeed, int value)
+		{
+			// Value is already rendered by the Slider binding; this method is kept
+			// intentionally lightweight so applying a value never triggers a reload.
 		}
 
 		private void MouseAccelerationToggle_Changed(object sender, RoutedEventArgs e)
