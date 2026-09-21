@@ -57,7 +57,6 @@ namespace WpfApp1.Pages
 			SetPanelVisibility(_systemSettingsPanel, showAll || category == "Система");
 			SetPanelVisibility(_securityBehaviorPanel, showAll || category == "Безопасность и конфиденциальность");
 			SetPanelVisibility(PrivacySettingsPanel, false);
-			SetPanelVisibility(_additionalSettingsPanel, false);
 		}
 
 		private static void SetPanelVisibility(FrameworkElement panel, bool visible)
