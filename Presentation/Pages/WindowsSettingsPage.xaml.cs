@@ -135,6 +135,9 @@ namespace WpfApp1.Pages
 		private ToggleButton _powerShellScriptsToggle;
 		private TextBlock _powerShellScriptsLabel;
 		private Border _additionalSettingsPanel;
+		private Border _startSearchSettingsPanel;
+		private Border _gamingSettingsPanel;
+		private Border _systemSettingsPanel;
 		private Border _securityBehaviorPanel;
 		private readonly LibraryInstallationService _libraryInstallation = new LibraryInstallationService();
 		private readonly RegistrySettingsStore _registryStore = new RegistrySettingsStore();
@@ -171,7 +174,7 @@ namespace WpfApp1.Pages
 			_processRunner = new SystemProcessRunner();
 			_explorerController = new ExplorerController(_processRunner);
 			_interfaceSettings = new WindowsInterfaceSettingsService(_registryStore, _settingBackup);
-			_powerSettings = new PowerSettingsService(_processRunner);
+			_powerSettings = new PowerSettingsService(_processRunner, _registryStore, _settingBackup);
 			_windowsUpdate = new WindowsUpdateService(_registryStore, _settingBackup, null, _processRunner);
 			_securitySettings = new SecuritySettingsService(_registryStore, _settingBackup);
 			_privacySettings = new PrivacySettingsService(_registryStore, _settingBackup);
