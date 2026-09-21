@@ -950,6 +950,7 @@ namespace WpfApp1.Pages
 				else if (tag == "DisableErrorReporting"
 					|| tag == "DisableAdvertisingAndSuggestions"
 					|| tag == "DisableNewsAndInterests"
+					|| tag == "DisableActivityHistory"
 					|| tag == "HideMeetNowButton"
 					|| tag == "DisableLocationAndSensors"
 					|| tag == "DisableAutoLogger"
