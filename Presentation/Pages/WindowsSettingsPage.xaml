@@ -708,7 +708,7 @@
                                 <StackPanel>
                                     <TextBlock Text="Приостановить службу Windows Update" FontWeight="SemiBold"/>
                                     <TextBlock x:Name="PauseWindowsUpdateStatus" Text="Дата окончания не установлена" Foreground="#82A5CF" FontSize="11" Margin="0,3,0,0"/>
-                                    <Button x:Name="PauseWindowsUpdateButton" Content="Приостановить до 01.01.2077" Click="PauseWindowsUpdateButton_Click" HorizontalAlignment="Left" Style="{StaticResource GhostButton}" Padding="12,6" Margin="0,8,0,0" Height="30" Width="190"/>
+                                    <Button x:Name="PauseWindowsUpdateButton" Content="Приостановить" Click="PauseWindowsUpdateButton_Click" HorizontalAlignment="Left" Style="{StaticResource GhostButton}" Padding="12,6" Margin="0,8,0,0" Height="30" Width="190"/>
                                 </StackPanel>
                             </Border>
                             <Border Style="{StaticResource SettingRow}">
