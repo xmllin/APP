@@ -236,11 +236,14 @@ namespace WpfApp1.Pages
 
 		private static void SetShortcutSuffix(bool removeSuffix)
 		{
-			using (var key = Registry.CurrentUser.CreateSubKey(NamingTemplatesPath))
+			if (removeSuffix)
 			{
-				if (removeSuffix) key?.SetValue("ShortcutNameTemplate", "%s", RegistryValueKind.ExpandString);
-				else key?.DeleteValue("ShortcutNameTemplate", false);
+				BackupUserString(NamingTemplatesPath, "ShortcutNameTemplate", "ShortcutSuffix");
+				WriteUserString(NamingTemplatesPath, "ShortcutNameTemplate", "%s");
+				return;
 			}
+
+			RestoreUserString(NamingTemplatesPath, "ShortcutNameTemplate", "ShortcutSuffix", null);
 		}
 
 		private static void RefreshExplorer()
