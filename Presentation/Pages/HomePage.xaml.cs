@@ -5,7 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Threading;
+using System.Threading.Tasks;
 using WpfApp1.Models;
+using WpfApp1.Domain.Apps;
 using WpfApp1.Services;
 using WpfApp1.Services.Apps;
 
@@ -20,6 +23,8 @@ namespace WpfApp1.Pages
         private static readonly string RecentFile = UserDataPath.File("recent_apps.txt");
         private int _recentAppCount = MinimumRecentApps;
         private bool _recentAppsLoaded;
+        private readonly SemaphoreSlim _recentLoadLock = new SemaphoreSlim(1, 1);
+        private readonly AppIconResolver _iconResolver = new AppIconResolver();
 
         public HomePage(MainWindow main)
         {
@@ -45,29 +50,41 @@ namespace WpfApp1.Pages
             }
         }
 
-        private async System.Threading.Tasks.Task LoadRecentAppsAsync()
+        private async Task LoadRecentAppsAsync()
         {
-            var recentNames = GetRecentAppNames();
-            var allApps = await _repository.LoadAsync();
-
-            var recentApps = new ObservableCollection<AppDefinition>();
-
-            foreach (var name in recentNames.Take(_recentAppCount))
+            await _recentLoadLock.WaitAsync();
+            try
             {
-                var app = allApps.FirstOrDefault(a => string.Equals(a.Name, name, StringComparison.OrdinalIgnoreCase));
-                if (app != null)
-                    recentApps.Add(app);
-            }
+                var recentKeys = GetRecentAppNames();
+                var allApps = await _repository.LoadAsync();
 
-            if (recentApps.Count < _recentAppCount)
+                var recentApps = new ObservableCollection<AppDefinition>();
+                foreach (var key in recentKeys)
+                {
+                    var app = allApps.FirstOrDefault(a =>
+                        string.Equals(a.Id, key, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(a.Name, key, StringComparison.OrdinalIgnoreCase));
+                    if (app != null && !recentApps.Contains(app))
+                    {
+                        recentApps.Add(app);
+                        if (recentApps.Count >= _recentAppCount) break;
+                    }
+                }
+
+                if (recentApps.Count < _recentAppCount)
+                {
+                    var remaining = allApps.Where(a => !recentApps.Contains(a)).Take(_recentAppCount - recentApps.Count);
+                    foreach (var app in remaining)
+                        recentApps.Add(app);
+                }
+
+                ResolveVisibleLogos(recentApps);
+                RecentItems.ItemsSource = recentApps;
+            }
+            finally
             {
-                var remaining = allApps.Where(a => !recentApps.Contains(a)).Take(_recentAppCount - recentApps.Count);
-                foreach (var app in remaining)
-                    recentApps.Add(app);
+                _recentLoadLock.Release();
             }
-
-            ResolveVisibleLogos(recentApps);
-            RecentItems.ItemsSource = recentApps;
         }
 
         private async void RecentScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -98,127 +115,10 @@ namespace WpfApp1.Pages
 
         private void ResolveVisibleLogos(IEnumerable<AppDefinition> apps)
         {
-            string logoDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logos");
-            if (!System.IO.Directory.Exists(logoDirectory)) return;
-
-            var logosByKey = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var file in System.IO.Directory.EnumerateFiles(logoDirectory))
-            {
-                var extension = System.IO.Path.GetExtension(file);
-                if (!string.Equals(extension, ".svg", StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(extension, ".png", StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(extension, ".ico", StringComparison.OrdinalIgnoreCase)) continue;
-                var key = NormalizeLogoKey(System.IO.Path.GetFileNameWithoutExtension(file));
-                if (!string.IsNullOrWhiteSpace(key) && !logosByKey.ContainsKey(key)) logosByKey[key] = file;
-            }
-
-            var logoById = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-            {
-                ["firefox"] = "Firefox_logo,_2019.svg",
-                ["chrome"] = "chrome-logo.svg",
-                ["chromium"] = "chromium.svg",
-                ["librewolf"] = "LibreWolf.svg",
-                ["opera"] = "Opera_2015_icon.svg",
-                ["opera-gx"] = "Opera_GX_Icon.svg",
-                ["telegram"] = "Telegram_2019_Logo.svg",
-                ["discord"] = "discord-icon-svgrepo-com.svg",
-                ["steam"] = "Steam_icon_logo.svg",
-                ["7zip"] = "7ziplogo.svg",
-                ["winrar"] = "WinRAR_icon.svg",
-                ["qbittorrent"] = "",
-                ["nvidia-app"] = "nvidia-logo-svgrepo-com.svg",
-                ["amd-software-adrenalin"] = "",
-                ["intel-driver-support-assistant"] = "",
-                ["amd-chipset-software"] = "",
-                ["asus-armoury-crate"] = "",
-                ["msi-center"] = "",
-                ["gigabyte-control-center"] = "",
-                ["asrock-auto-driver-installer"] = "",
-                ["makutweaker"] = "",
-                ["lightshot"] = "lightshot.ico",
-                ["happ"] = "happ.ico",
-                ["minersearch"] = "",
-                ["zapret"] = "",
-                ["tg-ws-proxy"] = "tg-ws-proxy.ico",
-                ["nuclear"] = "",
-                ["omniget"] = "omniget.ico",
-                ["lamzu-aurora"] = "",
-                ["lamzu-thorn-v2-firmware"] = "",
-                ["lamzu-maya-x-firmware"] = "",
-                ["lamzu-maya-champion-firmware"] = "",
-                ["lamzu-inca-firmware"] = "",
-                ["lamzu-paro-aurora-firmware"] = "",
-                ["lamzu-tachi-firmware"] = "",
-                ["autoruns"] = "",
-                ["hwmonitor"] = "",
-                ["everything"] = "everything.ico",
-                ["vlc"] = "VLC_Icon.svg",
-                ["mpc-hc"] = "mpc_hc_18911.ico",
-                ["eartrumpet"] = "",
-                ["rufus"] = "",
-                ["windhawk"] = "",
-                ["quicklook"] = "",
-                ["notepads"] = "",
-                ["notepadpp"] = "",
-                ["vscode"] = "",
-                ["visualstudio"] = "",
-                ["aida64"] = "",
-                ["driverbooster"] = "",
-                ["glaryutilities5"] = "",
-                ["malwarebytes"] = "",
-                ["virustotal"] = "",
-                ["amd-auto-detect"] = "",
-                ["amd-ryzen-master"] = "",
-                ["amd-cleanup-utility"] = "",
-                ["intel-graphics-software"] = "",
-                ["intel-xtu"] = "",
-                ["msi-driver-utility-installer"] = "",
-                ["snappy-driver-installer-origin"] = "",
-                ["driver-store-explorer"] = "",
-                ["display-driver-uninstaller"] = "",
-                ["nvcleanstall"] = "",
-                ["asus-driverhub"] = "",
-                ["asrock-app-shop"] = "",
-                ["asrock-a-tuning"] = "",
-                ["tor-browser"] = "Tor_Browser_icon.svg"
-            };
-
-            foreach (var app in apps)
+            foreach (var app in apps ?? Enumerable.Empty<AppDefinition>())
             {
                 if (app == null) continue;
-                if (!string.IsNullOrWhiteSpace(app.Icon) && !app.Icon.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                {
-                    string candidate = app.Icon.Replace('/', System.IO.Path.DirectorySeparatorChar);
-                    if (!System.IO.Path.IsPathRooted(candidate))
-                        candidate = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, candidate);
-                    if (System.IO.File.Exists(candidate))
-                    {
-                        app.Icon = candidate;
-                        continue;
-                    }
-                }
-
-                string fileName;
-                if (!string.IsNullOrWhiteSpace(app.Id) && logoById.TryGetValue(app.Id, out fileName) && !string.IsNullOrWhiteSpace(fileName))
-                {
-                    string candidate = System.IO.Path.Combine(logoDirectory, fileName);
-                    if (System.IO.File.Exists(candidate))
-                        app.Icon = candidate;
-                }
-
-                if (!System.IO.File.Exists(app.Icon))
-                {
-                    var idKey = NormalizeLogoKey(app.Id);
-                    var nameKey = NormalizeLogoKey(app.Name);
-                    string candidate;
-                    if (logosByKey.TryGetValue(idKey, out candidate) || logosByKey.TryGetValue(nameKey, out candidate))
-                        app.Icon = candidate;
-                    else if (!string.IsNullOrWhiteSpace(idKey))
-                    {
-                        var match = logosByKey.FirstOrDefault(x => x.Key.Contains(idKey) || (idKey.Length > 3 && idKey.Contains(x.Key))).Value;
-                        if (!string.IsNullOrWhiteSpace(match)) app.Icon = match;
-                    }
-                }
+                app.Icon = _iconResolver.Resolve(app);
             }
         }
 
@@ -241,19 +141,24 @@ namespace WpfApp1.Pages
             }
         }
 
-        public static void AddRecentApp(string appName)
+        public static void AddRecentApp(AppDefinition app)
         {
+            if (app == null) return;
+            var key = !string.IsNullOrWhiteSpace(app.Id) ? app.Id : app.Name;
+            if (string.IsNullOrWhiteSpace(key)) return;
+
             try
             {
                 var dir = Path.GetDirectoryName(RecentFile);
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
-                var recent = new List<string>();
-                if (File.Exists(RecentFile))
-                    recent = File.ReadAllLines(RecentFile).ToList();
+                var recent = File.Exists(RecentFile)
+                    ? File.ReadAllLines(RecentFile).Where(x => !string.IsNullOrWhiteSpace(x)).ToList()
+                    : new List<string>();
 
-                recent.Remove(appName);
-                recent.Insert(0, appName);
+                recent.RemoveAll(x => string.Equals(x, key, StringComparison.OrdinalIgnoreCase) ||
+                    (!string.IsNullOrWhiteSpace(app.Name) && string.Equals(x, app.Name, StringComparison.OrdinalIgnoreCase)));
+                recent.Insert(0, key);
 
                 File.WriteAllLines(RecentFile, recent.Take(10));
             }
@@ -265,7 +170,7 @@ namespace WpfApp1.Pages
             if (sender is Button btn && btn.Tag is AppDefinition app)
             {
                 _main.SelectedApp = app;
-                AddRecentApp(app.Name);
+                AddRecentApp(app);
                 _main.NavigateToAppDetails("home");
             }
         }
