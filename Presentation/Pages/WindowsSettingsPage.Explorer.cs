@@ -161,7 +161,10 @@ namespace WpfApp1.Pages
 				{
 					case "HiddenFiles": WriteDword(ExplorerAdvancedPath, "Hidden", enabled ? 1 : 2); break;
 					case "FileExtensions": WriteDword(ExplorerAdvancedPath, "HideFileExt", enabled ? 0 : 1); break;
-					case "OpenThisPc": WriteDword(ExplorerAdvancedPath, "LaunchTo", enabled ? 1 : 2); break;
+					case "OpenThisPc":
+						var launchResult = _explorerSettings.SetLaunchToThisPc(enabled);
+						if (!launchResult.Success) throw new InvalidOperationException(launchResult.Error);
+						break;
 					case "ExplorerHome": _explorerSettings.SetHomeVisibility(!enabled); break;
 					case "ShowRecentFiles": SetRecentFilesEnabled(enabled); break;
 					case "ShowFrequentFolders": WriteDword(ExplorerAdvancedPath, "ShowFrequent", enabled ? 1 : 0); WriteDword(ExplorerPath, "ShowFrequent", enabled ? 1 : 0); break;
