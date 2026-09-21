@@ -164,50 +164,64 @@ namespace WpfApp1.Pages
 			var rows = toggles.Select(GetSettingRow).Where(row => row != null).Distinct().ToList();
 			if (rows.Count == 0) return;
 
-			var originalStickyKeysRow = GetSettingRow(DisableStickyKeysToggle);
-			var originalBingSearchRow = GetSettingRow(DisableBingSearchToggle);
-
 			foreach (var row in rows)
 			{
 				if (row.Parent is Panel parent) parent.Children.Remove(row);
 				else SettingsStack.Children.Remove(row);
 			}
 
-			var interfaceRows = new List<UIElement>
+			var startSearchRows = new List<UIElement>
 			{
-				CreateAdditionalToggleRow(_darkThemeToggle, "Включить тёмную тему Windows", "Тёмная тема для приложений и системного интерфейса"),
-				CreateAdditionalToggleRow(_clipboardToggle, "Включить историю буфера обмена", "Сохранять несколько последних скопированных элементов"),
-				CreateAdditionalToggleRow(_windowsAdsToggle, "Рекомендации и предложения Windows", "Отключение встроенных рекомендаций Windows"),
-				CreateAdditionalToggleRow(CreateGameModeToggle(), "Игровой режим", "Автоматически оптимизировать Windows для игр"),
-				CreateHagsRow(),
-				CreateAdditionalToggleRow(CreateManagedToggle("DisableUSBPowerSaving"), "Отключить энергосбережение USB", "Запретить перевод USB-устройств в режим энергосбережения"),
-				CreateAdditionalToggleRow(CreateManagedToggle("DisableSystemThrottling"), "Отключить системное дросселирование", "Отключить Power Throttling и восстановление после USB power drain"),
-				CreateAdditionalToggleRow(CreateManagedToggle("GameBar"), "Xbox Game Bar", "Разрешить игровой оверлей Xbox Game Bar"),
-				CreateAdditionalToggleRow(CreateManagedToggle("BackgroundRecording"), "Фоновая запись (DVR)", "Разрешить запись игр и захват в фоне"),
-				CreateAdditionalToggleRow(CreateManagedToggle("FullscreenOptimizations"), "Полноэкранная оптимизация", "Использовать полноэкранные оптимизации Windows"),
-				CreateAdditionalToggleRow(CreateManagedToggle("SystemSuggestions"), "Системные предложения", "Показывать встроенные предложения и рекомендации Windows"),
-				CreateAdditionalToggleRow(CreateManagedToggle("ExplorerSyncNotifications"), "Уведомления поставщиков синхронизации", "Показывать уведомления OneDrive и других поставщиков файлов"),
-				CreateAdditionalToggleRow(CreateManagedToggle("ExplorerCompactMode"), "Компактный режим Проводника", "Уменьшить интервалы между элементами Проводника"),
-				CreateAdditionalToggleRow(CreateManagedToggle("SnapAssistFlyout"), "Подсказки Snap", "Показывать раскладку Snap при наведении на кнопку разворачивания"),
-				CreateAdditionalToggleRow(CreateManagedToggle("WindowShake"), "Встряхивание окна", "Разрешить встряхивание окна для сворачивания остальных окон"),
-				CreateAdditionalToggleRow(DisableStickyKeysToggle, "Отключить залипание клавиш", "Отключить Sticky Keys, Filter Keys и Toggle Keys"),
-				CreateAdditionalToggleRow(CreateManagedToggle("DeveloperMode"), "Режим разработчика", "Разрешить установку и разработку приложений без лицензии разработчика"),
-				CreateAdditionalToggleRow(CreateManagedToggle("LongPathsEnabled"), "Поддержка длинных путей", "Разрешить пути файловой системы длиннее стандартного ограничения"),
-				CreateAdditionalToggleRow(CreateManagedToggle("NumLockOnBoot"), "NumLock при загрузке", "Включать NumLock на экране входа и для текущего пользователя"),
-				CreateAdditionalToggleRow(CreateManagedToggle("SpeedUpExplorerAndMenus"), "Ускорить Проводник и меню", "Убрать задержку запуска Проводника и меню Windows"),
-				CreateAdditionalToggleRow(CreateManagedToggle("DisableStartMenuWebSearch"), "Отключить веб-поиск в меню Пуск", "Не использовать веб-подсказки при поиске в меню Пуск"),
-				CreateAdditionalToggleRow(CreateManagedToggle("DisableStartRecommended"), "Скрыть раздел «Рекомендуемое» в меню Пуск", "Убрать блок рекомендуемых элементов Windows 11"),
-				CreateAdditionalToggleRow(CreateManagedToggle("DisableSettings365Ads"), "Отключить рекламу Microsoft в настройках", "Убрать предложения Microsoft 365 из приложения «Параметры»"),
-				CreateAdditionalToggleRow(CreateManagedToggle("DisablePreinstalledApps"), "Блокировать предустановленный мусор", "Отключить автоматическую установку рекламных и предустановленных приложений")
+				CreateAdditionalToggleRow(DisableBingSearchToggle, "Отключить веб-поиск Windows", "Отключает Bing, веб-подсказки и веб-результаты поиска Windows"),
+				CreateAdditionalToggleRow(CreateManagedToggle("SystemSuggestions"), "Системные предложения", "Отключить встроенные рекомендации и предложения Windows"),
+				CreateAdditionalToggleRow(CreateManagedToggle("DisableStartRecommended"), "Скрыть раздел «Рекомендуемое»", "Убрать блок рекомендуемых элементов из меню «Пуск»"),
+				CreateAdditionalToggleRow(CreateManagedToggle("DisableSettings365Ads"), "Отключить рекламу Microsoft в настройках", "Убрать предложения Microsoft 365 и потребительский контент из «Параметров»"),
+				CreateAdditionalToggleRow(CreateManagedToggle("DisablePreinstalledApps"), "Блокировать автоматическую установку предустановленных приложений", "Запретить Content Delivery Manager автоматически устанавливать рекламные и предустановленные приложения")
 			};
 
-			var securityRows = rows.Except(new[] { originalStickyKeysRow, originalBingSearchRow }).ToList();
+			var gamingRows = new List<UIElement>
+			{
+				CreateAdditionalToggleRow(CreateGameModeToggle(), "Игровой режим", "Автоматическое включение режима Windows Game Mode для игр"),
+				CreateHagsRow(),
+				CreateAdditionalToggleRow(CreateManagedToggle("GameBar"), "Xbox Game Bar", "Управлять игровым оверлеем Xbox Game Bar"),
+				CreateAdditionalToggleRow(CreateManagedToggle("BackgroundRecording"), "Фоновая запись (DVR)", "Управлять Game DVR и фоновой записью игр"),
+				CreateAdditionalToggleRow(CreateManagedToggle("FullscreenOptimizations"), "Полноэкранная оптимизация", "Управлять полноэкранными оптимизациями Windows")
+			};
+
+			var systemRows = new List<UIElement>
+			{
+				CreateAdditionalToggleRow(_darkThemeToggle, "Тёмная тема Windows", "Тёмная тема для приложений и системных элементов"),
+				CreateAdditionalToggleRow(_clipboardToggle, "История буфера обмена", "Сохранять несколько последних скопированных элементов"),
+				CreateAdditionalToggleRow(DisableStickyKeysToggle, "Отключить залипание клавиш", "Отключить Sticky Keys, Filter Keys и Toggle Keys"),
+				CreateAdditionalToggleRow(_disableLockScreenBlurToggle, "Убрать размытие экрана входа", "Отключить acrylic/blur-эффект на экране входа Windows"),
+				CreateAdditionalToggleRow(CreateManagedToggle("DeveloperMode"), "Режим разработчика", "Разрешить установку и разработку приложений без лицензии разработчика"),
+				CreateAdditionalToggleRow(CreateManagedToggle("LongPathsEnabled"), "Поддержка длинных путей", "Разрешить длинные пути файловой системы"),
+				CreateAdditionalToggleRow(CreateManagedToggle("NumLockOnBoot"), "NumLock при загрузке", "Включать NumLock на экране входа и для текущего пользователя")
+			};
+
+			var securityRows = new List<UIElement>
+			{
+				CreateAdditionalToggleRow(DisableSmartScreenToggle, "Отключить SmartScreen", "Отключить проверку приложений и загружаемых файлов"),
+				CreateAdditionalToggleRow(DisableUacToggle, "UAC: никогда не уведомлять", "Не показывать запросы UAC при повышении прав"),
+				CreateAdditionalToggleRow(_disableVbsToggle, "Отключить VBS", "Отключить Virtualization Based Security"),
+				CreateAdditionalToggleRow(DisableMemoryIntegrityToggle, "Отключить целостность памяти (HVCI)", "Отключить Hypervisor-protected Code Integrity"),
+				CreateAdditionalToggleRow(DisablePageFileToggle, "Отключить файл подкачки", "Отключить pagefile с сохранением текущей конфигурации"),
+				CreateAdditionalToggleRow(DisableBitLockerAutoEncryptionToggle, "Отключить авто-шифрование BitLocker", "Запретить автоматическое шифрование устройства")
+			};
+
 			foreach (var tag in new[]
 			{
+				"DisableTelemetry",
+				"DisableAppDiagnostics",
+				"DisableActivity",
+				"DisablePerformance",
+				"DisableKeystrokes",
+				"DisableVoiceData",
 				"DisableErrorReporting",
 				"DisableAdvertisingAndSuggestions",
 				"DisableNewsAndInterests",
 				"HideMeetNowButton",
+				"DisableActivityHistory",
 				"DisableLocationAndSensors",
 				"DisableAutoLogger",
 				"DisableCortana",
@@ -219,10 +233,17 @@ namespace WpfApp1.Pages
 			{
 				var title = tag switch
 				{
+					"DisableTelemetry" => "Отключить телеметрию Windows",
+					"DisableAppDiagnostics" => "Отключить диагностику приложений",
+					"DisableActivity" => "Отключить сбор данных об активности",
+					"DisablePerformance" => "Отключить диагностику производительности",
+					"DisableKeystrokes" => "Отключить сбор данных ввода",
+					"DisableVoiceData" => "Отключить голосовые данные",
 					"DisableErrorReporting" => "Отключить отчёты об ошибках Windows",
 					"DisableAdvertisingAndSuggestions" => "Отключить рекламу и персонализированные предложения",
 					"DisableNewsAndInterests" => "Отключить «Новости и интересы»",
-					"HideMeetNowButton" => "Скрыть Meet Now на панели задач",
+					"HideMeetNowButton" => "Скрыть Meet Now",
+					"DisableActivityHistory" => "Отключить историю активности",
 					"DisableLocationAndSensors" => "Отключить геолокацию и датчики",
 					"DisableAutoLogger" => "Отключить WMI AutoLogger",
 					"DisableCortana" => "Отключить Cortana и облачный поиск",
@@ -231,52 +252,55 @@ namespace WpfApp1.Pages
 					"DisableFindMyDevice" => "Отключить «Найти устройство»",
 					_ => "Отключить Delivery Optimization"
 				};
-				var description = tag switch
-				{
-					"DisableLocationAndSensors" => "Отключить разрешения геолокации, датчиков и связанные службы Windows",
-					"DisableErrorReporting" => "Отключить WER, PCA и связанные отчёты",
-					"DisableAdvertisingAndSuggestions" => "Отключить рекламный идентификатор, consumer features и персонализацию",
-					"DisableNewsAndInterests" => "Отключить ленту новостей Windows",
-					"DisableAutoLogger" => "Отключить связанные сеансы WMI AutoLogger",
-					"DisableCortana" => "Отключить Cortana, облачный поиск и связанные policy",
-					"DisableCopilot" => "Отключить Copilot и его кнопку",
-					"DisableContentDeliveryManager" => "Отключить автоматическую доставку встроенного контента",
-					"DisableFindMyDevice" => "Запретить поиск устройства политикой Windows",
-					_ => "Изменить соответствующие политики и параметры Windows"
-				};
-				securityRows.Add(CreateAdditionalToggleRow(CreateManagedToggle(tag), title, description));
+				securityRows.Add(CreateAdditionalToggleRow(CreateManagedToggle(tag), title, "Управляет соответствующими параметрами и политиками Windows"));
 			}
 			securityRows.Add(CreatePowerShellScriptsRow());
 
-			_additionalSettingsPanel = new Border
+			var powerPanel = PowerSettingsPanel?.Child as StackPanel;
+			if (powerPanel != null)
 			{
-				Background = new SolidColorBrush(Color.FromRgb(10, 29, 57)),
-				BorderBrush = new SolidColorBrush(Color.FromRgb(23, 58, 97)),
-				BorderThickness = new Thickness(1),
-				CornerRadius = new CornerRadius(11),
-				Padding = new Thickness(0, 4, 0, 4),
-				Margin = new Thickness(0, 10, 0, 0)
-			};
-			var content = new StackPanel();
-			content.Children.Add(CreateDynamicCategoryHeader("Дополнительные настройки Windows"));
-			foreach (var row in interfaceRows) content.Children.Add(row);
-			_additionalSettingsPanel.Child = content;
-			SettingsStack.Children.Add(_additionalSettingsPanel);
+				powerPanel.Children.Add(CreateAdditionalToggleRow(DisableHibernationToggle, "Отключить гибернацию и быстрый запуск", "Использовать powercfg /h off; при включении вернуть поддержку гибернации"));
+				powerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("DisableUSBPowerSaving"), "Отключить энергосбережение USB", "Не переводить USB-устройства в энергосберегающий режим; исходные состояния сохраняются"));
+				powerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("DisableSystemThrottling"), "Отключить системное дросселирование", "Отключить Power Throttling Windows"));
+			}
 
-			_securityBehaviorPanel = new Border
+			_startSearchSettingsPanel = CreateDynamicSettingsPanel("Пуск и поиск", "Поиск, рекомендации и потребительский контент Windows", startSearchRows);
+			_gamingSettingsPanel = CreateDynamicSettingsPanel("Игры и производительность", "Игровые функции, DVR и полноэкранные оптимизации", gamingRows);
+			_systemSettingsPanel = CreateDynamicSettingsPanel("Система", "Общие пользовательские и системные параметры Windows", systemRows);
+			_securityBehaviorPanel = CreateDynamicSettingsPanel("Безопасность и конфиденциальность", "Защитные механизмы, диагностика, телеметрия и политики", securityRows);
+
+			SettingsStack.Children.Add(_startSearchSettingsPanel);
+			SettingsStack.Children.Add(_gamingSettingsPanel);
+			SettingsStack.Children.Add(_systemSettingsPanel);
+			SettingsStack.Children.Add(_securityBehaviorPanel);
+		}
+
+		private Border CreateDynamicSettingsPanel(string title, string description, IEnumerable<UIElement> rows)
+		{
+			var content = new StackPanel();
+			content.Children.Add(CreateDynamicCategoryHeader(title));
+			var descriptionBlock = new TextBlock
+			{
+				Text = description,
+				Foreground = new SolidColorBrush(Color.FromRgb(130, 165, 207)),
+				FontSize = 12,
+				Margin = new Thickness(16, 2, 16, 7),
+				TextWrapping = TextWrapping.Wrap
+			};
+			content.Children.Add(descriptionBlock);
+			foreach (var row in rows)
+				if (row != null) content.Children.Add(row);
+
+			return new Border
 			{
 				Background = new SolidColorBrush(Color.FromRgb(10, 29, 57)),
 				BorderBrush = new SolidColorBrush(Color.FromRgb(23, 58, 97)),
-				BorderThickness = new Thickness(1),
+				BorderThickness = new Thickness(1, 0, 1, 0),
 				CornerRadius = new CornerRadius(11),
 				Padding = new Thickness(0, 4, 0, 4),
-				Margin = new Thickness(0, 10, 0, 0)
+				Margin = new Thickness(0, 10, 0, 0),
+				Child = content
 			};
-			var securityContent = new StackPanel();
-			securityContent.Children.Add(CreateDynamicCategoryHeader("Безопасность и конфиденциальность"));
-			foreach (var row in securityRows) securityContent.Children.Add(row);
-			_securityBehaviorPanel.Child = securityContent;
-			SettingsStack.Children.Add(_securityBehaviorPanel);
 		}
 
 
@@ -485,9 +509,15 @@ namespace WpfApp1.Pages
 		{
 			if (ExplorerSettingsPanel != null && ExplorerSettingsPanel.Child is StackPanel explorerPanel)
 			{
-				var itemCheckboxes = CreateManagedToggle("ExplorerItemCheckboxes");
 				explorerPanel.Children.Add(CreateAdditionalValueRow("Названия новых файлов и папок", "Шаблон Windows для новых объектов Проводника", CreateNameTemplateControls()));
-				explorerPanel.Children.Add(CreateAdditionalToggleRow(itemCheckboxes, "Флажки элементов в Проводнике", "Показывать флажки выбора у файлов и папок"));
+				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ExplorerItemCheckboxes"), "Флажки элементов в Проводнике", "Показывать флажки выбора у файлов и папок"));
+				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ExplorerSyncNotifications"), "Уведомления поставщиков синхронизации", "Показывать уведомления OneDrive и других поставщиков файлов"));
+				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ExplorerCompactMode"), "Компактный режим Проводника", "Уменьшить интервалы между элементами Проводника"));
+				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("SnapAssistFlyout"), "Подсказки Snap", "Показывать раскладку Snap при наведении на кнопку разворачивания"));
+				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("WindowShake"), "Встряхивание окна", "Разрешить встряхивание окна для сворачивания остальных окон"));
+				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ToastNotifications"), "Всплывающие уведомления", "Разрешить системные toast-уведомления Windows"));
+				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ClassicContextMenu"), "Классическое контекстное меню", "Использовать классическое меню Windows 10 вместо компактного меню Windows 11"));
+				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("SpeedUpExplorerAndMenus"), "Ускорить Проводник и меню", "Уменьшить задержку запуска Проводника и отображения меню Windows"));
 			}
 			if (DesktopSettingsPanel != null && DesktopSettingsPanel.Child is StackPanel desktopPanel)
 			{
@@ -496,8 +526,6 @@ namespace WpfApp1.Pages
 				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ShowControlPanel"), "Показывать панель управления", "Показывать классический значок панели управления"));
 				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ShowDesktopIcons"), "Показывать все значки рабочего стола", "Глобально показывать или скрывать значки рабочего стола"));
 				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ShortcutArrow"), "Скрывать стрелки ярлыков", "Убирать стрелку с ярлыков рабочего стола"));
-				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ToastNotifications"), "Всплывающие уведомления", "Разрешить системные toast-уведомления Windows"));
-				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ClassicContextMenu"), "Классическое контекстное меню", "Использовать классическое меню Windows 10"));
 				desktopPanel.Children.Add(CreateAdditionalValueRow("Цвет выделения", "Цвет выделения текста и элементов интерфейса Windows", CreateHighlightColorControls()));
 				desktopPanel.Children.Add(CreateAdditionalToggleRow(_contextMenuDelayToggle, "Убрать задержку контекстного меню", "Установить минимальную задержку открытия меню"));
 			}
