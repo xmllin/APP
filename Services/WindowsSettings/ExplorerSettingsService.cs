@@ -66,6 +66,9 @@ namespace WpfApp1.Services.WindowsSettings
             _backup.BackupCurrentUserOnce("ExplorerHomeGraphFolder", HomeKey, "");
             _registry.WriteCurrentUser(HomeKey, "System.IsPinnedToNameSpaceTree", visible ? 1 : 0, RegistryValueKind.DWord);
             _registry.WriteCurrentUser(HomeKey, "", "CLSID_MSGraphHomeFolder", RegistryValueKind.String);
+
+            if (IsHomeVisible() != visible)
+                throw new InvalidOperationException("Windows не сохранила видимость главной страницы Проводника.");
         }
     }
 }
