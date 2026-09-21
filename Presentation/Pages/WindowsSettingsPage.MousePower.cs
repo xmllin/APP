@@ -27,6 +27,8 @@ namespace WpfApp1.Pages
 {
     public partial class WindowsSettingsPage : UserControl
     {
+        private CancellationTokenSource _mouseSliderApplyCts;
+        private bool _restoringMouseSliderValue;
 		private void RefreshMouseSettings()
 		{
 			_loadingExplorerSettings = true;
@@ -59,18 +61,51 @@ namespace WpfApp1.Pages
 			if (showToast) ShowToast("Параметры мыши применены.");
 		}
 
-		private void MouseSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		private async void MouseSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
-			if (_loadingExplorerSettings || e.OldValue == e.NewValue) return;
+			if (_loadingExplorerSettings || _restoringMouseSliderValue || e.OldValue == e.NewValue)
+				return;
+
+			var isSpeed = ReferenceEquals(sender, _mouseSpeedSlider);
+			var isScroll = ReferenceEquals(sender, _mouseScrollSlider);
+			if (!isSpeed && !isScroll) return;
+
+			_mouseSliderApplyCts?.Cancel();
+			_mouseSliderApplyCts?.Dispose();
+			var cts = new CancellationTokenSource();
+			_mouseSliderApplyCts = cts;
+
 			try
 			{
-				SettingOperationResult result;
-				if (ReferenceEquals(sender, _mouseSpeedSlider)) result = _mouseSettings.SetSpeed((int)Math.Round(e.NewValue));
-				else if (ReferenceEquals(sender, _mouseScrollSlider)) result = _mouseSettings.SetScrollLines((int)Math.Round(e.NewValue));
-				else return;
-				if (!result.Success) throw new InvalidOperationException(result.Error);
+				await Task.Delay(140, cts.Token);
+
+				SettingOperationResult result = isSpeed
+					? _mouseSettings.SetSpeed((int)Math.Round(_mouseSpeedSlider.Value))
+					: _mouseSettings.SetScrollLines((int)Math.Round(_mouseScrollSlider.Value));
+
+				if (!result.Success)
+					throw new InvalidOperationException(result.Error);
 			}
-			catch (Exception exception) { ShowToast("Не удалось применить параметры мыши: " + exception.Message, true); }
+			catch (OperationCanceledException)
+			{
+				// Новое положение ползунка отменяет предыдущее применение.
+			}
+			catch (Exception exception)
+			{
+				var slider = isSpeed ? _mouseSpeedSlider : _mouseScrollSlider;
+				_restoringMouseSliderValue = true;
+				try { slider.Value = e.OldValue; }
+				finally { _restoringMouseSliderValue = false; }
+				ShowToast("Не удалось применить параметры мыши: " + exception.Message, true);
+			}
+			finally
+			{
+				if (ReferenceEquals(_mouseSliderApplyCts, cts))
+				{
+					_mouseSliderApplyCts = null;
+					cts.Dispose();
+				}
+			}
 		}
 
 		private void MouseAccelerationToggle_Changed(object sender, RoutedEventArgs e)
@@ -125,26 +160,53 @@ namespace WpfApp1.Pages
 
 		private void MouseSpeedDefault_Click(object sender, RoutedEventArgs e)
 		{
-			try
-			{
-				var result = _mouseSettings.SetSpeed(10);
-				if (!result.Success) throw new InvalidOperationException(result.Error);
-				if (_mouseSpeedSlider != null) _mouseSpeedSlider.Value = 10;
-				ShowToast("Скорость указателя сброшена по умолчанию.");
-			}
-			catch (Exception exception) { ShowToast("Не удалось сбросить скорость указателя: " + exception.Message, true); }
+			ApplyMouseDefaultValue(true, 10);
 		}
 
 		private void MouseScrollDefault_Click(object sender, RoutedEventArgs e)
 		{
+			ApplyMouseDefaultValue(false, 5);
+		}
+
+		private void ApplyMouseDefaultValue(bool speed, int defaultValue)
+		{
+			_mouseSliderApplyCts?.Cancel();
+
+			var slider = speed ? _mouseSpeedSlider : _mouseScrollSlider;
+			if (slider == null) return;
+
+			var previous = (int)Math.Round(slider.Value);
+			_loadingExplorerSettings = true;
 			try
 			{
-				var result = _mouseSettings.SetScrollLines(5);
-				if (!result.Success) throw new InvalidOperationException(result.Error);
-				if (_mouseScrollSlider != null) _mouseScrollSlider.Value = 5;
-				ShowToast("Прокрутка сброшена по умолчанию.");
+				slider.Value = defaultValue;
 			}
-			catch (Exception exception) { ShowToast("Не удалось сбросить прокрутку: " + exception.Message, true); }
+			finally
+			{
+				_loadingExplorerSettings = false;
+			}
+
+			var result = speed
+				? _mouseSettings.SetSpeed(defaultValue)
+				: _mouseSettings.SetScrollLines(defaultValue);
+
+			if (!result.Success)
+			{
+				_loadingExplorerSettings = true;
+				try { slider.Value = previous; }
+				finally { _loadingExplorerSettings = false; }
+
+				ShowToast(
+					speed
+						? "Не удалось сбросить скорость указателя: " + result.Error
+						: "Не удалось сбросить прокрутку: " + result.Error,
+					true);
+				return;
+			}
+
+			ShowToast(speed
+				? "Скорость указателя сброшена по умолчанию."
+				: "Прокрутка сброшена по умолчанию.");
 		}
 
 		private double CalculateTightComboBoxWidth(IEnumerable<string> items)
