@@ -182,7 +182,7 @@ namespace WpfApp1.Services.WindowsSettings
                             return SetUserDword("PreinstalledAppsSilent", ContentDelivery, "SilentInstalledAppsEnabled", value);
                         }
                     default:
-                        return SettingOperationResult.Fail("Íåèçâåñòíàÿ ñèñòåìíàÿ íàñòðîéêà: " + tag);
+                        return SettingOperationResult.Fail("Неизвестная системная настройка: " + tag);
                 }
             }
             catch (Exception ex)
@@ -278,8 +278,8 @@ namespace WpfApp1.Services.WindowsSettings
                 _registry.WriteLocalMachine(ShellIconsPath, "29", @"%windir%\System32\shell32.dll,-50", RegistryValueKind.String);
 
             return IsShortcutArrowVisible() == visible
-                ? SettingOperationResult.Ok("Ñòðåëêè ÿðëûêîâ ñîõðàíåíû.", true)
-                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà íàñòðîéêó ñòðåëîê ÿðëûêîâ.");
+                ? SettingOperationResult.Ok("Стрелки ярлыков сохранены.", true)
+                : SettingOperationResult.Fail("Windows не сохранила настройку стрелок ярлыков.");
         }
 
         private bool IsShortcutArrowVisible()
@@ -307,8 +307,8 @@ namespace WpfApp1.Services.WindowsSettings
                     parent?.DeleteSubKeyTree("{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}", false);
             }
             return IsClassicContextMenuEnabled() == enabled
-                ? SettingOperationResult.Ok("Êëàññè÷åñêîå êîíòåêñòíîå ìåíþ ñîõðàíåíî.", true)
-                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà êëàññè÷åñêîå êîíòåêñòíîå ìåíþ.");
+                ? SettingOperationResult.Ok("Классическое контекстное меню сохранено.", true)
+                : SettingOperationResult.Fail("Windows не сохранила классическое контекстное меню.");
         }
 
         private bool IsClassicContextMenuEnabled()
@@ -324,10 +324,10 @@ namespace WpfApp1.Services.WindowsSettings
             {
                 using (var key = Registry.Users.OpenSubKey(@".DEFAULT\Control Panel\Keyboard", true))
                 {
-                    if (key == null) return SettingOperationResult.Fail("Íå óäàëîñü îòêðûòü ïàðàìåòðû êëàâèàòóðû äëÿ ýêðàíà âõîäà.");
+                    if (key == null) return SettingOperationResult.Fail("Не удалось открыть параметры клавиатуры для экрана входа.");
                     key.SetValue("InitialKeyboardIndicators", value.ToString(), RegistryValueKind.String);
                 }
-                return SettingOperationResult.Ok("NumLock ïðè çàãðóçêå ñîõðàí¸í.");
+                return SettingOperationResult.Ok("NumLock при загрузке сохранЈн.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
@@ -337,8 +337,8 @@ namespace WpfApp1.Services.WindowsSettings
             _backup.BackupCurrentUserOnce(backupName, path, name);
             _registry.WriteCurrentUser(path, name, value, RegistryValueKind.DWord);
             return Convert.ToInt32(_registry.ReadCurrentUser(path, name).Value ?? int.MinValue) == value
-                ? SettingOperationResult.Ok("Íàñòðîéêà ñîõðàíåíà.", restart)
-                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà âûáðàííóþ íàñòðîéêó.");
+                ? SettingOperationResult.Ok("Настройка сохранена.", restart)
+                : SettingOperationResult.Fail("Windows не сохранила выбранную настройку.");
         }
 
         private SettingOperationResult SetUserString(string backupName, string path, string name, string value)
@@ -346,8 +346,8 @@ namespace WpfApp1.Services.WindowsSettings
             _backup.BackupCurrentUserOnce(backupName, path, name);
             _registry.WriteCurrentUser(path, name, value, RegistryValueKind.String);
             return string.Equals(Convert.ToString(_registry.ReadCurrentUser(path, name).Value), value, StringComparison.OrdinalIgnoreCase)
-                ? SettingOperationResult.Ok("Íàñòðîéêà ñîõðàíåíà.")
-                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà âûáðàííîå çíà÷åíèå.");
+                ? SettingOperationResult.Ok("Настройка сохранена.")
+                : SettingOperationResult.Fail("Windows не сохранила выбранное значение.");
         }
 
         private SettingOperationResult SetMachineDword(string backupName, string path, string name, int value, bool restart = true)
@@ -355,8 +355,8 @@ namespace WpfApp1.Services.WindowsSettings
             _backup.BackupLocalMachineOnce(backupName, path, name);
             _registry.WriteLocalMachine(path, name, value, RegistryValueKind.DWord);
             return Convert.ToInt32(_registry.ReadLocalMachine(path, name).Value ?? int.MinValue) == value
-                ? SettingOperationResult.Ok("Íàñòðîéêà ñîõðàíåíà.", true)
-                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà âûáðàííóþ íàñòðîéêó.");
+                ? SettingOperationResult.Ok("Настройка сохранена.", true)
+                : SettingOperationResult.Fail("Windows не сохранила выбранную настройку.");
         }
 
         private int ReadOptionalUserDword(string path, string name, int fallback)
