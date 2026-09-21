@@ -65,6 +65,9 @@ namespace WpfApp1.Domain.Apps
                 icon.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                 return null;
 
+            if (Uri.TryCreate(icon, UriKind.Absolute, out var uri) && uri.IsFile)
+                return icon;
+
             var path = icon;
             if (!Path.IsPathRooted(path))
                 path = Path.Combine(_baseDirectory, path.Replace('/', Path.DirectorySeparatorChar));
