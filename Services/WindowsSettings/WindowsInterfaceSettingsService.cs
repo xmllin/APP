@@ -24,6 +24,8 @@ namespace WpfApp1.Services.WindowsSettings
         private const string ToastPath = @"Software\Microsoft\Windows\CurrentVersion\PushNotifications";
         private const string ClipboardPath = @"Software\Microsoft\Clipboard";
         private const string NamingTemplatesPath = @"Software\Microsoft\Windows\CurrentVersion\Explorer\NamingTemplates";
+        private const string DirectXUserGpuPreferences = @"Software\Microsoft\DirectX\UserGpuPreferences";
+        private const string DirectXGlobalSettings = "DirectXUserGlobalSettings";
         private readonly RegistrySettingsStore _registry;
         private readonly SettingBackupService _backup;
 
