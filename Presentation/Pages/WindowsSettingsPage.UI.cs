@@ -958,7 +958,44 @@ namespace WpfApp1.Pages
 
 		private static bool IsUserSettingTag(string tag)
 		{
-			return tag == "DisableBingSearch" || tag == "DisableStickyKeys" || tag == "EnableTaskbarEndTask" || tag == "TaskbarAutoHide" || tag == "TaskbarBadges" || tag == "TaskbarFlashing" || tag == "TaskbarMultiMonitor" || tag == "TaskbarShareWindow" || tag == "TaskbarShowDesktop" || tag == "EnableDarkTheme" || tag == "ReduceContextMenuDelay" || tag == "EnableClipboard" || tag == "DisableWindowsAds";
+			return tag == "OpenThisPc"
+				|| tag == "ShowUserFiles"
+				|| tag == "ShowNetworkIcon"
+				|| tag == "ShowControlPanel"
+				|| tag == "ShowDesktopIcons"
+				|| tag == "ToastNotifications"
+				|| tag == "ClassicContextMenu"
+				|| tag == "ExplorerItemCheckboxes"
+				|| tag == "TaskbarWidgets"
+				|| tag == "TaskbarTaskViewButton"
+				|| tag == "TaskbarLastActiveClick"
+				|| tag == "DisableBingSearch"
+				|| tag == "DisableStickyKeys"
+				|| tag == "EnableTaskbarEndTask"
+				|| tag == "TaskbarAutoHide"
+				|| tag == "TaskbarBadges"
+				|| tag == "TaskbarFlashing"
+				|| tag == "TaskbarMultiMonitor"
+				|| tag == "TaskbarShareWindow"
+				|| tag == "TaskbarShowDesktop"
+				|| tag == "ExplorerSyncNotifications"
+				|| tag == "SystemSuggestions"
+				|| tag == "ExplorerCompactMode"
+				|| tag == "SnapAssistFlyout"
+				|| tag == "ClipboardHistory"
+				|| tag == "WindowShake"
+				|| tag == "GameBar"
+				|| tag == "FullscreenOptimizations"
+				|| tag == "SpeedUpExplorerAndMenus"
+				|| tag == "DisableStartMenuWebSearch"
+				|| tag == "DisableStartRecommended"
+				|| tag == "DisablePreinstalledApps"
+				|| tag == "HideMeetNowButton"
+				|| tag == "DisableContentDeliveryManager"
+				|| tag == "EnableDarkTheme"
+				|| tag == "ReduceContextMenuDelay"
+				|| tag == "EnableClipboard"
+				|| tag == "DisableWindowsAds";
 		}
 
 		private bool IsHardwareGpuSchedulingSupported() => _securitySettings.IsHardwareGpuSchedulingSupported();
