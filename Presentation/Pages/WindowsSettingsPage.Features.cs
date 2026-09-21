@@ -286,9 +286,9 @@ namespace WpfApp1.Pages
 			{
 				if (tag == "DisableTelemetry")
 				{
-					var telemetryTags = new[] { "DisableAppDiagnostics", "DisableActivity", "DisablePerformance", "DisableKeystrokes", "DisableVoiceData" };
-					await ApplyWindowsFeatureSettingAsync(tag, disabled);
-					foreach (var telemetryTag in telemetryTags) await ApplyWindowsFeatureSettingAsync(telemetryTag, disabled);
+					var telemetryOperation = await ApplyWindowsFeatureSettingAsync(tag, disabled);
+					if (!telemetryOperation.Success)
+						throw new InvalidOperationException(telemetryOperation.Error);
 					SetTelemetryGroupVisualState(disabled);
 					RefreshExplorer();
 					return;
