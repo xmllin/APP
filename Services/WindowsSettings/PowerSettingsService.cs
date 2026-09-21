@@ -68,16 +68,118 @@ namespace WpfApp1.Services.WindowsSettings
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
 
+        public bool IsHibernationDisabled()
+        {
+            return _registry.ReadLocalMachine(@"SYSTEM\CurrentControlSet\Control\Session Manager\Power", "HibernateEnabled").Value is object value
+                && Convert.ToInt32(value) == 0;
+        }
+
         public async Task<SettingOperationResult> SetHibernationAsync(bool disabled, CancellationToken token)
         {
             try
             {
-                var result = await _processes.RunAsync("powercfg.exe", disabled ? "/h off" : "/h on", token, false, 30).ConfigureAwait(false);
-                return result.ExitCode == 0
-                    ? SettingOperationResult.Ok(disabled ? "Гибернация отключена." : "Гибернация включена.")
-                    : SettingOperationResult.Fail(string.IsNullOrWhiteSpace(result.StandardError) ? "powercfg завершился с ошибкой." : result.StandardError.Trim());
+                var result = await _processes.RunElevatedAsync("powercfg.exe", disabled ? "/h off" : "/h on", token, 60).ConfigureAwait(false);
+                if (result.ExitCode != 0)
+                    return SettingOperationResult.Fail(string.IsNullOrWhiteSpace(result.StandardError) ? "powercfg завершился с ошибкой." : result.StandardError.Trim());
+
+                return IsHibernationDisabled() == disabled
+                    ? SettingOperationResult.Ok(disabled ? "Гибернация и быстрый запуск отключены." : "Гибернация включена.")
+                    : SettingOperationResult.Fail("Windows не подтвердила состояние гибернации.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
+        }
+
+        public bool IsSystemPowerThrottlingDisabled()
+        {
+            var power = _registry.ReadLocalMachine(@"SYSTEM\CurrentControlSet\Control\Power\PowerThrottling", "PowerThrottlingOff").Value;
+            var usb = _registry.ReadLocalMachine(@"SYSTEM\CurrentControlSet\Control\USB\AutomaticSurpriseRemoval", "AttemptRecoveryFromUsbPowerDrain").Value;
+            return Convert.ToInt32(power ?? 0) == 1 && Convert.ToInt32(usb ?? 1) == 0;
+        }
+
+        public SettingOperationResult SetSystemPowerThrottlingDisabled(bool disabled)
+        {
+            try
+            {
+                _backup.BackupLocalMachineOnce("PowerThrottlingOff", @"SYSTEM\CurrentControlSet\Control\Power\PowerThrottling", "PowerThrottlingOff");
+                _backup.BackupLocalMachineOnce("UsbPowerDrainRecovery", @"SYSTEM\CurrentControlSet\Control\USB\AutomaticSurpriseRemoval", "AttemptRecoveryFromUsbPowerDrain");
+                _registry.WriteLocalMachine(@"SYSTEM\CurrentControlSet\Control\Power\PowerThrottling", "PowerThrottlingOff", disabled ? 1 : 0, Microsoft.Win32.RegistryValueKind.DWord);
+                _registry.WriteLocalMachine(@"SYSTEM\CurrentControlSet\Control\USB\AutomaticSurpriseRemoval", "AttemptRecoveryFromUsbPowerDrain", disabled ? 0 : 1, Microsoft.Win32.RegistryValueKind.DWord);
+                return IsSystemPowerThrottlingDisabled() == disabled
+                    ? SettingOperationResult.Ok("Системное дросселирование сохранено.")
+                    : SettingOperationResult.Fail("Windows не сохранила настройку системного дросселирования.");
+            }
+            catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
+        }
+
+        public async Task<SettingOperationResult> SetUsbPowerSavingDisabledAsync(bool disabled, CancellationToken token)
+        {
+            const string statePath = "usb-power-states.json";
+            var basePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var appPath = System.IO.Path.Combine(basePath, "WpfApp1");
+            var savePath = System.IO.Path.Combine(appPath, statePath);
+
+            try
+            {
+                Directory.CreateDirectory(appPath);
+
+                if (disabled)
+                {
+                    var query = await RunPowerShellAsync(
+                        "Get-CimInstance -Namespace root\\wmi -ClassName MSPower_DeviceEnable -ErrorAction SilentlyContinue | " +
+                        "Where-Object { $_.InstanceName -match 'USB\\\\ROOT' } | " +
+                        "Select-Object InstanceName, Enable | ConvertTo-Json -Compress",
+                        token);
+
+                    if (string.IsNullOrWhiteSpace(query.StandardOutput))
+                        return SettingOperationResult.Ok("USB-энергосбережение не изменено: подходящие устройства не найдены.");
+
+                    await File.WriteAllTextAsync(savePath, query.StandardOutput, token);
+
+                    var apply = await RunPowerShellAsync(
+                        "$devices = Get-CimInstance -Namespace root\\wmi -ClassName MSPower_DeviceEnable -ErrorAction SilentlyContinue | " +
+                        "Where-Object { $_.InstanceName -match 'USB\\\\ROOT' }; " +
+                        "foreach ($d in $devices) { if ($d.Enable -ne $false) { Set-CimInstance -CimInstance $d -Property @{ Enable = $false } | Out-Null } }",
+                        token);
+
+                    if (apply.ExitCode != 0)
+                        return SettingOperationResult.Fail(string.IsNullOrWhiteSpace(apply.StandardError) ? "Не удалось отключить энергосбережение USB." : apply.StandardError.Trim());
+
+                    return SettingOperationResult.Ok("Энергосбережение USB отключено.");
+                }
+
+                if (!File.Exists(savePath))
+                {
+                    return SettingOperationResult.Ok("Сохранённые состояния USB не найдены; текущее состояние Windows не изменено.");
+                }
+
+                var json = await File.ReadAllTextAsync(savePath, token);
+                var restoreScript = "$saved = " + EscapePowerShellSingleQuoted(json) + "; " +
+                    "$states = $saved | ConvertFrom-Json; if ($states -isnot [array]) { $states = @($states) }; " +
+                    "$devices = Get-CimInstance -Namespace root\\wmi -ClassName MSPower_DeviceEnable -ErrorAction SilentlyContinue | Where-Object { $_.InstanceName -match 'USB\\\\ROOT' }; " +
+                    "foreach ($d in $devices) { $s = $states | Where-Object { $_.InstanceName -eq $d.InstanceName } | Select-Object -First 1; if ($null -ne $s) { Set-CimInstance -CimInstance $d -Property @{ Enable = [bool]$s.Enable } | Out-Null } }";
+                var restore = await RunPowerShellAsync(restoreScript, token);
+                if (restore.ExitCode != 0)
+                    return SettingOperationResult.Fail(string.IsNullOrWhiteSpace(restore.StandardError) ? "Не удалось восстановить энергосбережение USB." : restore.StandardError.Trim());
+
+                File.Delete(savePath);
+                return SettingOperationResult.Ok("Энергосбережение USB восстановлено.");
+            }
+            catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
+        }
+
+        private async Task<ProcessResult> RunPowerShellAsync(string command, CancellationToken token)
+        {
+            var encoded = Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes(command));
+            return await _processes.RunElevatedAsync(
+                "powershell.exe",
+                "-NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand " + encoded,
+                token,
+                120).ConfigureAwait(false);
+        }
+
+        private static string EscapePowerShellSingleQuoted(string value)
+        {
+            return "'" + (value ?? string.Empty).Replace("'", "''") + "'";
         }
 
         public static int GetSchemeIndex(string guid)
