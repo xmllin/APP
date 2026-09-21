@@ -323,23 +323,85 @@ namespace WpfApp1.Pages
 			if (secondsRow != null && secondsRow.Parent is Panel desktopPanel)
 				desktopPanel.Children.Remove(secondsRow);
 
-			taskbarPanel.Children.Add(CreateAdditionalValueRow("Выравнивание панели задач", "Расположение значков панели задач: слева или по центру", _taskbarAlignmentCombo));
-			taskbarPanel.Children.Add(CreateAdditionalToggleRow(_taskbarAutoHideToggle, "Автоматически скрывать панель задач", "Скрывать панель задач до наведения курсора к краю экрана"));
-			taskbarPanel.Children.Add(CreateAdditionalToggleRow(_taskbarBadgesToggle, "Показывать значки в приложениях на панели задач", "Отображать счётчики и другие индикаторы на значках приложений"));
-			taskbarPanel.Children.Add(CreateAdditionalToggleRow(_taskbarFlashingToggle, "Показывать мигание значков приложений на панели задач", "Разрешить мигание значка приложения при требовании внимания"));
-			taskbarPanel.Children.Add(CreateAdditionalToggleRow(_taskbarMultiMonitorToggle, "Показывать панель задач на всех дисплеях", "Отображать панели задач на дополнительных мониторах"));
-			taskbarPanel.Children.Add(CreateAdditionalValueRow("При использовании нескольких дисплеев отображать приложения панели задач на", "Выбрать, на каких панелях задач отображать кнопки открытых приложений", _taskbarMultiMonitorModeCombo));
-			taskbarPanel.Children.Add(CreateAdditionalToggleRow(_taskbarShareWindowToggle, "Предоставление доступа к любому окну из панели задач", "Показывать команду предоставления доступа к окну в меню панели задач"));
-			taskbarPanel.Children.Add(CreateAdditionalToggleRow(_taskbarShowDesktopToggle, "Щёлкните в дальнем углу панели задач, чтобы показать рабочий стол", "Включить кнопку показа рабочего стола в дальнем углу панели задач"));
-			taskbarPanel.Children.Add(CreateAdditionalValueRow("Объединить кнопки панели задач и скрыть метки", "Всегда, при заполнении панели задач или никогда", _taskbarGlomCombo));
-			taskbarPanel.Children.Add(CreateAdditionalValueRow("Объединить кнопки панели задач и скрыть метки на других панелях задач", "То же правило группировки для дополнительных мониторов", _taskbarMultiMonitorGlomCombo));
-			taskbarPanel.Children.Add(CreateAdditionalToggleRow(taskbarWidgets, "Показывать виджеты на панели задач", "Показывать кнопку и панель виджетов Windows"));
-			taskbarPanel.Children.Add(CreateAdditionalToggleRow(taskbarTaskView, "Показывать представление задач", "Показывать кнопку Task View на панели задач"));
-			taskbarPanel.Children.Add(CreateAdditionalValueRow("Поиск на панели задач", "Выбрать отображение поиска на панели задач", searchBoxMode));
-			taskbarPanel.Children.Add(CreateAdditionalToggleRow(taskbarLastActive, "Переключаться на последнее окно", "Щелчок по сгруппированной кнопке открывает последнее активное окно"));
-			taskbarPanel.Children.Add(CreateAdditionalToggleRow(_taskbarEndTaskToggle, "Завершать задачи с панели задач", "Добавить команду завершения приложения в меню панели задач"));
+			var mainRows = new List<UIElement>
+			{
+				CreateAdditionalValueRow("Выравнивание панели задач", "Расположение значков панели задач: слева или по центру", _taskbarAlignmentCombo),
+				CreateAdditionalValueRow("Поиск на панели задач", "Выбрать способ отображения поиска на панели задач", searchBoxMode),
+				CreateAdditionalToggleRow(taskbarWidgets, "Показывать виджеты", "Показывать кнопку и панель виджетов Windows"),
+				CreateAdditionalToggleRow(taskbarTaskView, "Показывать представление задач", "Показывать кнопку Task View на панели задач"),
+				CreateAdditionalToggleRow(_taskbarAutoHideToggle, "Автоматически скрывать панель задач", "Скрывать панель задач до наведения курсора к краю экрана"),
+				CreateAdditionalToggleRow(_taskbarShowDesktopToggle, "Показывать рабочий стол в дальнем углу", "Щёлкните в дальнем углу панели задач, чтобы показать рабочий стол")
+			};
 			if (secondsRow != null)
-				taskbarPanel.Children.Add(secondsRow);
+				mainRows.Add(secondsRow);
+
+			var behaviorRows = new List<UIElement>
+			{
+				CreateAdditionalValueRow("Объединение кнопок панели задач", "Всегда, при заполнении панели задач или никогда", _taskbarGlomCombo),
+				CreateAdditionalToggleRow(_taskbarBadgesToggle, "Показывать значки на кнопках приложений", "Отображать счётчики и другие индикаторы на значках приложений"),
+				CreateAdditionalToggleRow(_taskbarFlashingToggle, "Разрешить мигание значков", "Разрешать значку приложения мигать при требовании внимания"),
+				CreateAdditionalToggleRow(taskbarLastActive, "Переключаться на последнее окно", "Щелчок по сгруппированной кнопке открывает последнее активное окно"),
+				CreateAdditionalToggleRow(_taskbarShareWindowToggle, "Предоставление доступа к окну", "Показывать команду предоставления доступа к окну в меню панели задач"),
+				CreateAdditionalToggleRow(_taskbarEndTaskToggle, "Завершать задачи с панели задач", "Добавить команду завершения приложения в меню панели задач")
+			};
+
+			var multiMonitorRows = new List<UIElement>
+			{
+				CreateAdditionalToggleRow(_taskbarMultiMonitorToggle, "Показывать панель задач на всех дисплеях", "Отображать панели задач на дополнительных мониторах"),
+				CreateAdditionalValueRow("Приложения на дополнительных панелях задач", "Выбрать, на каких панелях задач отображать кнопки открытых приложений", _taskbarMultiMonitorModeCombo),
+				CreateAdditionalValueRow("Объединение кнопок на других панелях задач", "Правило группировки кнопок на дополнительных мониторах", _taskbarMultiMonitorGlomCombo)
+			};
+
+			taskbarPanel.Children.Add(CreateTaskbarSubsectionHeader("Основные"));
+			foreach (var row in mainRows)
+				taskbarPanel.Children.Add(row);
+
+			taskbarPanel.Children.Add(CreateTaskbarSubsectionHeader("Поведение"));
+			foreach (var row in behaviorRows)
+				taskbarPanel.Children.Add(row);
+
+			taskbarPanel.Children.Add(CreateTaskbarSubsectionHeader("Несколько дисплеев"));
+			foreach (var row in multiMonitorRows)
+				taskbarPanel.Children.Add(row);
+		}
+
+		private Border CreateTaskbarSubsectionHeader(string text)
+		{
+			return new Border
+			{
+				Background = new SolidColorBrush(Color.FromRgb(8, 24, 46)),
+				BorderBrush = new SolidColorBrush(Color.FromRgb(23, 58, 97)),
+				BorderThickness = new Thickness(0, 1, 0, 1),
+				Padding = new Thickness(16, 8, 16, 8),
+				Margin = new Thickness(0, 8, 0, 2),
+				Child = new TextBlock
+				{
+					Text = text,
+					FontSize = 12,
+					FontWeight = FontWeights.SemiBold,
+					Foreground = new SolidColorBrush(Color.FromRgb(130, 165, 207))
+				}
+			};
+		}
+
+		private void RemoveObsoleteSettingRows()
+		{
+			foreach (var tag in new[]
+			{
+				"WindowShake",
+				"ToastNotifications",
+				"ShowDesktopIcons",
+				"BackgroundRecording",
+				"HideMeetNowButton",
+				"DisableNewsAndInterests",
+				"DisableAutoLogger"
+			})
+			{
+				var toggle = GetAllToggleButtons().FirstOrDefault(item => string.Equals(item.Tag as string, tag, StringComparison.Ordinal));
+				var row = toggle == null ? null : GetSettingRow(toggle);
+				if (row?.Parent is Panel parent)
+					parent.Children.Remove(row);
+			}
 		}
 
 		private TextBlock CreateCategoryHeader(string text)
@@ -1008,7 +1070,6 @@ namespace WpfApp1.Pages
 				|| tag == "TaskbarWidgets"
 				|| tag == "TaskbarTaskViewButton"
 				|| tag == "TaskbarLastActiveClick"
-				|| tag == "DisableBingSearch"
 				|| tag == "DisableStickyKeys"
 				|| tag == "EnableTaskbarEndTask"
 				|| tag == "TaskbarAutoHide"
