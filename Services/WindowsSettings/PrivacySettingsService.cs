@@ -33,6 +33,42 @@ namespace WpfApp1.Services.WindowsSettings
         {
             switch (tag)
             {
+                case "DisableTelemetry":
+                    return MachineEquals(LegacyDataCollection, "AllowTelemetry", 0)
+                        && MachineEquals(DataCollection, "AllowTelemetry", 0)
+                        && MachineEquals(DataCollection, "MaxTelemetryAllowed", 0)
+                        && MachineEquals(DataCollection, "AllowCommercialDataPipeline", 0)
+                        && MachineEquals(DataCollection, "AllowDeviceNameInTelemetry", 0)
+                        && MachineEquals(DataCollection, "MicrosoftEdgeDataOptIn", 0)
+                        && MachineEquals(DataCollection, "DoNotShowFeedbackNotifications", 1)
+                        && MachineEquals(AppCompat, "AITEnable", 0)
+                        && MachineEquals(AppCompat, "DisableInventory", 1)
+                        && UserEquals(@"Software\Microsoft\Siuf\Rules", "NumberOfSIUFInPeriod", 0)
+                        && UserEquals(@"Software\Policies\Microsoft\Windows\EdgeUI", "DisableMFUTracking", 1)
+                        && UserEquals(@"Software\Policies\Microsoft\Assistance\Client\1.0", "NoExplicitFeedback", 1)
+                        && UserEquals(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "Start_TrackProgs", 0)
+                        && MachineEquals(@"SYSTEM\CurrentControlSet\Services\DiagTrack", "Start", 4)
+                        && MachineEquals(@"SYSTEM\CurrentControlSet\Services\dmwappushservice", "Start", 4)
+                        && MachineEquals(@"SYSTEM\CurrentControlSet\Services\DcpSvc", "Start", 4)
+                        && MachineEquals(@"SYSTEM\CurrentControlSet\Services\diagnosticshub.standardcollector.service", "Start", 4);
+                case "DisableAppDiagnostics":
+                    return MachineEquals(AppPrivacy, "LetAppsGetDiagnosticInfo", 2)
+                        && MachineEquals(AppPrivacy, "LetAppsAccessDiagnosticInfo", 2)
+                        && UserEquals(AppDiagnostics, "Value", "Deny");
+                case "DisableActivity":
+                    return MachineEquals(Activity, "PublishUserActivities", 0)
+                        && MachineEquals(Activity, "UploadUserActivities", 0)
+                        && MachineEquals(Activity, "EnableActivityFeed", 0);
+                case "DisablePerformance":
+                    return MachineEquals(DataCollection, "DisableDiagnosticDataViewer", 1);
+                case "DisableKeystrokes":
+                    return MachineEquals(Input, "AllowInputPersonalization", 0)
+                        && MachineEquals(Input, "RestrictKeystrokeLogging", 1)
+                        && UserEquals(LegacyInput, "RestrictImplicitTextCollection", 1)
+                        && UserEquals(LegacyInput, "RestrictImplicitInkCollection", 1);
+                case "DisableVoiceData":
+                    return UserEquals(Voice, "HasAccepted", 0)
+                        && MachineEquals(Speech, "AllowSpeechModelUpdate", 0);
                 case "DisableErrorReporting":
                     return MachineEquals(@"SOFTWARE\Microsoft\Windows\Windows Error Reporting", "Disabled", 1)
                         && MachineEquals(@"SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports", "PreventHandwritingErrorReports", 1);
@@ -279,7 +315,6 @@ namespace WpfApp1.Services.WindowsSettings
                 UserDword(@"Software\Policies\Microsoft\Assistance\Client\1.0", "NoExplicitFeedback", disabled ? 1 : 0),
                 UserDword(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "Start_TrackProgs", disabled ? 0 : 1),
 
-                MachineDword(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", "NoConnectedUser", disabled ? 3 : 0),
                 MachineDword(@"SYSTEM\CurrentControlSet\Services\DiagTrack", "Start", disabled ? 4 : 3),
                 MachineDword(@"SYSTEM\CurrentControlSet\Services\dmwappushservice", "Start", disabled ? 4 : 3),
                 MachineDword(@"SYSTEM\CurrentControlSet\Services\DcpSvc", "Start", disabled ? 4 : 3),
