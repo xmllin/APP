@@ -237,11 +237,8 @@ namespace WpfApp1.Pages
 				"DisableTelemetry",
 				"DisableErrorReporting",
 				"DisableAdvertisingAndSuggestions",
-				"DisableNewsAndInterests",
-				"HideMeetNowButton",
 				"DisableActivityHistory",
 				"DisableLocationAndSensors",
-				"DisableAutoLogger",
 				"DisableCortana",
 				"DisableCopilot",
 				"DisableContentDeliveryManager",
@@ -808,7 +805,6 @@ namespace WpfApp1.Pages
 				SetManagedToggleState("ShowUserFiles");
 				SetManagedToggleState("ShowNetworkIcon");
 				SetManagedToggleState("ShowControlPanel");
-				SetManagedToggleState("ShowDesktopIcons");
 				SetManagedToggleState("ShortcutArrow");
 				SetManagedToggleState("ClassicContextMenu");
 				SetManagedToggleState("ExplorerItemCheckboxes");
