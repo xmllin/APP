@@ -42,6 +42,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Tests\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Scripts\HWID_Activation.cmd" />
   </ItemGroup>
 
