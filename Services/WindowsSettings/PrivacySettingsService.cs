@@ -350,8 +350,6 @@ namespace WpfApp1.Services.WindowsSettings
             }
         }
 
-        private static RegistryChange MachineDword(string path, string name, int value) => new RegistryChange { Machine = true, Path = path, Name = name, NewValue = value, Kind = RegistryValueKind.DWord };
-        private static RegistryChange MachineString(string path, string name, string value) => new RegistryChange { Machine = true, Path = path, Name = name, NewValue = value, Kind = RegistryValueKind.String };
         private static RegistryChange UserDword2(string path, string name, int value) => new RegistryChange { Machine = false, Path = path, Name = name, NewValue = value, Kind = RegistryValueKind.DWord };
         private static RegistryChange UserString2(string path, string name, string value) => new RegistryChange { Machine = false, Path = path, Name = name, NewValue = value, Kind = RegistryValueKind.String };
 
