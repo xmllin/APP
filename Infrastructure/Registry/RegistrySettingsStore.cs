@@ -1,4 +1,5 @@
 using System;
+using System.Security;
 using Microsoft.Win32;
 
 namespace WpfApp1.Infrastructure.Registry
@@ -37,21 +38,35 @@ namespace WpfApp1.Infrastructure.Registry
 
         private static RegistryValueSnapshot Read(RegistryKey root, string path, string name)
         {
-            using (var key = root.OpenSubKey(path, false))
+            try
             {
-                if (key == null)
-                    return new RegistryValueSnapshot { Exists = false };
-
-                object value = key.GetValue(name, null, RegistryValueOptions.DoNotExpandEnvironmentNames);
-                if (value == null)
-                    return new RegistryValueSnapshot { Exists = false };
-
-                return new RegistryValueSnapshot
+                // Read-only access must never request write permissions. Some HKLM keys
+                // can still be denied by ACLs or system policy; treat such a key as
+                // unavailable instead of crashing the settings page.
+                using (var key = root.OpenSubKey(path, false))
                 {
-                    Exists = true,
-                    Kind = key.GetValueKind(name),
-                    Value = CloneValue(value)
-                };
+                    if (key == null)
+                        return new RegistryValueSnapshot { Exists = false };
+
+                    object value = key.GetValue(name, null, RegistryValueOptions.DoNotExpandEnvironmentNames);
+                    if (value == null)
+                        return new RegistryValueSnapshot { Exists = false };
+
+                    return new RegistryValueSnapshot
+                    {
+                        Exists = true,
+                        Kind = key.GetValueKind(name),
+                        Value = CloneValue(value)
+                    };
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return new RegistryValueSnapshot { Exists = false };
+            }
+            catch (SecurityException)
+            {
+                return new RegistryValueSnapshot { Exists = false };
             }
         }
 
