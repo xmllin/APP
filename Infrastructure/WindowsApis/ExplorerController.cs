@@ -17,31 +17,59 @@ namespace WpfApp1.Infrastructure.WindowsApis
 
         public async Task RestartAsync(CancellationToken token)
         {
-            // OptimizerDuck 2.27.6 перезапускает shell через cmd:
-            // taskkill ... && start explorer.exe. Важный момент — Explorer
-            // стартует через shell, а не как прямой дочерний процесс нашего
-            // elevated-приложения.
-            var result = await _processes.RunAsync(
-                "cmd.exe",
-                "/c taskkill /f /im explorer.exe && start explorer.exe",
-                token,
-                false,
-                30).ConfigureAwait(false);
-
-            if (result.ExitCode != 0)
-                throw new InvalidOperationException(
-                    "Команда перезапуска Проводника завершилась с кодом " + result.ExitCode + ".");
-
-            for (var i = 0; i < 50; i++)
+            try
             {
+                var kill = await _processes.RunAsync(
+                    "taskkill.exe",
+                    "/F /IM explorer.exe",
+                    token,
+                    false,
+                    15).ConfigureAwait(false);
+
+                var explorerStillRunning = Process.GetProcessesByName("explorer").Length > 0;
+                if (kill.ExitCode != 0 && explorerStillRunning)
+                {
+                    throw new InvalidOperationException(
+                        "Не удалось завершить explorer.exe. Код: " + kill.ExitCode + ".");
+                }
+
                 token.ThrowIfCancellationRequested();
-                if (Process.GetProcessesByName("explorer").Length > 0)
-                    return;
 
-                await Task.Delay(100, token).ConfigureAwait(false);
+                // Не используем SystemProcessRunner для запуска Explorer:
+                // его stdout/stderr перенаправляются в pipe, и explorer.exe
+                // может унаследовать эти дескрипторы, из-за чего RunAsync
+                // ждёт закрытия pipe значительно дольше самого запуска shell.
+                using (var starter = Process.Start(new ProcessStartInfo
+                {
+                    FileName = "explorer.exe",
+                    UseShellExecute = true,
+                    WorkingDirectory = Environment.SystemDirectory,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                }))
+                {
+                    if (starter == null)
+                        throw new InvalidOperationException("Не удалось запустить explorer.exe.");
+                }
+
+                // Ждём только появления процесса, а не завершения стартующей
+                // команды. Это существенно сокращает время, когда исчезает shell.
+                for (var i = 0; i < 60; i++)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (Process.GetProcessesByName("explorer").Length > 0)
+                        return;
+
+                    await Task.Delay(50, token).ConfigureAwait(false);
+                }
+
+                throw new InvalidOperationException("explorer.exe не появился после перезапуска.");
             }
-
-            throw new InvalidOperationException("explorer.exe не запустился после перезапуска.");
+            catch (Exception) when (Process.GetProcessesByName("explorer").Length > 0)
+            {
+                // Если Explorer уже поднялся, не превращаем долгий вспомогательный
+                // этап в ложную ошибку для пользователя.
+                return;
+            }
         }
     }
 }
