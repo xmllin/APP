@@ -153,7 +153,7 @@ namespace WpfApp1.Services.WindowsSettings
                             return SetUserDword("PreinstalledAppsSilent", ContentDelivery, "SilentInstalledAppsEnabled", value);
                         }
                     default:
-                        return SettingOperationResult.Fail("ÐÐµÐ¸Ð·Ð²ÐµÑÑ‚Ð½Ð°Ñ ÑÐ¸ÑÑ‚ÐµÐ¼Ð½Ð°Ñ Ð½Ð°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ°: " + tag);
+                        return SettingOperationResult.Fail("Íåèçâåñòíàÿ ñèñòåìíàÿ íàñòðîéêà: " + tag);
                 }
             }
             catch (Exception ex)
@@ -191,7 +191,7 @@ namespace WpfApp1.Services.WindowsSettings
                 var r = SetUserDword("Fullscreen_" + item.Item1, GameConfigPath, item.Item1, item.Item2);
                 if (!r.Success) return r;
             }
-            return SettingOperationResult.Ok("ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° Ð¿Ð¾Ð»Ð½Ð¾ÑÐºÑ€Ð°Ð½Ð½Ð¾Ð¹ Ð¾Ð¿Ñ‚Ð¸Ð¼Ð¸Ð·Ð°Ñ†Ð¸Ð¸ ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð°.", true);
+            return SettingOperationResult.Ok("Íàñòðîéêà ïîëíîýêðàííîé îïòèìèçàöèè ñîõðàíåíà.", true);
         }
 
         private SettingOperationResult SetShortcutArrow(bool visible)
@@ -204,8 +204,8 @@ namespace WpfApp1.Services.WindowsSettings
                 _registry.WriteLocalMachine(ShellIconsPath, "29", @"%windir%\System32\shell32.dll,-50", RegistryValueKind.String);
 
             return IsShortcutArrowVisible() == visible
-                ? SettingOperationResult.Ok("Ð¡Ñ‚Ñ€ÐµÐ»ÐºÐ¸ ÑÑ€Ð»Ñ‹ÐºÐ¾Ð² ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ñ‹.", true)
-                : SettingOperationResult.Fail("Windows Ð½Ðµ ÑÐ¾Ñ…Ñ€Ð°Ð½Ð¸Ð»Ð° Ð½Ð°ÑÑ‚Ñ€Ð¾Ð¹ÐºÑƒ ÑÑ‚Ñ€ÐµÐ»Ð¾Ðº ÑÑ€Ð»Ñ‹ÐºÐ¾Ð².");
+                ? SettingOperationResult.Ok("Ñòðåëêè ÿðëûêîâ ñîõðàíåíû.", true)
+                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà íàñòðîéêó ñòðåëîê ÿðëûêîâ.");
         }
 
         private bool IsShortcutArrowVisible()
@@ -234,8 +234,8 @@ namespace WpfApp1.Services.WindowsSettings
                     parent?.DeleteSubKeyTree("{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}", false);
             }
             return IsClassicContextMenuEnabled() == enabled
-                ? SettingOperationResult.Ok("ÐšÐ»Ð°ÑÑÐ¸Ñ‡ÐµÑÐºÐ¾Ðµ ÐºÐ¾Ð½Ñ‚ÐµÐºÑÑ‚Ð½Ð¾Ðµ Ð¼ÐµÐ½ÑŽ ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¾.", true)
-                : SettingOperationResult.Fail("Windows Ð½Ðµ ÑÐ¾Ñ…Ñ€Ð°Ð½Ð¸Ð»Ð° ÐºÐ»Ð°ÑÑÐ¸Ñ‡ÐµÑÐºÐ¾Ðµ ÐºÐ¾Ð½Ñ‚ÐµÐºÑÑ‚Ð½Ð¾Ðµ Ð¼ÐµÐ½ÑŽ.");
+                ? SettingOperationResult.Ok("Êëàññè÷åñêîå êîíòåêñòíîå ìåíþ ñîõðàíåíî.", true)
+                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà êëàññè÷åñêîå êîíòåêñòíîå ìåíþ.");
         }
 
         private bool IsClassicContextMenuEnabled()
@@ -251,10 +251,10 @@ namespace WpfApp1.Services.WindowsSettings
             {
                 using (var key = Registry.Users.OpenSubKey(@".DEFAULT\Control Panel\Keyboard", true))
                 {
-                    if (key == null) return SettingOperationResult.Fail("ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ñ‹ ÐºÐ»Ð°Ð²Ð¸Ð°Ñ‚ÑƒÑ€Ñ‹ Ð´Ð»Ñ ÑÐºÑ€Ð°Ð½Ð° Ð²Ñ…Ð¾Ð´Ð°.");
-                    key.SetValue("InitialKeyboardIndicators", value, RegistryValueKind.String);
+                    if (key == null) return SettingOperationResult.Fail("Íå óäàëîñü îòêðûòü ïàðàìåòðû êëàâèàòóðû äëÿ ýêðàíà âõîäà.");
+                    key.SetValue("InitialKeyboardIndicators", value.ToString(), RegistryValueKind.String);
                 }
-                return SettingOperationResult.Ok("NumLock Ð¿Ñ€Ð¸ Ð·Ð°Ð³Ñ€ÑƒÐ·ÐºÐµ ÑÐ¾Ñ…Ñ€Ð°Ð½Ñ‘Ð½.");
+                return SettingOperationResult.Ok("NumLock ïðè çàãðóçêå ñîõðàí¸í.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
@@ -264,8 +264,8 @@ namespace WpfApp1.Services.WindowsSettings
             _backup.BackupCurrentUserOnce(backupName, path, name);
             _registry.WriteCurrentUser(path, name, value, RegistryValueKind.DWord);
             return Convert.ToInt32(_registry.ReadCurrentUser(path, name).Value ?? int.MinValue) == value
-                ? SettingOperationResult.Ok("ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð°.", restart)
-                : SettingOperationResult.Fail("Windows Ð½Ðµ ÑÐ¾Ñ…Ñ€Ð°Ð½Ð¸Ð»Ð° Ð²Ñ‹Ð±Ñ€Ð°Ð½Ð½ÑƒÑŽ Ð½Ð°ÑÑ‚Ñ€Ð¾Ð¹ÐºÑƒ.");
+                ? SettingOperationResult.Ok("Íàñòðîéêà ñîõðàíåíà.", restart)
+                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà âûáðàííóþ íàñòðîéêó.");
         }
 
         private SettingOperationResult SetUserString(string backupName, string path, string name, string value)
@@ -273,8 +273,8 @@ namespace WpfApp1.Services.WindowsSettings
             _backup.BackupCurrentUserOnce(backupName, path, name);
             _registry.WriteCurrentUser(path, name, value, RegistryValueKind.String);
             return string.Equals(Convert.ToString(_registry.ReadCurrentUser(path, name).Value), value, StringComparison.OrdinalIgnoreCase)
-                ? SettingOperationResult.Ok("ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð°.")
-                : SettingOperationResult.Fail("Windows Ð½Ðµ ÑÐ¾Ñ…Ñ€Ð°Ð½Ð¸Ð»Ð° Ð²Ñ‹Ð±Ñ€Ð°Ð½Ð½Ð¾Ðµ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ.");
+                ? SettingOperationResult.Ok("Íàñòðîéêà ñîõðàíåíà.")
+                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà âûáðàííîå çíà÷åíèå.");
         }
 
         private SettingOperationResult SetMachineDword(string backupName, string path, string name, int value)
@@ -282,8 +282,8 @@ namespace WpfApp1.Services.WindowsSettings
             _backup.BackupLocalMachineOnce(backupName, path, name);
             _registry.WriteLocalMachine(path, name, value, RegistryValueKind.DWord);
             return Convert.ToInt32(_registry.ReadLocalMachine(path, name).Value ?? int.MinValue) == value
-                ? SettingOperationResult.Ok("ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð°.", true)
-                : SettingOperationResult.Fail("Windows Ð½Ðµ ÑÐ¾Ñ…Ñ€Ð°Ð½Ð¸Ð»Ð° Ð²Ñ‹Ð±Ñ€Ð°Ð½Ð½ÑƒÑŽ Ð½Ð°ÑÑ‚Ñ€Ð¾Ð¹ÐºÑƒ.");
+                ? SettingOperationResult.Ok("Íàñòðîéêà ñîõðàíåíà.", true)
+                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà âûáðàííóþ íàñòðîéêó.");
         }
 
         private int ReadDword(string path, string name, int fallback) =>

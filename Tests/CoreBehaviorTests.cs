@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WpfApp1.Domain.Apps;
 using WpfApp1.Models;
+using WpfApp1.Services;
 using WpfApp1.Services.Downloads;
 using Xunit;
 
@@ -28,10 +29,10 @@ namespace WpfApp1.Tests
             Assert.False(update.IsMissing);
             Assert.False(manual.IsMissing);
 
-            Assert.Equal("РќРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ", missing.StatusText);
-            Assert.Equal("РЈСЃС‚Р°РЅРѕРІР»РµРЅРѕ", installed.StatusText);
-            Assert.Equal("Р”РѕСЃС‚СѓРїРЅРѕ РѕР±РЅРѕРІР»РµРЅРёРµ", update.StatusText);
-            Assert.Equal("Р СѓС‡РЅР°СЏ СѓСЃС‚Р°РЅРѕРІРєР°", manual.StatusText);
+            Assert.Equal("Не установлено", missing.StatusText);
+            Assert.Equal("Установлено", installed.StatusText);
+            Assert.Equal("Доступно обновление", update.StatusText);
+            Assert.Equal("Ручная установка", manual.StatusText);
         }
 
         [Fact]
