@@ -456,7 +456,7 @@ namespace WpfApp1.Pages
             if (sender is Button button && button.Tag is AppDefinition app)
             {
                 _main.SelectedApp = app;
-                HomePage.AddRecentApp(app.Name);
+                HomePage.AddRecentApp(app);
                 _main.NavigateToAppDetails("apps");
             }
         }
