@@ -52,9 +52,9 @@ namespace WpfApp1.Pages
 			SetPanelVisibility(PowerSettingsPanel, showAll || category == "Энергопотребление");
 			SetPanelVisibility(MouseSettingsPanel, showAll || category == "Мышь");
 			SetPanelVisibility(WindowsUpdateSettingsPanel, showAll || category == "Windows Update");
-			SetPanelVisibility(PrivacySettingsPanel, showAll || category == "Конфиденциальность");
+			SetPanelVisibility(PrivacySettingsPanel, false);
 			SetPanelVisibility(_additionalSettingsPanel, showAll || category == "Дополнительные настройки");
-			SetPanelVisibility(_securityBehaviorPanel, showAll || category == "Безопасность и поведение" || category == "Конфиденциальность");
+			SetPanelVisibility(_securityBehaviorPanel, showAll || category == "Безопасность и конфиденциальность");
 		}
 
 		private static void SetPanelVisibility(FrameworkElement panel, bool visible)
@@ -145,6 +145,12 @@ namespace WpfApp1.Pages
 		{
 			var toggles = new ToggleButton[]
 			{
+				DisableTelemetryToggle,
+				DisableAppDiagnosticsToggle,
+				DisableActivityToggle,
+				DisablePerformanceToggle,
+				DisableKeystrokesToggle,
+				DisableVoiceDataToggle,
 				DisableStickyKeysToggle,
 				DisableBingSearchToggle,
 				DisableHibernationToggle,
