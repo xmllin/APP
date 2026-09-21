@@ -18,7 +18,9 @@ namespace WpfApp1.Infrastructure.WindowsApis
 
         public async Task RestartAsync(CancellationToken token)
         {
-            await _processes.RunAsync("taskkill.exe", "/F /IM explorer.exe", token, false, 30).ConfigureAwait(false);
+            var killResult = await _processes.RunAsync("taskkill.exe", "/F /IM explorer.exe", token, false, 30).ConfigureAwait(false);
+            if (killResult.ExitCode != 0 && Process.GetProcessesByName("explorer").Length > 0)
+                throw new InvalidOperationException("Не удалось завершить процесс Проводника. Код: " + killResult.ExitCode + ".");
             for (var i = 0; i < 30; i++)
             {
                 token.ThrowIfCancellationRequested();
@@ -26,12 +28,23 @@ namespace WpfApp1.Infrastructure.WindowsApis
                 await Task.Delay(100, token).ConfigureAwait(false);
             }
             await Task.Delay(250, token).ConfigureAwait(false);
-            Process.Start(new ProcessStartInfo
+            var process = Process.Start(new ProcessStartInfo
             {
                 FileName = Path.Combine(Environment.SystemDirectory, "explorer.exe"),
                 UseShellExecute = true,
                 WorkingDirectory = Environment.SystemDirectory
             });
+            if (process == null)
+                throw new InvalidOperationException("Не удалось запустить explorer.exe.");
+
+            for (var i = 0; i < 50; i++)
+            {
+                token.ThrowIfCancellationRequested();
+                if (Process.GetProcessesByName("explorer").Length > 0) return;
+                await Task.Delay(100, token).ConfigureAwait(false);
+            }
+
+            throw new InvalidOperationException("explorer.exe не запустился после перезапуска.");
         }
     }
 }
