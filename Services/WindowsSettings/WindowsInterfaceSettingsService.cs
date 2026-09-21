@@ -54,10 +54,16 @@ namespace WpfApp1.Services.WindowsSettings
                 case "ClipboardHistory": return ReadDword(ClipboardPath, "EnableClipboardHistory", 0) != 0;
                 case "WindowShake": return ReadDword(ExplorerAdvanced, "DisallowShaking", 0) == 0;
 
-                case "GameBar": return ReadDword(GameConfigPath, "GameBarEnabled", 1) != 0;
+                case "GameBar":
+                    return ReadDword(GameConfigPath, "GameBarEnabled", 1) != 0
+                        && ReadOptionalUserDword(GameBarPath, "ShowStartupPanel", 1) == 1
+                        && ReadOptionalUserDword(GameBarPath, "UseNexusForGameBarEnabled", 1) == 1
+                        && ReadOptionalUserDword(GameBarPath, "GamePanelStartupTipIndex", 3) == 3;
                 case "BackgroundRecording":
                     return ReadDword(GameDvrPath, "AppCaptureEnabled", 1) != 0
+                        && ReadOptionalUserDword(GameDvrPath, "HistoricalCaptureEnabled", 1) == 1
                         && ReadDword(GameConfigPath, "GameDVR_Enabled", 1) != 0
+                        && ReadOptionalUserDword(GameConfigPath, "GameDVR_HistoricalCaptureEnabled", 1) == 1
                         && ReadMachineDword(@"SOFTWARE\Policies\Microsoft\Windows\GameDVR", "AllowGameDVR", 1) != 0;
                 case "FullscreenOptimizations":
                     return ReadDword(GameConfigPath, "GameDVR_DXGIHonorFSEWindowsCompatible", 0) == 0
@@ -134,9 +140,34 @@ namespace WpfApp1.Services.WindowsSettings
 
                     case "SpeedUpExplorerAndMenus":
                         {
-                            var a = SetUserDword("SpeedUpExplorer", @"Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize", "StartupDelayInMSec", enabled ? 0 : 2000);
+                            const string serializePath = @"Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize";
+                            const string desktopPath = @"Control Panel\Desktop";
+
+                            if (!enabled)
+                            {
+                                var restoredDelay = _backup.TryRestoreCurrentUser("SpeedUpExplorer", serializePath, "StartupDelayInMSec");
+                                var restoredMenu = _backup.TryRestoreCurrentUser("SpeedUpMenus", desktopPath, "MenuShowDelay");
+
+                                if (!restoredDelay)
+                                {
+                                    var a = SetUserDword("SpeedUpExplorerFallback", serializePath, "StartupDelayInMSec", 2000);
+                                    if (!a.Success) return a;
+                                }
+
+                                if (!restoredMenu)
+                                {
+                                    var b = SetUserString("SpeedUpMenusFallback", desktopPath, "MenuShowDelay", "400");
+                                    if (!b.Success) return b;
+                                }
+
+                                return IsEnabled("SpeedUpExplorerAndMenus")
+                                    ? SettingOperationResult.Fail("ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð²Ð¾ÑÑÑ‚Ð°Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ Ð¸ÑÑ…Ð¾Ð´Ð½Ñ‹Ðµ Ð·Ð°Ð´ÐµÑ€Ð¶ÐºÐ¸ ÐŸÑ€Ð¾Ð²Ð¾Ð´Ð½Ð¸ÐºÐ° Ð¸ Ð¼ÐµÐ½ÑŽ.")
+                                    : SettingOperationResult.Ok("Ð˜ÑÑ…Ð¾Ð´Ð½Ñ‹Ðµ Ð·Ð°Ð´ÐµÑ€Ð¶ÐºÐ¸ ÐŸÑ€Ð¾Ð²Ð¾Ð´Ð½Ð¸ÐºÐ° Ð¸ Ð¼ÐµÐ½ÑŽ Ð²Ð¾ÑÑÑ‚Ð°Ð½Ð¾Ð²Ð»ÐµÐ½Ñ‹.");
+                            }
+
+                            var a = SetUserDword("SpeedUpExplorer", serializePath, "StartupDelayInMSec", 0);
                             if (!a.Success) return a;
-                            return SetUserString("SpeedUpMenus", @"Control Panel\Desktop", "MenuShowDelay", enabled ? "0" : "400");
+                            return SetUserString("SpeedUpMenus", desktopPath, "MenuShowDelay", "0");
                         }
                     case "DisableStartMenuWebSearch": return SetUserDword("DisableStartMenuWebSearch", SearchPolicy, "DisableSearchBoxSuggestions", enabled ? 1 : 0);
                     case "DisableStartRecommended": return SetUserDword("DisableStartRecommended", SearchPolicy, "HideRecommendedSection", enabled ? 1 : 0);
@@ -153,7 +184,7 @@ namespace WpfApp1.Services.WindowsSettings
                             return SetUserDword("PreinstalledAppsSilent", ContentDelivery, "SilentInstalledAppsEnabled", value);
                         }
                     default:
-                        return SettingOperationResult.Fail("Íåèçâåñòíàÿ ñèñòåìíàÿ íàñòðîéêà: " + tag);
+                        return SettingOperationResult.Fail("ÃÃ¥Ã¨Ã§Ã¢Ã¥Ã±Ã²Ã­Ã Ã¿ Ã±Ã¨Ã±Ã²Ã¥Ã¬Ã­Ã Ã¿ Ã­Ã Ã±Ã²Ã°Ã®Ã©ÃªÃ : " + tag);
                 }
             }
             catch (Exception ex)
@@ -176,7 +207,11 @@ namespace WpfApp1.Services.WindowsSettings
             var value = enabled ? 1 : 0;
             var r = SetUserDword("GameDvrAppCapture", GameDvrPath, "AppCaptureEnabled", value);
             if (!r.Success) return r;
+            r = SetUserDword("GameDvrHistorical", GameDvrPath, "HistoricalCaptureEnabled", value);
+            if (!r.Success) return r;
             r = SetUserDword("GameDvrEnabled", GameConfigPath, "GameDVR_Enabled", value);
+            if (!r.Success) return r;
+            r = SetUserDword("GameDvrHistoricalConfig", GameConfigPath, "GameDVR_HistoricalCaptureEnabled", value);
             if (!r.Success) return r;
             return SetMachineDword("GameDvrPolicy", @"SOFTWARE\Policies\Microsoft\Windows\GameDVR", "AllowGameDVR", value);
         }
@@ -191,7 +226,7 @@ namespace WpfApp1.Services.WindowsSettings
                 var r = SetUserDword("Fullscreen_" + item.Item1, GameConfigPath, item.Item1, item.Item2);
                 if (!r.Success) return r;
             }
-            return SettingOperationResult.Ok("Íàñòðîéêà ïîëíîýêðàííîé îïòèìèçàöèè ñîõðàíåíà.", true);
+            return SettingOperationResult.Ok("ÃÃ Ã±Ã²Ã°Ã®Ã©ÃªÃ  Ã¯Ã®Ã«Ã­Ã®Ã½ÃªÃ°Ã Ã­Ã­Ã®Ã© Ã®Ã¯Ã²Ã¨Ã¬Ã¨Ã§Ã Ã¶Ã¨Ã¨ Ã±Ã®ÃµÃ°Ã Ã­Ã¥Ã­Ã .", true);
         }
 
         private SettingOperationResult SetShortcutArrow(bool visible)
@@ -204,8 +239,8 @@ namespace WpfApp1.Services.WindowsSettings
                 _registry.WriteLocalMachine(ShellIconsPath, "29", @"%windir%\System32\shell32.dll,-50", RegistryValueKind.String);
 
             return IsShortcutArrowVisible() == visible
-                ? SettingOperationResult.Ok("Ñòðåëêè ÿðëûêîâ ñîõðàíåíû.", true)
-                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà íàñòðîéêó ñòðåëîê ÿðëûêîâ.");
+                ? SettingOperationResult.Ok("Ã‘Ã²Ã°Ã¥Ã«ÃªÃ¨ Ã¿Ã°Ã«Ã»ÃªÃ®Ã¢ Ã±Ã®ÃµÃ°Ã Ã­Ã¥Ã­Ã».", true)
+                : SettingOperationResult.Fail("Windows Ã­Ã¥ Ã±Ã®ÃµÃ°Ã Ã­Ã¨Ã«Ã  Ã­Ã Ã±Ã²Ã°Ã®Ã©ÃªÃ³ Ã±Ã²Ã°Ã¥Ã«Ã®Ãª Ã¿Ã°Ã«Ã»ÃªÃ®Ã¢.");
         }
 
         private bool IsShortcutArrowVisible()
@@ -234,8 +269,8 @@ namespace WpfApp1.Services.WindowsSettings
                     parent?.DeleteSubKeyTree("{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}", false);
             }
             return IsClassicContextMenuEnabled() == enabled
-                ? SettingOperationResult.Ok("Êëàññè÷åñêîå êîíòåêñòíîå ìåíþ ñîõðàíåíî.", true)
-                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà êëàññè÷åñêîå êîíòåêñòíîå ìåíþ.");
+                ? SettingOperationResult.Ok("ÃŠÃ«Ã Ã±Ã±Ã¨Ã·Ã¥Ã±ÃªÃ®Ã¥ ÃªÃ®Ã­Ã²Ã¥ÃªÃ±Ã²Ã­Ã®Ã¥ Ã¬Ã¥Ã­Ã¾ Ã±Ã®ÃµÃ°Ã Ã­Ã¥Ã­Ã®.", true)
+                : SettingOperationResult.Fail("Windows Ã­Ã¥ Ã±Ã®ÃµÃ°Ã Ã­Ã¨Ã«Ã  ÃªÃ«Ã Ã±Ã±Ã¨Ã·Ã¥Ã±ÃªÃ®Ã¥ ÃªÃ®Ã­Ã²Ã¥ÃªÃ±Ã²Ã­Ã®Ã¥ Ã¬Ã¥Ã­Ã¾.");
         }
 
         private bool IsClassicContextMenuEnabled()
@@ -251,10 +286,10 @@ namespace WpfApp1.Services.WindowsSettings
             {
                 using (var key = Registry.Users.OpenSubKey(@".DEFAULT\Control Panel\Keyboard", true))
                 {
-                    if (key == null) return SettingOperationResult.Fail("Íå óäàëîñü îòêðûòü ïàðàìåòðû êëàâèàòóðû äëÿ ýêðàíà âõîäà.");
+                    if (key == null) return SettingOperationResult.Fail("ÃÃ¥ Ã³Ã¤Ã Ã«Ã®Ã±Ã¼ Ã®Ã²ÃªÃ°Ã»Ã²Ã¼ Ã¯Ã Ã°Ã Ã¬Ã¥Ã²Ã°Ã» ÃªÃ«Ã Ã¢Ã¨Ã Ã²Ã³Ã°Ã» Ã¤Ã«Ã¿ Ã½ÃªÃ°Ã Ã­Ã  Ã¢ÃµÃ®Ã¤Ã .");
                     key.SetValue("InitialKeyboardIndicators", value.ToString(), RegistryValueKind.String);
                 }
-                return SettingOperationResult.Ok("NumLock ïðè çàãðóçêå ñîõðàí¸í.");
+                return SettingOperationResult.Ok("NumLock Ã¯Ã°Ã¨ Ã§Ã Ã£Ã°Ã³Ã§ÃªÃ¥ Ã±Ã®ÃµÃ°Ã Ã­Â¸Ã­.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
@@ -264,8 +299,8 @@ namespace WpfApp1.Services.WindowsSettings
             _backup.BackupCurrentUserOnce(backupName, path, name);
             _registry.WriteCurrentUser(path, name, value, RegistryValueKind.DWord);
             return Convert.ToInt32(_registry.ReadCurrentUser(path, name).Value ?? int.MinValue) == value
-                ? SettingOperationResult.Ok("Íàñòðîéêà ñîõðàíåíà.", restart)
-                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà âûáðàííóþ íàñòðîéêó.");
+                ? SettingOperationResult.Ok("ÃÃ Ã±Ã²Ã°Ã®Ã©ÃªÃ  Ã±Ã®ÃµÃ°Ã Ã­Ã¥Ã­Ã .", restart)
+                : SettingOperationResult.Fail("Windows Ã­Ã¥ Ã±Ã®ÃµÃ°Ã Ã­Ã¨Ã«Ã  Ã¢Ã»Ã¡Ã°Ã Ã­Ã­Ã³Ã¾ Ã­Ã Ã±Ã²Ã°Ã®Ã©ÃªÃ³.");
         }
 
         private SettingOperationResult SetUserString(string backupName, string path, string name, string value)
@@ -273,8 +308,8 @@ namespace WpfApp1.Services.WindowsSettings
             _backup.BackupCurrentUserOnce(backupName, path, name);
             _registry.WriteCurrentUser(path, name, value, RegistryValueKind.String);
             return string.Equals(Convert.ToString(_registry.ReadCurrentUser(path, name).Value), value, StringComparison.OrdinalIgnoreCase)
-                ? SettingOperationResult.Ok("Íàñòðîéêà ñîõðàíåíà.")
-                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà âûáðàííîå çíà÷åíèå.");
+                ? SettingOperationResult.Ok("ÃÃ Ã±Ã²Ã°Ã®Ã©ÃªÃ  Ã±Ã®ÃµÃ°Ã Ã­Ã¥Ã­Ã .")
+                : SettingOperationResult.Fail("Windows Ã­Ã¥ Ã±Ã®ÃµÃ°Ã Ã­Ã¨Ã«Ã  Ã¢Ã»Ã¡Ã°Ã Ã­Ã­Ã®Ã¥ Ã§Ã­Ã Ã·Ã¥Ã­Ã¨Ã¥.");
         }
 
         private SettingOperationResult SetMachineDword(string backupName, string path, string name, int value)
@@ -282,8 +317,14 @@ namespace WpfApp1.Services.WindowsSettings
             _backup.BackupLocalMachineOnce(backupName, path, name);
             _registry.WriteLocalMachine(path, name, value, RegistryValueKind.DWord);
             return Convert.ToInt32(_registry.ReadLocalMachine(path, name).Value ?? int.MinValue) == value
-                ? SettingOperationResult.Ok("Íàñòðîéêà ñîõðàíåíà.", true)
-                : SettingOperationResult.Fail("Windows íå ñîõðàíèëà âûáðàííóþ íàñòðîéêó.");
+                ? SettingOperationResult.Ok("ÃÃ Ã±Ã²Ã°Ã®Ã©ÃªÃ  Ã±Ã®ÃµÃ°Ã Ã­Ã¥Ã­Ã .", true)
+                : SettingOperationResult.Fail("Windows Ã­Ã¥ Ã±Ã®ÃµÃ°Ã Ã­Ã¨Ã«Ã  Ã¢Ã»Ã¡Ã°Ã Ã­Ã­Ã³Ã¾ Ã­Ã Ã±Ã²Ã°Ã®Ã©ÃªÃ³.");
+        }
+
+        private int ReadOptionalUserDword(string path, string name, int fallback)
+        {
+            var snapshot = _registry.ReadCurrentUser(path, name);
+            return snapshot.Exists ? ConvertToInt(snapshot.Value, fallback) : fallback;
         }
 
         private int ReadDword(string path, string name, int fallback) =>
