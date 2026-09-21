@@ -115,15 +115,33 @@ namespace WpfApp1.Services.WindowsSettings
         private int GetSpeed()
         {
             var value = 10;
-            SystemParametersInfo(SPI_GETMOUSESPEED, 0, ref value, 0);
-            return Math.Clamp(value, 1, 20);
+            if (SystemParametersInfo(SPI_GETMOUSESPEED, 0, ref value, 0))
+                return Math.Clamp(value, 1, 20);
+
+            var snapshot = _registry.ReadCurrentUser(MousePath, "MouseSensitivity");
+            try
+            {
+                if (snapshot.Exists && snapshot.Value != null)
+                    return Math.Clamp(Convert.ToInt32(snapshot.Value), 1, 20);
+            }
+            catch { }
+            return 10;
         }
 
         private int GetScrollLines()
         {
             var value = 5;
-            SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, ref value, 0);
-            return Math.Clamp(value, 1, 100);
+            if (SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, ref value, 0))
+                return Math.Clamp(value, 1, 100);
+
+            var snapshot = _registry.ReadCurrentUser(DesktopPath, "WheelScrollLines");
+            try
+            {
+                if (snapshot.Exists && snapshot.Value != null)
+                    return Math.Clamp(Convert.ToInt32(snapshot.Value), 1, 100);
+            }
+            catch { }
+            return 5;
         }
 
         private bool GetAcceleration()
@@ -132,16 +150,33 @@ namespace WpfApp1.Services.WindowsSettings
             return values.Length >= 3 && values[2] != 0;
         }
 
-        private static int[] GetAccelerationValues()
+        private int[] GetAccelerationValues()
         {
             var values = new int[3];
             var handle = GCHandle.Alloc(values, GCHandleType.Pinned);
             try
             {
-                SystemParametersInfo(SPI_GETMOUSE, 0, handle.AddrOfPinnedObject(), 0);
-                return values;
+                if (SystemParametersInfo(SPI_GETMOUSE, 0, handle.AddrOfPinnedObject(), 0))
+                    return values;
             }
             finally { handle.Free(); }
+
+            return new[]
+            {
+                ReadRegistryInt(MousePath, "MouseSpeed", 1),
+                ReadRegistryInt(MousePath, "MouseThreshold1", 6),
+                ReadRegistryInt(MousePath, "MouseThreshold2", 10)
+            };
+        }
+
+        private int ReadRegistryInt(string path, string name, int fallback)
+        {
+            var snapshot = _registry.ReadCurrentUser(path, name);
+            try
+            {
+                return snapshot.Exists && snapshot.Value != null ? Convert.ToInt32(snapshot.Value) : fallback;
+            }
+            catch { return fallback; }
         }
 
         private void VerifySpeed(int expected)
