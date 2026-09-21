@@ -63,31 +63,31 @@ namespace WpfApp1.Services.WindowsSettings
                 TaskViewButton = ReadBool(Advanced, "ShowTaskViewButton", null, true),
                 LastActiveClick = ReadBool(Advanced, "LastActiveClick", null, false),
                 SearchBoxTaskbarMode = ReadIntString(@"Software\Microsoft\Windows\CurrentVersion\Search", "SearchboxTaskbarMode", 3),
-                Alignment = ReadIntString(AlignmentPath, "SystemSettings_DesktopTaskbar_Al", 1),
-                MultiMonitorMode = ReadIntString(MultiMonitorModePath, "SystemSettings_Taskbar_MultiMonTaskbarMode", 0, "SystemSettings_DesktopTaskbar_MultiMonTaskbarMode"),
-                GroupingMode = ReadIntString(GlomPath, "SystemSettings_DesktopTaskbar_GroupingMode", 0),
-                MultiMonitorGroupingMode = ReadIntString(MultiMonitorGlomPath, "SystemSettings_DesktopTaskbar_GroupingMode", 0)
+                Alignment = ReadIntWithFallback(AlignmentPath, "TaskbarAl", 1, "SystemSettings_DesktopTaskbar_Al"),
+                MultiMonitorMode = ReadIntWithFallback(MultiMonitorModePath, "MMTaskbarMode", 0, "SystemSettings_Taskbar_MultiMonTaskbarMode", "SystemSettings_DesktopTaskbar_MultiMonTaskbarMode"),
+                GroupingMode = ReadIntWithFallback(GlomPath, "TaskbarGlomLevel", 0, "SystemSettings_DesktopTaskbar_GroupingMode"),
+                MultiMonitorGroupingMode = ReadIntWithFallback(MultiMonitorGlomPath, "MMTaskbarGlomLevel", 0, "SystemSettings_DesktopTaskbar_GroupingMode")
             };
         }
 
         public SettingOperationResult SetAlignment(int value)
         {
-            return WriteStringSetting("TaskbarAlignment", AlignmentPath, "SystemSettings_DesktopTaskbar_Al", Math.Clamp(value, 0, 1), true);
+            return WriteDwordSetting("TaskbarAlignment", AlignmentPath, "TaskbarAl", Math.Clamp(value, 0, 1), true);
         }
 
         public SettingOperationResult SetMultiMonitorMode(int value)
         {
-            return WriteStringSetting("TaskbarMultiMonitorMode", MultiMonitorModePath, "SystemSettings_Taskbar_MultiMonTaskbarMode", Math.Clamp(value, 0, 2), true, "SystemSettings_DesktopTaskbar_MultiMonTaskbarMode");
+            return WriteDwordSetting("TaskbarMultiMonitorMode", MultiMonitorModePath, "MMTaskbarMode", Math.Clamp(value, 0, 2), true);
         }
 
         public SettingOperationResult SetGroupingMode(int value)
         {
-            return WriteStringSetting("TaskbarGroupingMode", GlomPath, "SystemSettings_DesktopTaskbar_GroupingMode", Math.Clamp(value, 0, 2), true);
+            return WriteDwordSetting("TaskbarGroupingMode", GlomPath, "TaskbarGlomLevel", Math.Clamp(value, 0, 2), true);
         }
 
         public SettingOperationResult SetMultiMonitorGroupingMode(int value)
         {
-            return WriteStringSetting("TaskbarMultiMonitorGroupingMode", MultiMonitorGlomPath, "SystemSettings_DesktopTaskbar_GroupingMode", Math.Clamp(value, 0, 2), true);
+            return WriteDwordSetting("TaskbarMultiMonitorGroupingMode", MultiMonitorGlomPath, "MMTaskbarGlomLevel", Math.Clamp(value, 0, 2), true);
         }
 
         public SettingOperationResult SetAutoHide(bool enabled)
@@ -193,6 +193,20 @@ namespace WpfApp1.Services.WindowsSettings
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
 
+        private SettingOperationResult WriteDwordSetting(string backupName, string path, string name, int value, bool restart)
+        {
+            try
+            {
+                _backup.BackupCurrentUserOnce(backupName, path, name);
+                _registry.WriteCurrentUser(path, name, value, RegistryValueKind.DWord);
+                var actual = _registry.ReadCurrentUser(path, name).Value;
+                return ConvertToInt(actual, int.MinValue) == value
+                    ? SettingOperationResult.Ok("Настройка панели задач сохранена.", restart)
+                    : SettingOperationResult.Fail("Windows не сохранила выбранное значение панели задач.");
+            }
+            catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
+        }
+
         private SettingOperationResult WriteStringSetting(string backupName, string path, string primaryName, int value, bool restart, string secondaryName = null)
         {
             try
@@ -251,14 +265,16 @@ namespace WpfApp1.Services.WindowsSettings
             return fallback;
         }
 
-        private int ReadIntString(string path, string primary, int fallback, string secondary = null)
+        private int ReadIntWithFallback(string path, string primary, int fallback, params string[] secondaryNames)
         {
             var first = _registry.ReadCurrentUser(path, primary);
             if (TryParseInt(first.Value, out var value)) return Math.Max(0, value);
-            if (!string.IsNullOrWhiteSpace(secondary))
+
+            foreach (var secondary in secondaryNames ?? Array.Empty<string>())
             {
-                var second = _registry.ReadCurrentUser(path, secondary);
-                if (TryParseInt(second.Value, out value)) return Math.Max(0, value);
+                if (string.IsNullOrWhiteSpace(secondary)) continue;
+                var snapshot = _registry.ReadCurrentUser(path, secondary);
+                if (TryParseInt(snapshot.Value, out value)) return Math.Max(0, value);
             }
             return fallback;
         }
@@ -267,6 +283,11 @@ namespace WpfApp1.Services.WindowsSettings
         {
             if (value is int i) { result = i; return true; }
             return int.TryParse(Convert.ToString(value), out result);
+        }
+
+        private static int ConvertToInt(object value, int fallback)
+        {
+            try { return value == null ? fallback : Convert.ToInt32(value); } catch { return fallback; }
         }
 
         private bool ReadAutoHide()
