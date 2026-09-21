@@ -30,6 +30,16 @@ namespace WpfApp1.Services.WindowsSettings
             _backup = backup ?? new SettingBackupService(_registry);
         }
 
+        public bool IsFeatureSupported(string tag)
+        {
+            var isWindows11 = Environment.OSVersion.Version.Build >= 22000;
+            if (string.Equals(tag, "DisableCortana", StringComparison.Ordinal))
+                return !isWindows11;
+            if (string.Equals(tag, "DisableCopilot", StringComparison.Ordinal))
+                return isWindows11;
+            return true;
+        }
+
         public bool IsDisabled(string tag)
         {
             switch (tag)
@@ -140,6 +150,7 @@ namespace WpfApp1.Services.WindowsSettings
                         if (!MachineEquals(@"SYSTEM\CurrentControlSet\Control\WMI\Autologger\" + name, "Start", 0)) return false;
                     return true;
                 case "DisableCortana":
+                    if (!IsFeatureSupported(tag)) return false;
                     return MachineEquals(@"SOFTWARE\Policies\Microsoft\Windows\Windows Search", "AllowCortana", 0)
                         && MachineEquals(@"SOFTWARE\Policies\Microsoft\Windows\Windows Search", "AllowCloudSearch", 0)
                         && MachineEquals(@"SOFTWARE\Policies\Microsoft\Windows\Windows Search", "AllowCortanaAboveLock", 0)
@@ -149,6 +160,7 @@ namespace WpfApp1.Services.WindowsSettings
                         && UserEquals(@"Software\Microsoft\Windows\CurrentVersion\Search", "CortanaConsent2", 0);
 
                 case "DisableCopilot":
+                    if (!IsFeatureSupported(tag)) return false;
                     return MachineEquals(@"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot", 1)
                         && UserEquals(@"Software\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot", 1)
                         && UserEquals(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowCopilotButton", 0)
@@ -262,6 +274,7 @@ namespace WpfApp1.Services.WindowsSettings
                     case "DisableAutoLogger":
                         return ApplyAutologger(disabled);
                     case "DisableCortana":
+                        if (!IsFeatureSupported(tag)) return SettingOperationResult.Fail("Настройка Cortana доступна только в Windows 10.");
                         return ApplyRegistryGroup(new[]
                         {
                             MachineDword(@"SOFTWARE\Policies\Microsoft\Windows\Windows Search", "AllowCortana", disabled ? 0 : 1),
@@ -273,6 +286,7 @@ namespace WpfApp1.Services.WindowsSettings
                             UserDword2(@"Software\Microsoft\Windows\CurrentVersion\Search", "CortanaConsent2", disabled ? 0 : 1)
                         }, "Cortana è îáëà÷íûé ïîèñê ñîõðàíåíû.");
                     case "DisableCopilot":
+                        if (!IsFeatureSupported(tag)) return SettingOperationResult.Fail("Настройка Copilot доступна только в Windows 11.");
                         return ApplyCopilot(disabled);
                     case "DisableContentDeliveryManager":
                         return ApplyRegistryGroup(new[]
