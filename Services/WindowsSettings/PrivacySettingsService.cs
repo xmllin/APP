@@ -71,7 +71,8 @@ namespace WpfApp1.Services.WindowsSettings
                 case "DisableCopilot":
                     return MachineEquals(@"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot", 1)
                         && UserEquals(@"Software\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot", 1)
-                        && UserEquals(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowCopilotButton", 0);
+                        && UserEquals(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowCopilotButton", 0)
+                        && MachineEquals(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked", "{CB3B0003-8088-4EDE-8769-8B354AB2FF8C}", "");
                 case "DisableContentDeliveryManager":
                     return UserEquals(ContentDeliveryPath, "ContentDeliveryAllowed", 0)
                         && UserEquals(ContentDeliveryPath, "SubscribedContent-338387Enabled", 0)
@@ -99,7 +100,7 @@ namespace WpfApp1.Services.WindowsSettings
                     case "DisableAppDiagnostics":
                         SetDword(AppPrivacy, "LetAppsGetDiagnosticInfo", disabled ? 2 : 0);
                         SetDword(AppPrivacy, "LetAppsAccessDiagnosticInfo", disabled ? 2 : 0);
-                        SetMachineString(AppDiagnostics, "Value", disabled ? "Deny" : "Allow");
+                        SetUserString(AppDiagnostics, "Value", disabled ? "Deny" : "Allow");
                         return SettingOperationResult.Ok("Диагностические данные приложений сохранены.");
                     case "DisableActivity":
                         SetDword(Activity, "PublishUserActivities", disabled ? 0 : 1);
@@ -142,7 +143,8 @@ namespace WpfApp1.Services.WindowsSettings
                             UserDword2(@"Software\Microsoft\Windows\CurrentVersion\UserProfileEngagement", "ScoobeSystemSettingEnabled", disabled ? 0 : 1),
                             UserDword2(@"Software\Microsoft\InputPersonalization", "RestrictImplicitInkCollection", disabled ? 1 : 0),
                             UserDword2(@"Software\Microsoft\InputPersonalization", "RestrictImplicitTextCollection", disabled ? 1 : 0),
-                            UserDword2(@"Software\Microsoft\InputPersonalization\TrainedDataStore", "HarvestContacts", disabled ? 0 : 1)
+                            UserDword2(@"Software\Microsoft\InputPersonalization\TrainedDataStore", "HarvestContacts", disabled ? 0 : 1),
+                            UserDword2(@"Control Panel\International\User Profile", "HttpAcceptLanguageOptOut", disabled ? 1 : 0)
                         }, "Реклама и системные предложения сохранены.");
                     case "DisableNewsAndInterests":
                         return ApplyRegistryGroup(new[]
@@ -166,8 +168,13 @@ namespace WpfApp1.Services.WindowsSettings
                             MachineDword(@"SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors", "DisableLocation", disabled ? 1 : 0),
                             MachineDword(@"SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors", "DisableSensors", disabled ? 1 : 0),
                             MachineDword(@"SYSTEM\Maps", "AutoUpdateEnabled", disabled ? 0 : 1),
+                            UserDword2(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Permissions\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}", "SensorPermissionState", disabled ? 0 : 1),
                             UserString2(@"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location", "Value", disabled ? "Deny" : "Allow"),
-                            MachineString(@"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location", "Value", disabled ? "Deny" : "Allow")
+                            MachineString(@"Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location", "Value", disabled ? "Deny" : "Allow"),
+                            UserDword2(@"Software\Microsoft\Windows\CurrentVersion\Geolocation", "Status", disabled ? 0 : 1),
+                            MachineDword(@"SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration", "Status", disabled ? 0 : 1),
+                            MachineDword(@"Software\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting", "Value", disabled ? 0 : 1),
+                            MachineDword(@"Software\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots", "Value", disabled ? 0 : 1)
                         }, "Геолокация и датчики сохранены.");
                     case "DisableAutoLogger":
                         return ApplyAutologger(disabled);
@@ -183,13 +190,7 @@ namespace WpfApp1.Services.WindowsSettings
                             UserDword2(@"Software\Microsoft\Windows\CurrentVersion\Search", "CortanaConsent2", disabled ? 0 : 1)
                         }, "Cortana и облачный поиск сохранены.");
                     case "DisableCopilot":
-                        return ApplyRegistryGroup(new[]
-                        {
-                            MachineDword(@"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot", disabled ? 1 : 0),
-                            UserDword2(@"Software\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot", disabled ? 1 : 0),
-                            UserDword2(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowCopilotButton", disabled ? 0 : 1),
-                            MachineString(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked", "{CB3B0003-8088-4EDE-8769-8B354AB2FF8C}", disabled ? "" : "")
-                        }, "Copilot сохранён.");
+                        return ApplyCopilot(disabled);
                     case "DisableContentDeliveryManager":
                         return ApplyRegistryGroup(new[]
                         {
@@ -240,7 +241,7 @@ namespace WpfApp1.Services.WindowsSettings
 
                 MachineDword(AppPrivacy, "LetAppsGetDiagnosticInfo", disabled ? 2 : 0),
                 MachineDword(AppPrivacy, "LetAppsAccessDiagnosticInfo", disabled ? 2 : 0),
-                MachineString(AppDiagnostics, "Value", disabled ? "Deny" : "Allow"),
+                UserString(AppDiagnostics, "Value", disabled ? "Deny" : "Allow"),
 
                 MachineDword(Activity, "PublishUserActivities", disabled ? 0 : 1),
                 MachineDword(Activity, "UploadUserActivities", disabled ? 0 : 1),
@@ -306,6 +307,35 @@ namespace WpfApp1.Services.WindowsSettings
                 if (rollbackErrors.Count > 0)
                     message += " Не все исходные значения удалось восстановить: " + string.Join("; ", rollbackErrors);
                 return SettingOperationResult.Fail(message);
+            }
+        }
+
+        private SettingOperationResult ApplyCopilot(bool disabled)
+        {
+            try
+            {
+                var policy = ApplyRegistryGroup(new[]
+                {
+                    MachineDword(@"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot", disabled ? 1 : 0),
+                    UserDword2(@"Software\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot", disabled ? 1 : 0),
+                    UserDword2(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowCopilotButton", disabled ? 0 : 1)
+                }, "Copilot сохранён.");
+                if (!policy.Success) return policy;
+
+                const string path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked";
+                const string name = "{CB3B0003-8088-4EDE-8769-8B354AB2FF8C}";
+                _backup.BackupLocalMachineOnce("Privacy_CopilotBlockedExtension", path, name);
+
+                if (disabled)
+                    _registry.WriteLocalMachine(path, name, string.Empty, RegistryValueKind.String);
+                else if (!_backup.TryRestoreLocalMachine("Privacy_CopilotBlockedExtension", path, name))
+                    _registry.DeleteLocalMachine(path, name);
+
+                return SettingOperationResult.Ok("Copilot сохранён.");
+            }
+            catch (Exception ex)
+            {
+                return SettingOperationResult.Fail(ex.Message);
             }
         }
 
@@ -441,6 +471,12 @@ namespace WpfApp1.Services.WindowsSettings
         {
             _backup.BackupLocalMachineOnce("Privacy_" + path + "_" + name, path, name);
             _registry.WriteLocalMachine(path, name, value, RegistryValueKind.String);
+        }
+
+        private void SetUserString(string path, string name, string value)
+        {
+            _backup.BackupCurrentUserOnce("Privacy_" + path + "_" + name, path, name);
+            _registry.WriteCurrentUser(path, name, value, RegistryValueKind.String);
         }
 
         private void SetUserDword(string path, string name, int value)
