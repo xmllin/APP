@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Win32;
+using WpfApp1.Domain.WindowsSettings;
 using WpfApp1.Infrastructure.Registry;
 
 namespace WpfApp1.Services.WindowsSettings
