@@ -41,7 +41,9 @@ namespace WpfApp1.Services.Downloads
                     Directory.CreateDirectory(directory);
 
                 var json = JsonSerializer.Serialize(items.ToList());
-                File.WriteAllText(HistoryFile, json);
+                var temporaryPath = HistoryFile + ".tmp";
+                File.WriteAllText(temporaryPath, json);
+                File.Move(temporaryPath, HistoryFile, true);
             }
             catch (Exception ex)
             {
