@@ -552,10 +552,10 @@ namespace WpfApp1.Pages
 
 		private static bool IsBingSearchDisabled()
 		{
-			var currentUserSearchDisabled = ReadDword(SearchPolicyPath, SearchRegistryValue, 1) == 0 &&
-				ReadDword(SearchPolicyPath, CortanaConsentValue, 1) == 0 &&
-				ReadDword(SearchPolicyPath, ConnectedSearchUseWebValue, 1) == 0;
-			return currentUserSearchDisabled || ReadDword(SearchExplorerPolicyPath, "DisableSearchBoxSuggestions", 0) == 1;
+			return ReadDword(SearchPolicyPath, SearchRegistryValue, 1) == 0
+				&& ReadDword(SearchPolicyPath, CortanaConsentValue, 1) == 0
+				&& ReadDword(SearchPolicyPath, ConnectedSearchUseWebValue, 1) == 0
+				&& ReadDword(SearchExplorerPolicyPath, "DisableSearchBoxSuggestions", 0) == 1;
 		}
 
 		private static void SetBingSearchDisabled(bool disabled)
@@ -565,6 +565,8 @@ namespace WpfApp1.Pages
 			WriteDword(SearchPolicyPath, CortanaConsentValue, value);
 			WriteDword(SearchPolicyPath, ConnectedSearchUseWebValue, value);
 			WriteDword(SearchExplorerPolicyPath, "DisableSearchBoxSuggestions", disabled ? 1 : 0);
+			if (IsBingSearchDisabled() != disabled)
+				throw new InvalidOperationException("Windows не подтвердила состояние веб-поиска.");
 		}
 
 		private static bool IsWindowsAdsDisabled()
