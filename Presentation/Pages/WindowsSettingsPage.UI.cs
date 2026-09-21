@@ -601,7 +601,6 @@ namespace WpfApp1.Pages
 				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ShowUserFiles"), "Показывать файлы пользователя", "Показывать папку пользователя на рабочем столе"));
 				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ShowNetworkIcon"), "Показывать сеть", "Показывать значок «Сеть» на рабочем столе"));
 				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ShowControlPanel"), "Показывать панель управления", "Показывать классический значок панели управления"));
-				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ShowDesktopIcons"), "Показывать все значки рабочего стола", "Глобально показывать или скрывать значки рабочего стола"));
 				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ShortcutArrow"), "Скрывать стрелки ярлыков", "Убирать стрелку с ярлыков рабочего стола"));
 				desktopPanel.Children.Add(CreateAdditionalValueRow("Цвет выделения", "Цвет выделения текста и элементов интерфейса Windows", CreateHighlightColorControls()));
 				desktopPanel.Children.Add(CreateAdditionalToggleRow(_contextMenuDelayToggle, "Убрать задержку контекстного меню", "Установить минимальную задержку открытия меню"));
