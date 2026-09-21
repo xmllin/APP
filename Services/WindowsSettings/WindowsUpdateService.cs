@@ -94,6 +94,25 @@ namespace WpfApp1.Services.WindowsSettings
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
 
+        public bool IsPauseLimitMaximized()
+        {
+            var value = _registry.ReadLocalMachine(SettingsPath, "FlightSettingsMaxPauseDays").Value;
+            return value != null && Convert.ToInt64(value) == -1L;
+        }
+
+        public SettingOperationResult MaximizePauseLimit()
+        {
+            try
+            {
+                _backup.BackupLocalMachineOnce("WU_FlightSettingsMaxPauseDays", SettingsPath, "FlightSettingsMaxPauseDays");
+                _registry.WriteLocalMachine(SettingsPath, "FlightSettingsMaxPauseDays", unchecked((int)0xFFFFFFFF), RegistryValueKind.DWord);
+                return IsPauseLimitMaximized()
+                    ? SettingOperationResult.Ok("Максимальный срок паузы Windows Update установлен.")
+                    : SettingOperationResult.Fail("Windows не сохранила максимальный срок паузы обновлений.");
+            }
+            catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
+        }
+
         public void PauseUntil(DateTime expiryUtc)
         {
             var start = new DateTime(2015, 1, 1, 0, 0, 0, DateTimeKind.Utc);
