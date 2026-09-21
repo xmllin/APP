@@ -42,6 +42,13 @@ namespace WpfApp1.Pages
 			}
 		}
 
+		private ToggleButton CreateManagedToggle(string tag)
+		{
+			var toggle = CreateAdditionalToggle(tag);
+			_managedToggles[tag] = toggle;
+			return toggle;
+		}
+
 		private ToggleButton CreateAdditionalToggle(string tag)
 		{
 			var toggle = new ToggleButton
