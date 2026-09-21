@@ -129,24 +129,6 @@
     "usedBy": ["Очень старые игры", "Очень старые программы"]
   },
   {
-    "id": "dotnet-framework-20-30",
-    "name": ".NET Framework 2.0 и 3.0",
-    "category": ".NET Framework",
-    "description": "Совместимый компонент Windows, включающий .NET Framework 2.0 и 3.0.",
-    "purpose": "Запуск программ, которым требуется .NET Framework 2.0 или 3.0.",
-    "componentType": "Компонент Windows",
-    "architectures": ["x86", "x64", "arm64"],
-    "version": "2.0/3.0",
-    "sourceUrl": "https://www.microsoft.com/download/details.aspx?id=1639",
-    "installationType": "windowsFeature",
-    "canInstallAutomatically": true,
-    "detectionType": "manual",
-    "detectionValue": ".NET Framework 3.5",
-    "warnings": ["Windows включает версии 2.0 и 3.0 одновременно как часть компонента .NET Framework 3.5 (NetFx3)."],
-    "requirements": ["Совместимая версия Windows"],
-    "usedBy": ["Старые приложения", "Старые игры"]
-  },
-  {
     "id": "dotnet-framework-35",
     "name": ".NET Framework 3.5",
     "category": ".NET Framework",
