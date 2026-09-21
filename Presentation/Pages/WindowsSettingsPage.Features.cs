@@ -448,6 +448,7 @@ namespace WpfApp1.Pages
 				case "DisableErrorReporting":
 				case "DisableAdvertisingAndSuggestions":
 				case "DisableNewsAndInterests":
+				case "DisableActivityHistory":
 				case "HideMeetNowButton":
 				case "DisableLocationAndSensors":
 				case "DisableAutoLogger":
