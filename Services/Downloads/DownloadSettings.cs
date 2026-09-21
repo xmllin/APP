@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using WpfApp1.Services;
 
 namespace WpfApp1.Services.Downloads
@@ -8,8 +9,30 @@ namespace WpfApp1.Services.Downloads
     {
         private static readonly string SettingsFile = UserDataPath.File("download_settings.txt");
 
+        private static readonly Guid DownloadsFolderId = new Guid("374DE290-123F-4565-9164-39C4925E467B");
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern int SHGetKnownFolderPath(ref Guid rfid, uint dwFlags, IntPtr hToken, out IntPtr ppszPath);
+
         public static string GetDefaultFolder()
         {
+            IntPtr pathPtr = IntPtr.Zero;
+            try
+            {
+                var id = DownloadsFolderId;
+                if (SHGetKnownFolderPath(ref id, 0, IntPtr.Zero, out pathPtr) == 0 && pathPtr != IntPtr.Zero)
+                {
+                    var path = Marshal.PtrToStringUni(pathPtr);
+                    if (!string.IsNullOrWhiteSpace(path))
+                        return path;
+                }
+            }
+            catch { }
+            finally
+            {
+                if (pathPtr != IntPtr.Zero) Marshal.FreeCoTaskMem(pathPtr);
+            }
+
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
         }
 
