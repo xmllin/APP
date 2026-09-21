@@ -134,7 +134,6 @@ namespace WpfApp1.Pages
 		private ToggleButton _windowsAdsToggle;
 		private ToggleButton _powerShellScriptsToggle;
 		private TextBlock _powerShellScriptsLabel;
-		private Border _additionalSettingsPanel;
 		private Border _startSearchSettingsPanel;
 		private Border _gamingSettingsPanel;
 		private Border _systemSettingsPanel;
