@@ -109,8 +109,16 @@ namespace WpfApp1.Services.Libraries
             var separator = value.LastIndexOf('\\');
             var path = separator > 0 ? value.Substring(0, separator) : value;
             var valueName = separator > 0 ? value.Substring(separator + 1) : null;
-            using (var key = Registry.LocalMachine.OpenSubKey(path))
-                return key != null && (string.IsNullOrWhiteSpace(valueName) || key.GetValue(valueName) != null);
+            foreach (var view in new[] { RegistryView.Registry64, RegistryView.Registry32 })
+            {
+                using (var baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view))
+                using (var key = baseKey.OpenSubKey(path))
+                {
+                    if (key != null && (string.IsNullOrWhiteSpace(valueName) || key.GetValue(valueName) != null))
+                        return true;
+                }
+            }
+            return false;
         }
     }
 }
