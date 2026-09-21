@@ -681,20 +681,12 @@ namespace WpfApp1.Pages
 				DisableReservedStorageToggle.IsEnabled = IsReservedStorageSupported();
 				if (!DisableReservedStorageToggle.IsEnabled) DisableReservedStorageLabel.Text = "Не поддерживается";
 				UpdatePauseStatus();
-				SetToggle(DisableTelemetryToggle, AreTelemetrySettingsDisabled());
-				SetToggle(DisableAppDiagnosticsToggle,
-					ReadMachineDword(AppPrivacyPolicyPath, "LetAppsGetDiagnosticInfo", 0) == 2 ||
-					ReadMachineString(AppDiagnosticsConsentPath, "Value", "Allow").Equals("Deny", StringComparison.OrdinalIgnoreCase));
-				SetToggle(DisableActivityToggle, ReadMachineDword(ActivityHistoryPath, "PublishUserActivities", 1) == 0 && ReadMachineDword(ActivityHistoryPath, "UploadUserActivities", 1) == 0);
-				SetToggle(DisablePerformanceToggle, ReadMachineDword(DataCollectionPolicyPath, "DisableDiagnosticDataViewer", 0) == 1);
-				SetToggle(DisableKeystrokesToggle,
-					ReadMachineDword(InputPersonalizationPath, "AllowInputPersonalization", 1) == 0 &&
-					ReadMachineDword(InputPersonalizationPath, "RestrictKeystrokeLogging", 0) == 1 &&
-					ReadMachineDword(LegacyInputPersonalizationPath, "RestrictImplicitTextCollection", 0) == 1 &&
-					ReadMachineDword(LegacyInputPersonalizationPath, "RestrictImplicitInkCollection", 0) == 1);
-				SetToggle(DisableVoiceDataToggle,
-					ReadDword(VoiceDataPath, "HasAccepted", 1) == 0 ||
-					ReadMachineDword(SpeechPolicyPath, "AllowSpeechModelUpdate", 1) == 0);
+				SetToggle(DisableTelemetryToggle, _privacySettings.IsDisabled("DisableTelemetry"));
+				SetToggle(DisableAppDiagnosticsToggle, _privacySettings.IsDisabled("DisableAppDiagnostics"));
+				SetToggle(DisableActivityToggle, _privacySettings.IsDisabled("DisableActivity"));
+				SetToggle(DisablePerformanceToggle, _privacySettings.IsDisabled("DisablePerformance"));
+				SetToggle(DisableKeystrokesToggle, _privacySettings.IsDisabled("DisableKeystrokes"));
+				SetToggle(DisableVoiceDataToggle, _privacySettings.IsDisabled("DisableVoiceData"));
 				SetToggle(DisableStickyKeysToggle, AreStickyKeysDisabled());
 				SetToggle(DisableBingSearchToggle, IsBingSearchDisabled());
 				SetToggle(DisableHibernationToggle, _powerSettings.IsHibernationDisabled());
