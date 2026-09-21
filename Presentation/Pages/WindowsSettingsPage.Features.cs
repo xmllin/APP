@@ -281,6 +281,14 @@ namespace WpfApp1.Pages
 				MessageBox.Show("HAGS недоступен на этом оборудовании или драйвере.", "Планирование GPU", MessageBoxButton.OK, MessageBoxImage.Information);
 				return;
 			}
+			if ((tag == "DisableCortana" || tag == "DisableCopilot") && !_privacySettings.IsFeatureSupported(tag))
+			{
+				_loadingExplorerSettings = true;
+				try { SetToggle(toggle, false); }
+				finally { _loadingExplorerSettings = false; }
+				return;
+			}
+
 			if (!IsUserSettingTag(tag) && !IsAdministrator())
 			{
 				_loadingExplorerSettings = true;
@@ -307,7 +315,12 @@ namespace WpfApp1.Pages
 				var operation = await ApplyWindowsFeatureSettingAsync(tag, disabled);
 				if (!operation.Success) throw new InvalidOperationException(operation.Error);
 				UpdateWindowsFeatureLabel(tag, disabled);
-				if (operation.RequiresRestart && !string.Equals(tag, "UacNeverNotify", StringComparison.Ordinal))
+				if (IsPrivacySettingTag(tag) && _privacySettings.IsFeatureSupported(tag) && _privacySettings.IsDisabled(tag) != disabled)
+					throw new InvalidOperationException("Windows не подтвердила выбранное состояние настройки.");
+				if (operation.RequiresRestart
+					&& !string.Equals(tag, "UacNeverNotify", StringComparison.Ordinal)
+					&& !string.Equals(tag, "DeveloperMode", StringComparison.Ordinal)
+					&& !IsPrivacySettingTag(tag))
 					ShowToast(operation.Message + " Требуется перезапуск для полного применения.");
 				if (IsTaskbarLiveReloadTag(tag) && !VerifyTaskbarToggleState(tag, disabled))
 					throw new InvalidOperationException("Windows не сохранила выбранное состояние панели задач.");
@@ -321,6 +334,28 @@ namespace WpfApp1.Pages
 				MessageBox.Show(message, "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
 				LoadExplorerSettings();
 			}
+		}
+
+		private bool IsPrivacySettingTag(string tag)
+		{
+			return tag == "DisableTelemetry"
+				|| tag == "DisableAppDiagnostics"
+				|| tag == "DisableActivity"
+				|| tag == "DisablePerformance"
+				|| tag == "DisableKeystrokes"
+				|| tag == "DisableVoiceData"
+				|| tag == "DisableErrorReporting"
+				|| tag == "DisableAdvertisingAndSuggestions"
+				|| tag == "DisableNewsAndInterests"
+				|| tag == "HideMeetNowButton"
+				|| tag == "DisableActivityHistory"
+				|| tag == "DisableLocationAndSensors"
+				|| tag == "DisableAutoLogger"
+				|| tag == "DisableCortana"
+				|| tag == "DisableCopilot"
+				|| tag == "DisableContentDeliveryManager"
+				|| tag == "DisableFindMyDevice"
+				|| tag == "DisableDeliveryOptimization";
 		}
 
 		private void SetTelemetryGroupVisualState(bool disabled)
