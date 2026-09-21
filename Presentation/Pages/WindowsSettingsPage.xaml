@@ -355,7 +355,7 @@
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-search.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Пуск и поиск"/></StackPanel>
                     </ComboBoxItem>
                     <ComboBoxItem Tag="Игры и производительность">
-                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/xbox-controller.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Игры и производительность"/></StackPanel>
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-media.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Игры и производительность"/></StackPanel>
                     </ComboBoxItem>
                     <ComboBoxItem Tag="Система">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Система"/></StackPanel>
