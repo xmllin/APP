@@ -237,18 +237,18 @@ namespace WpfApp1.Services.WindowsSettings
                             UserDword2(@"Software\Microsoft\InputPersonalization", "RestrictImplicitTextCollection", disabled ? 1 : 0),
                             UserDword2(@"Software\Microsoft\InputPersonalization\TrainedDataStore", "HarvestContacts", disabled ? 0 : 1),
                             UserDword2(@"Control Panel\International\User Profile", "HttpAcceptLanguageOptOut", disabled ? 1 : 0)
-                        }, "Ðåêëàìà è ñèñòåìíûå ïðåäëîæåíèÿ ñîõðàíåíû.");
+                        }, "Реклама и системные предложения сохранены.");
                     case "DisableNewsAndInterests":
                         return ApplyRegistryGroup(new[]
                         {
                             MachineDword(@"SOFTWARE\Policies\Microsoft\Dsh", "AllowNewsAndInterests", disabled ? 0 : 1),
                             UserDword2(@"Software\Microsoft\Windows\CurrentVersion\Feeds", "ShellFeedsTaskbarViewMode", disabled ? 0 : 1)
-                        }, "Íîâîñòè è èíòåðåñû ñîõðàíåíû.");
+                        }, "Новости и интересы сохранены.");
                     case "HideMeetNowButton":
                         return ApplyRegistryGroup(new[]
                         {
                             UserDword2(@"Software\Microsoft\Windows\CurrentVersion\Policies\Explorer", "HideSCAMeetNow", disabled ? 1 : 0)
-                        }, "Êíîïêà Meet Now ñîõðàíåíà.");
+                        }, "Кнопка Meet Now сохранена.");
                     case "DisableActivityHistory":
                         return ApplyRegistryGroup(new[]
                         {
@@ -256,7 +256,7 @@ namespace WpfApp1.Services.WindowsSettings
                             MachineDword(Activity, "EnableActivityFeed", disabled ? 0 : 1),
                             MachineDword(Activity, "PublishUserActivitiesOnUserConsent", disabled ? 0 : 1),
                             MachineDword(Activity, "UploadUserActivities", disabled ? 0 : 1)
-                        }, "Èñòîðèÿ àêòèâíîñòè ñîõðàíåíà.");
+                        }, "История активности сохранена.");
                     case "DisableLocationAndSensors":
                         return ApplyRegistryGroup(new[]
                         {
@@ -270,7 +270,7 @@ namespace WpfApp1.Services.WindowsSettings
                             MachineDword(@"SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration", "Status", disabled ? 0 : 1),
                             MachineDword(@"Software\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting", "Value", disabled ? 0 : 1),
                             MachineDword(@"Software\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots", "Value", disabled ? 0 : 1)
-                        }, "Ãåîëîêàöèÿ è äàò÷èêè ñîõðàíåíû.");
+                        }, "Геолокация и датчики сохранены.");
                     case "DisableAutoLogger":
                         return ApplyAutologger(disabled);
                     case "DisableCortana":
@@ -284,7 +284,7 @@ namespace WpfApp1.Services.WindowsSettings
                             MachineDword(@"SOFTWARE\Policies\Microsoft\Windows\Windows Search", "ConnectedSearchUseWeb", disabled ? 0 : 1),
                             UserDword2(@"Software\Microsoft\Windows\CurrentVersion\Search", "CortanaConsent", disabled ? 0 : 1),
                             UserDword2(@"Software\Microsoft\Windows\CurrentVersion\Search", "CortanaConsent2", disabled ? 0 : 1)
-                        }, "Cortana è îáëà÷íûé ïîèñê ñîõðàíåíû.");
+                        }, "Cortana и облачный поиск сохранены.");
                     case "DisableCopilot":
                         if (!IsFeatureSupported(tag)) return SettingOperationResult.Fail("Настройка Copilot доступна только в Windows 11.");
                         return ApplyCopilot(disabled);
@@ -297,7 +297,7 @@ namespace WpfApp1.Services.WindowsSettings
                             UserDword2(ContentDeliveryPath, "SubscribedContent-338389Enabled", disabled ? 0 : 1),
                             UserDword2(ContentDeliveryPath, "SubscribedContent-353698Enabled", disabled ? 0 : 1),
                             UserDword2(ContentDeliveryPath, "SystemPaneSuggestionsEnabled", disabled ? 0 : 1)
-                        }, "Äîñòàâêó êîíòåíòà è ïðåäëîæåíèÿ ñîõðàíåíî.");
+                        }, "Доставка контента и предложения сохранены.");
                     case "DisableFindMyDevice":
                         return SetMachineDword2("DisableFindMyDevice", @"SOFTWARE\Policies\Microsoft\FindMyDevice", "AllowFindMyDevice", disabled ? 0 : 1);
                     case "DisableDeliveryOptimization":
@@ -405,7 +405,7 @@ namespace WpfApp1.Services.WindowsSettings
                     catch { }
                 }
 
-                return SettingOperationResult.Ok("Ïàðàìåòðû òåëåìåòðèè ñîõðàíåíû.", true);
+                return SettingOperationResult.Ok("Параметры телеметрии сохранены.");
             }
             catch (Exception ex)
             {
@@ -424,9 +424,9 @@ namespace WpfApp1.Services.WindowsSettings
                     }
                 }
 
-                var message = "Èçìåíåíèå ãðóïïû òåëåìåòðèè îòìåíåíî: " + ex.Message;
+                var message = "Изменение группы телеметрии отменено: " + ex.Message;
                 if (rollbackErrors.Count > 0)
-                    message += " Íå âñå èñõîäíûå çíà÷åíèÿ óäàëîñü âîññòàíîâèòü: " + string.Join("; ", rollbackErrors);
+                    message += " Не все исходные значения удалось восстановить: " + string.Join("; ", rollbackErrors);
                 return SettingOperationResult.Fail(message);
             }
         }
@@ -440,7 +440,7 @@ namespace WpfApp1.Services.WindowsSettings
                     MachineDword(@"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot", disabled ? 1 : 0),
                     UserDword2(@"Software\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot", disabled ? 1 : 0),
                     UserDword2(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowCopilotButton", disabled ? 0 : 1)
-                }, "Copilot ñîõðàí¸í.");
+                }, "Copilot сохранён.");
                 if (!policy.Success) return policy;
 
                 const string path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked";
@@ -452,7 +452,7 @@ namespace WpfApp1.Services.WindowsSettings
                 else if (!_backup.TryRestoreLocalMachine("Privacy_CopilotBlockedExtension", path, name))
                     _registry.DeleteLocalMachine(path, name);
 
-                return SettingOperationResult.Ok("Copilot ñîõðàí¸í.");
+                return SettingOperationResult.Ok("Copilot сохранён.");
             }
             catch (Exception ex)
             {
@@ -465,7 +465,7 @@ namespace WpfApp1.Services.WindowsSettings
             var changes = new System.Collections.Generic.List<RegistryChange>();
             foreach (var name in new[] { "AppModel", "Cellcore", "CloudExperienceHostOobe", "DataMarket", "DiagLog", "Diagtrack-Listener", "LwtNetLog", "SQMLogger", "WdiContextLog", "WiFiSession" })
                 changes.Add(MachineDword(@"SYSTEM\CurrentControlSet\Control\WMI\Autologger\" + name, "Start", disabled ? 0 : 1));
-            return ApplyRegistryGroup(changes.ToArray(), "WMI AutoLogger ñîõðàí¸í.");
+            return ApplyRegistryGroup(changes.ToArray(), "WMI AutoLogger сохранён.");
         }
 
         private SettingOperationResult ApplyRegistryGroup(RegistryChange[] changes, string message)
@@ -532,8 +532,8 @@ namespace WpfApp1.Services.WindowsSettings
                 _backup.BackupLocalMachineOnce("Privacy_" + backupName, path, name);
                 _registry.WriteLocalMachine(path, name, value, RegistryValueKind.DWord);
                 return MachineEquals(path, name, value)
-                    ? SettingOperationResult.Ok("Íàñòðîéêà ñîõðàíåíà.")
-                    : SettingOperationResult.Fail("Windows íå ñîõðàíèëà âûáðàííóþ íàñòðîéêó.");
+                    ? SettingOperationResult.Ok("Настройка сохранена.")
+                    : SettingOperationResult.Fail("Windows не сохранила выбранную настройку.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
