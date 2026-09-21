@@ -327,7 +327,7 @@ namespace WpfApp1.Services.WindowsSettings
                     if (key == null) return SettingOperationResult.Fail("Не удалось открыть параметры клавиатуры для экрана входа.");
                     key.SetValue("InitialKeyboardIndicators", value.ToString(), RegistryValueKind.String);
                 }
-                return SettingOperationResult.Ok("NumLock при загрузке сохранЈн.");
+                return SettingOperationResult.Ok("NumLock при загрузке сохранён.");
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
@@ -355,7 +355,7 @@ namespace WpfApp1.Services.WindowsSettings
             _backup.BackupLocalMachineOnce(backupName, path, name);
             _registry.WriteLocalMachine(path, name, value, RegistryValueKind.DWord);
             return Convert.ToInt32(_registry.ReadLocalMachine(path, name).Value ?? int.MinValue) == value
-                ? SettingOperationResult.Ok("Настройка сохранена.", true)
+                ? SettingOperationResult.Ok("Настройка сохранена.", restart)
                 : SettingOperationResult.Fail("Windows не сохранила выбранную настройку.");
         }
 
