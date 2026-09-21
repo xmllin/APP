@@ -53,6 +53,7 @@ namespace WpfApp1.Pages
 				case "TaskbarMultiMonitorMode": result = _taskbarSettings.SetMultiMonitorMode(combo.SelectedIndex); break;
 				case "TaskbarGlomLevel": result = _taskbarSettings.SetGroupingMode(combo.SelectedIndex); break;
 				case "TaskbarMultiMonitorGlomLevel": result = _taskbarSettings.SetMultiMonitorGroupingMode(combo.SelectedIndex); break;
+				case "SearchBoxTaskbarMode": result = _taskbarSettings.SetSearchBoxTaskbarMode(combo.SelectedIndex); break;
 				default: return;
 			}
 
@@ -70,6 +71,9 @@ namespace WpfApp1.Pages
 			var state = _taskbarSettings.ReadState();
 			switch (tag)
 			{
+				case "TaskbarWidgets": return state.Widgets == enabled;
+				case "TaskbarTaskViewButton": return state.TaskViewButton == enabled;
+				case "TaskbarLastActiveClick": return state.LastActiveClick == enabled;
 				case "TaskbarAutoHide": return state.AutoHide == enabled;
 				case "TaskbarBadges": return state.Badges == enabled;
 				case "TaskbarFlashing": return state.Flashing == enabled;
@@ -82,7 +86,10 @@ namespace WpfApp1.Pages
 
 		private static bool IsTaskbarLiveReloadTag(string tag)
 		{
-			return tag == "TaskbarAutoHide"
+			return tag == "TaskbarWidgets"
+				|| tag == "TaskbarTaskViewButton"
+				|| tag == "TaskbarLastActiveClick"
+				|| tag == "TaskbarAutoHide"
 				|| tag == "TaskbarBadges"
 				|| tag == "TaskbarFlashing"
 				|| tag == "TaskbarMultiMonitor"
