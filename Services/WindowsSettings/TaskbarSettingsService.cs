@@ -218,7 +218,7 @@ namespace WpfApp1.Services.WindowsSettings
                     _backup.BackupCurrentUserOnce(backupName + "_Secondary", path, secondaryName);
                     _registry.WriteCurrentUser(path, secondaryName, value.ToString(), RegistryValueKind.String);
                 }
-                var state = ReadIntString(path, primaryName, -1, secondaryName);
+                var state = ReadIntWithFallback(path, primaryName, -1, secondaryName);
                 return state == value
                     ? SettingOperationResult.Ok("Настройка панели задач сохранена.", restart)
                     : SettingOperationResult.Fail("Windows не сохранила выбранное значение панели задач.");
