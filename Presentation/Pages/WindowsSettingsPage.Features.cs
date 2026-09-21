@@ -297,7 +297,8 @@ namespace WpfApp1.Pages
 				var operation = await ApplyWindowsFeatureSettingAsync(tag, disabled);
 				if (!operation.Success) throw new InvalidOperationException(operation.Error);
 				UpdateWindowsFeatureLabel(tag, disabled);
-				if (operation.RequiresRestart) ShowToast(operation.Message + " Требуется перезапуск для полного применения.");
+				if (operation.RequiresRestart && !string.Equals(tag, "UacNeverNotify", StringComparison.Ordinal))
+					ShowToast(operation.Message + " Требуется перезапуск для полного применения.");
 				if (IsTaskbarLiveReloadTag(tag) && !VerifyTaskbarToggleState(tag, disabled))
 					throw new InvalidOperationException("Windows не сохранила выбранное состояние панели задач.");
 				if (!IsTaskbarLiveReloadTag(tag)) RefreshExplorer();
