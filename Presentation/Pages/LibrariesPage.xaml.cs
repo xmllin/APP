@@ -320,7 +320,10 @@ namespace WpfApp1.Pages
                 else
                     await _installation.UninstallAsync(item.Definition, CancellationToken.None);
 
-                var detected = _detection.Detect(item.Definition);
+                var detected = item.IsWindowsFeature
+                    ? _detection.Detect(item.Definition)
+                    : await DetectAfterUninstallAsync(item.Definition);
+
                 item.Status = detected.Status;
                 item.InstalledVersion = detected.InstalledVersion;
                 item.IsSelected = false;
@@ -350,6 +353,24 @@ namespace WpfApp1.Pages
                 InstallStatusText.Text = "Ошибка удаления: " + ex.Message;
                 AppDialog.ShowInfo(Window.GetWindow(this), item.Definition.Name, ex.Message);
             }
+        }
+
+        private async Task<LibraryItem> DetectAfterUninstallAsync(LibraryDefinition definition)
+        {
+            LibraryItem detected = null;
+
+            // Деинсталляторы иногда завершают основной процесс раньше,
+            // чем запись Uninstall исчезает из реестра.
+            for (var attempt = 0; attempt < 20; attempt++)
+            {
+                detected = _detection.Detect(definition);
+                if (detected.Status != LibraryInstallStatus.Installed)
+                    return detected;
+
+                await Task.Delay(250);
+            }
+
+            return detected ?? _detection.Detect(definition);
         }
 
         private async void InstallSelected_Click(object sender, RoutedEventArgs e)
