@@ -140,7 +140,13 @@ namespace WpfApp1.Pages
 		private static void WriteDword(string path, string name, int value)
 		{
 			using (var key = Registry.CurrentUser.CreateSubKey(path))
-				key?.SetValue(name, value, RegistryValueKind.DWord);
+			{
+				if (key == null)
+					throw new InvalidOperationException("Не удалось открыть раздел реестра HKCU: " + path);
+				key.SetValue(name, value, RegistryValueKind.DWord);
+				if (Convert.ToInt32(key.GetValue(name, null)) != value)
+					throw new InvalidOperationException("Не удалось проверить запись реестра " + name + ".");
+			}
 		}
 
 		private static int ReadUserDword(string path, string name, int fallback)
@@ -197,7 +203,14 @@ namespace WpfApp1.Pages
 		private static void WriteMachineString(string path, string name, string value)
 		{
 			using (var key = Registry.LocalMachine.CreateSubKey(path))
-				key?.SetValue(name, value, RegistryValueKind.String);
+			{
+				if (key == null)
+					throw new InvalidOperationException("Не удалось открыть раздел реестра HKLM: " + path);
+				key.SetValue(name, value, RegistryValueKind.String);
+				var written = key.GetValue(name, null) as string;
+				if (!string.Equals(written, value, StringComparison.Ordinal))
+					throw new InvalidOperationException("Не удалось проверить запись реестра " + name + ".");
+			}
 		}
 
 		private static int ReadMachineDword(string path, string name, int fallback)
@@ -212,7 +225,13 @@ namespace WpfApp1.Pages
 		private static void WriteMachineDword(string path, string name, int value)
 		{
 			using (var key = Registry.LocalMachine.CreateSubKey(path))
-				key?.SetValue(name, value, RegistryValueKind.DWord);
+			{
+				if (key == null)
+					throw new InvalidOperationException("Не удалось открыть раздел реестра HKLM: " + path);
+				key.SetValue(name, value, RegistryValueKind.DWord);
+				if (Convert.ToInt32(key.GetValue(name, null)) != value)
+					throw new InvalidOperationException("Не удалось проверить запись реестра " + name + ".");
+			}
 		}
 
 		private static void SetShortcutSuffix(bool removeSuffix)
