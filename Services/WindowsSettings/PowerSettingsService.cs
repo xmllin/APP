@@ -128,7 +128,7 @@ namespace WpfApp1.Services.WindowsSettings
                         "Get-CimInstance -Namespace root\\wmi -ClassName MSPower_DeviceEnable -ErrorAction SilentlyContinue | " +
                         "Where-Object { $_.InstanceName -match 'USB\\\\ROOT' } | " +
                         "Select-Object InstanceName, Enable | ConvertTo-Json -Compress",
-                        token);
+                        token, false);
 
                     if (string.IsNullOrWhiteSpace(query.StandardOutput))
                         return SettingOperationResult.Ok("USB-энергосбережение не изменено: подходящие устройства не найдены.");
@@ -139,7 +139,7 @@ namespace WpfApp1.Services.WindowsSettings
                         "$devices = Get-CimInstance -Namespace root\\wmi -ClassName MSPower_DeviceEnable -ErrorAction SilentlyContinue | " +
                         "Where-Object { $_.InstanceName -match 'USB\\\\ROOT' }; " +
                         "foreach ($d in $devices) { if ($d.Enable -ne $false) { Set-CimInstance -CimInstance $d -Property @{ Enable = $false } | Out-Null } }",
-                        token);
+                        token, true);
 
                     if (apply.ExitCode != 0)
                         return SettingOperationResult.Fail(string.IsNullOrWhiteSpace(apply.StandardError) ? "Не удалось отключить энергосбережение USB." : apply.StandardError.Trim());
@@ -157,7 +157,7 @@ namespace WpfApp1.Services.WindowsSettings
                     "$states = $saved | ConvertFrom-Json; if ($states -isnot [array]) { $states = @($states) }; " +
                     "$devices = Get-CimInstance -Namespace root\\wmi -ClassName MSPower_DeviceEnable -ErrorAction SilentlyContinue | Where-Object { $_.InstanceName -match 'USB\\\\ROOT' }; " +
                     "foreach ($d in $devices) { $s = $states | Where-Object { $_.InstanceName -eq $d.InstanceName } | Select-Object -First 1; if ($null -ne $s) { Set-CimInstance -CimInstance $d -Property @{ Enable = [bool]$s.Enable } | Out-Null } }";
-                var restore = await RunPowerShellAsync(restoreScript, token);
+                var restore = await RunPowerShellAsync(restoreScript, token, true);
                 if (restore.ExitCode != 0)
                     return SettingOperationResult.Fail(string.IsNullOrWhiteSpace(restore.StandardError) ? "Не удалось восстановить энергосбережение USB." : restore.StandardError.Trim());
 
@@ -167,13 +167,14 @@ namespace WpfApp1.Services.WindowsSettings
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
 
-        private async Task<ProcessResult> RunPowerShellAsync(string command, CancellationToken token)
+        private async Task<ProcessResult> RunPowerShellAsync(string command, CancellationToken token, bool administrator)
         {
             var encoded = Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes(command));
-            return await _processes.RunElevatedAsync(
+            return await _processes.RunAsync(
                 "powershell.exe",
                 "-NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand " + encoded,
                 token,
+                administrator,
                 120).ConfigureAwait(false);
         }
 
