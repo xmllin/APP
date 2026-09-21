@@ -86,13 +86,36 @@ namespace WpfApp1.Services.WindowsSettings
 
         public SettingOperationResult SetSmartScreenDisabled(bool disabled)
         {
+            const string explorerPath = @"Software\Microsoft\Windows\CurrentVersion\Explorer";
+            const string machineName = "EnableSmartScreen";
+            const string userName = "SmartScreenEnabled";
             try
             {
-                BackupMachine(SystemPolicyPath, "EnableSmartScreen");
-                _backup.BackupCurrentUserOnce("Security_SmartScreenEnabled", @"Software\Microsoft\Windows\CurrentVersion\Explorer", "SmartScreenEnabled");
-                WriteMachine(SystemPolicyPath, "EnableSmartScreen", disabled ? 0 : 1);
-                _registry.WriteCurrentUser(@"Software\Microsoft\Windows\CurrentVersion\Explorer", "SmartScreenEnabled", disabled ? "Off" : "Warn", RegistryValueKind.String);
-                return SettingOperationResult.Ok("SmartScreen сохранён.", true);
+                BackupMachine(SystemPolicyPath, machineName);
+                _backup.BackupCurrentUserOnce("Security_SmartScreenEnabled", explorerPath, userName);
+
+                var machineSnapshot = _registry.ReadLocalMachine(SystemPolicyPath, machineName).Clone();
+                var userSnapshot = _registry.ReadCurrentUser(explorerPath, userName).Clone();
+
+                try
+                {
+                    WriteMachine(SystemPolicyPath, machineName, disabled ? 0 : 1);
+                    _registry.WriteCurrentUser(explorerPath, userName, disabled ? "Off" : "Warn", RegistryValueKind.String);
+
+                    var machineValue = ReadMachineInt(SystemPolicyPath, machineName, disabled ? 0 : 1);
+                    var userValue = _registry.ReadCurrentUser(explorerPath, userName).Value as string;
+                    if (machineValue != (disabled ? 0 : 1) ||
+                        !string.Equals(userValue, disabled ? "Off" : "Warn", StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidOperationException("Windows не сохранила настройку SmartScreen.");
+
+                    return SettingOperationResult.Ok("SmartScreen сохранён.", true);
+                }
+                catch
+                {
+                    RestoreSnapshot(machineSnapshot, true, SystemPolicyPath, machineName);
+                    RestoreSnapshot(userSnapshot, false, explorerPath, userName);
+                    throw;
+                }
             }
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
