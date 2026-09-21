@@ -34,11 +34,7 @@ namespace WpfApp1.Pages
 			if (RequiresAdministratorAccess(tag) && !IsAdministrator())
 			{
 				e.Handled = true;
-				if (tag != "AutoGameModeEnabled")
-				{
-					MessageBox.Show("Для изменения системных настроек сначала нажмите «Перезапустить от администратора».", "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
-				}
-
+				MessageBox.Show("Для изменения системных настроек сначала нажмите «Перезапустить от администратора».", "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
 		}
 
@@ -72,9 +68,8 @@ namespace WpfApp1.Pages
 
 		private static bool IsGameModeEnabled()
 		{
-			// Windows 11 exposes Game Mode under HKCU\Software\Microsoft\GameBar.
-			// Do not mirror a machine-level value here: the Windows Settings toggle is user-scoped.
-			return ReadDword(@"Software\Microsoft\GameBar", "AutoGameModeEnabled", 0) == 1;
+			return ReadDword(@"Software\Microsoft\GameBar", "AllowAutoGameMode", 1) == 1
+				&& ReadDword(@"Software\Microsoft\GameBar", "AutoGameModeEnabled", 1) == 1;
 		}
 
 		private void ApplyAdminToggleState(ToggleButton toggle)
@@ -120,7 +115,6 @@ namespace WpfApp1.Pages
 				|| tag == "DisableSettings365Ads"
 				|| tag == "HardwareGpuScheduling"
 				|| tag == "PowerShellScripts"
-				|| tag == "AutoGameModeEnabled"
 				|| tag == "UacNeverNotify"
 				|| tag == "Gallery"
 				|| tag.StartsWith("Disable", StringComparison.Ordinal) && !IsUserSettingTag(tag)
@@ -507,8 +501,11 @@ namespace WpfApp1.Pages
 					SetWindowsAdsDisabled(disabled);
 					return SettingOperationResult.Ok("Рекламные предложения Windows сохранены.");
 				case "AutoGameModeEnabled":
+					WriteDword(@"Software\Microsoft\GameBar", "AllowAutoGameMode", disabled ? 1 : 0);
 					WriteDword(@"Software\Microsoft\GameBar", "AutoGameModeEnabled", disabled ? 1 : 0);
-					return SettingOperationResult.Ok("Игровой режим сохранён.");
+					return IsGameModeEnabled() == disabled
+						? SettingOperationResult.Ok("Игровой режим сохранён.")
+						: SettingOperationResult.Fail("Windows не сохранила состояние игрового режима.");
 				case "UacNeverNotify":
 					return _securitySettings.SetUacNeverNotify(disabled);
 				case "DisablePageFile":
