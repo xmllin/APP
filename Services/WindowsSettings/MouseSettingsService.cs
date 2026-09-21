@@ -163,9 +163,9 @@ namespace WpfApp1.Services.WindowsSettings
 
             return new[]
             {
-                ReadRegistryInt(MousePath, "MouseSpeed", 1),
                 ReadRegistryInt(MousePath, "MouseThreshold1", 6),
-                ReadRegistryInt(MousePath, "MouseThreshold2", 10)
+                ReadRegistryInt(MousePath, "MouseThreshold2", 10),
+                ReadRegistryInt(MousePath, "MouseSpeed", 1)
             };
         }
 
