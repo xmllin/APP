@@ -507,7 +507,7 @@ namespace WpfApp1.Services.WindowsSettings
                 {
                     try { RestoreSnapshot(changes[i]); } catch { }
                 }
-                return SettingOperationResult.Fail(message + " Îøèáêà: " + ex.Message);
+                return SettingOperationResult.Fail(message + " Ошибка: " + ex.Message);
             }
         }
 
