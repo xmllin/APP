@@ -14,6 +14,10 @@ namespace WpfApp1.Services.WindowsSettings
         public bool ShareWindow { get; set; }
         public bool ShowDesktop { get; set; }
         public bool EndTask { get; set; }
+        public bool Widgets { get; set; }
+        public bool TaskViewButton { get; set; }
+        public bool LastActiveClick { get; set; }
+        public int SearchBoxTaskbarMode { get; set; }
         public int Alignment { get; set; }
         public int MultiMonitorMode { get; set; }
         public int GroupingMode { get; set; }
@@ -55,6 +59,10 @@ namespace WpfApp1.Services.WindowsSettings
                 ShareWindow = ReadBool(SharePath, "SystemSettings_DesktopTaskbar_Sn", null, true),
                 ShowDesktop = ReadBool(ShowDesktopPath, "SystemSettings_DesktopTaskbar_Sd", null, true),
                 EndTask = Convert.ToInt32(_registry.ReadCurrentUser(DeveloperPath, "TaskbarEndTask").Value ?? 0) == 1,
+                Widgets = ReadBool(Advanced, "TaskbarDa", null, true),
+                TaskViewButton = ReadBool(Advanced, "ShowTaskViewButton", null, true),
+                LastActiveClick = ReadBool(Advanced, "LastActiveClick", null, false),
+                SearchBoxTaskbarMode = ReadIntString(@"Software\\Microsoft\\Windows\\CurrentVersion\\Search", "SearchboxTaskbarMode", 3),
                 Alignment = ReadIntString(AlignmentPath, "SystemSettings_DesktopTaskbar_Al", 1),
                 MultiMonitorMode = ReadIntString(MultiMonitorModePath, "SystemSettings_Taskbar_MultiMonTaskbarMode", 0, "SystemSettings_DesktopTaskbar_MultiMonTaskbarMode"),
                 GroupingMode = ReadIntString(GlomPath, "SystemSettings_DesktopTaskbar_GroupingMode", 0),
@@ -144,6 +152,31 @@ namespace WpfApp1.Services.WindowsSettings
         public SettingOperationResult SetShowDesktop(bool enabled)
         {
             return SetBool("TaskbarShowDesktop", ShowDesktopPath, new[] { "SystemSettings_DesktopTaskbar_Sd" }, enabled);
+        }
+
+        public SettingOperationResult SetWidgets(bool enabled)
+        {
+            return SetBool("TaskbarWidgets", Advanced, new[] { "TaskbarDa" }, enabled);
+        }
+
+        public SettingOperationResult SetTaskViewButton(bool enabled)
+        {
+            return SetBool("TaskbarTaskViewButton", Advanced, new[] { "ShowTaskViewButton" }, enabled);
+        }
+
+        public SettingOperationResult SetLastActiveClick(bool enabled)
+        {
+            return SetBool("TaskbarLastActiveClick", Advanced, new[] { "LastActiveClick" }, enabled);
+        }
+
+        public SettingOperationResult SetSearchBoxTaskbarMode(int value)
+        {
+            return WriteStringSetting(
+                "TaskbarSearchBoxMode",
+                @"Software\\Microsoft\\Windows\\CurrentVersion\\Search",
+                "SearchboxTaskbarMode",
+                Math.Clamp(value, 0, Environment.OSVersion.Version.Build >= 22000 ? 3 : 2),
+                true);
         }
 
         public SettingOperationResult SetEndTask(bool enabled)
