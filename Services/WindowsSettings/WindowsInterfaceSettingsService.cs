@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using Microsoft.Win32;
 using WpfApp1.Domain.WindowsSettings;
 using WpfApp1.Infrastructure.Registry;
@@ -66,10 +67,7 @@ namespace WpfApp1.Services.WindowsSettings
                         && ReadOptionalUserDword(GameConfigPath, "GameDVR_HistoricalCaptureEnabled", 1) == 1
                         && ReadMachineDword(@"SOFTWARE\Policies\Microsoft\Windows\GameDVR", "AllowGameDVR", 1) != 0;
                 case "FullscreenOptimizations":
-                    return ReadDword(GameConfigPath, "GameDVR_DXGIHonorFSEWindowsCompatible", 0) == 0
-                        && ReadDword(GameConfigPath, "GameDVR_FSEBehavior", 0) == 0
-                        && ReadDword(GameConfigPath, "GameDVR_FSEBehaviorMode", 0) == 0
-                        && ReadDword(GameConfigPath, "GameDVR_HonorUserFSEBehaviorMode", 0) == 0;
+                    return IsFullscreenWindowedGamesOptimizationEnabled();
 
                         case "NumLockOnBoot":
                     return ReadDefaultUserDword("InitialKeyboardIndicators", 0) == 2
@@ -135,7 +133,7 @@ namespace WpfApp1.Services.WindowsSettings
                             if (!r.Success) return r;
                             return SetDefaultUserKeyboardIndicators(enabled ? 2 : 0);
                         }
-                    case "DeveloperMode": return SetMachineDword("DeveloperMode", AppModelUnlock, "AllowDevelopmentWithoutDevLicense", enabled ? 1 : 0);
+                    case "DeveloperMode": return SetMachineDword("DeveloperMode", AppModelUnlock, "AllowDevelopmentWithoutDevLicense", enabled ? 1 : 0, false);
                     case "LongPathsEnabled": return SetMachineDword("LongPathsEnabled", FileSystemPath, "LongPathsEnabled", enabled ? 1 : 0);
 
                     case "SpeedUpExplorerAndMenus":
@@ -219,15 +217,55 @@ namespace WpfApp1.Services.WindowsSettings
 
         private SettingOperationResult ApplyFullscreenOptimizations(bool enabled)
         {
-            var values = enabled
-                ? new[] { ("GameDVR_DXGIHonorFSEWindowsCompatible", 0), ("GameDVR_FSEBehavior", 0), ("GameDVR_FSEBehaviorMode", 0), ("GameDVR_HonorUserFSEBehaviorMode", 0) }
-                : new[] { ("GameDVR_DXGIHonorFSEWindowsCompatible", 1), ("GameDVR_FSEBehavior", 2), ("GameDVR_FSEBehaviorMode", 2), ("GameDVR_HonorUserFSEBehaviorMode", 1) };
-            foreach (var item in values)
+            try
             {
-                var r = SetUserDword("Fullscreen_" + item.Item1, GameConfigPath, item.Item1, item.Item2);
-                if (!r.Success) return r;
+                _backup.BackupCurrentUserOnce("FullscreenWindowedGames", DirectXUserGpuPreferences, DirectXGlobalSettings);
+                var current = ReadUserString(DirectXUserGpuPreferences, DirectXGlobalSettings, string.Empty);
+                var updated = SetSemicolonSetting(current, "SwapEffectUpgradeEnable", enabled ? "1" : "0");
+                _registry.WriteCurrentUser(DirectXUserGpuPreferences, DirectXGlobalSettings, updated, RegistryValueKind.String);
+
+                return IsFullscreenWindowedGamesOptimizationEnabled() == enabled
+                    ? SettingOperationResult.Ok("Настройка «Оптимизация для игр в оконном режиме» сохранена.")
+                    : SettingOperationResult.Fail("Windows не сохранила настройку «Оптимизация для игр в оконном режиме».");
             }
-            return SettingOperationResult.Ok("Íàñòðîéêà ïîëíîýêðàííîé îïòèìèçàöèè ñîõðàíåíà.", true);
+            catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
+        }
+
+        private bool IsFullscreenWindowedGamesOptimizationEnabled()
+        {
+            var current = ReadUserString(DirectXUserGpuPreferences, DirectXGlobalSettings, string.Empty);
+            foreach (var part in (current ?? string.Empty).Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var pair = part.Split(new[] { '=' }, 2);
+                if (pair.Length != 2 || !string.Equals(pair[0].Trim(), "SwapEffectUpgradeEnable", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                return string.Equals(pair[1].Trim(), "1", StringComparison.Ordinal);
+            }
+            return false;
+        }
+
+        private static string SetSemicolonSetting(string current, string name, string value)
+        {
+            var parts = new List<string>();
+            var found = false;
+            foreach (var part in (current ?? string.Empty).Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var pair = part.Split(new[] { '=' }, 2);
+                if (pair.Length == 2 && string.Equals(pair[0].Trim(), name, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!found) parts.Add(name + "=" + value);
+                    found = true;
+                }
+                else
+                {
+                    var trimmed = part.Trim();
+                    if (!string.IsNullOrWhiteSpace(trimmed))
+                        parts.Add(trimmed);
+                }
+            }
+
+            if (!found) parts.Add(name + "=" + value);
+            return string.Join(";", parts) + ";";
         }
 
         private SettingOperationResult SetShortcutArrow(bool visible)
@@ -312,7 +350,7 @@ namespace WpfApp1.Services.WindowsSettings
                 : SettingOperationResult.Fail("Windows íå ñîõðàíèëà âûáðàííîå çíà÷åíèå.");
         }
 
-        private SettingOperationResult SetMachineDword(string backupName, string path, string name, int value)
+        private SettingOperationResult SetMachineDword(string backupName, string path, string name, int value, bool restart = true)
         {
             _backup.BackupLocalMachineOnce(backupName, path, name);
             _registry.WriteLocalMachine(path, name, value, RegistryValueKind.DWord);
