@@ -1012,6 +1012,7 @@ namespace WpfApp1.Pages
 				|| tag == "ClipboardHistory"
 				|| tag == "WindowShake"
 				|| tag == "GameBar"
+				|| tag == "AutoGameModeEnabled"
 				|| tag == "FullscreenOptimizations"
 				|| tag == "SpeedUpExplorerAndMenus"
 				|| tag == "DisableStartMenuWebSearch"
