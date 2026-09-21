@@ -31,7 +31,7 @@ namespace WpfApp1.Services
             var lower = name.ToLowerInvariant();
             var folder = lower.Contains("cache") ? "Cache"
                 : lower.Contains("log") ? "Logs"
-                : lower.Contains("history") || lower.Contains("download") && lower.Contains("history") ? "Downloads"
+                : lower.Contains("history") ? "Downloads"
                 : lower.Contains("setting") ? "Settings"
                 : lower.Contains("wallpaper") ? "Wallpapers"
                 : lower.Contains("diagnostic") ? "Diagnostics"
@@ -62,9 +62,12 @@ namespace WpfApp1.Services
                         Path.GetFullPath(Root).TrimEnd(Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase))
                     return;
 
-                foreach (var source in Directory.EnumerateFiles(LegacyRoot, "*", SearchOption.TopDirectoryOnly))
+                foreach (var source in Directory.EnumerateFiles(LegacyRoot, "*", SearchOption.AllDirectories))
                 {
-                    var destination = File(Path.GetFileName(source));
+                    var relative = Path.GetRelativePath(LegacyRoot, source);
+                    var destination = relative.IndexOf(Path.DirectorySeparatorChar) >= 0 || relative.IndexOf(Path.AltDirectorySeparatorChar) >= 0
+                        ? Path.Combine(Root, relative)
+                        : File(Path.GetFileName(source));
                     if (System.IO.File.Exists(destination))
                         continue;
                     var destinationDir = Path.GetDirectoryName(destination);
