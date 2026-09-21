@@ -189,9 +189,7 @@ namespace WpfApp1.Services.Libraries
             }
             else
             {
-                var separator = command.IndexOf(' ');
-                fileName = separator < 0 ? command : command.Substring(0, separator);
-                arguments = separator < 0 ? string.Empty : command.Substring(separator + 1).Trim();
+                SplitExecutableAndArguments(command, out fileName, out arguments);
             }
 
             if (Path.GetFileNameWithoutExtension(fileName).Equals("msiexec", StringComparison.OrdinalIgnoreCase))
@@ -205,6 +203,39 @@ namespace WpfApp1.Services.Libraries
                 Verb = "runas",
                 WorkingDirectory = Path.GetDirectoryName(fileName) ?? Environment.GetFolderPath(Environment.SpecialFolder.System)
             };
+        }
+
+        private static void SplitExecutableAndArguments(string command, out string fileName, out string arguments)
+        {
+            fileName = command.Trim();
+            arguments = string.Empty;
+
+            foreach (var extension in new[] { ".exe", ".com", ".bat", ".cmd" })
+            {
+                var searchStart = 0;
+                while (searchStart < command.Length)
+                {
+                    var index = command.IndexOf(extension, searchStart, StringComparison.OrdinalIgnoreCase);
+                    if (index < 0) break;
+
+                    var end = index + extension.Length;
+                    if (end == command.Length || char.IsWhiteSpace(command[end]))
+                    {
+                        fileName = command.Substring(0, end).Trim().Trim('"');
+                        arguments = end < command.Length ? command.Substring(end).Trim() : string.Empty;
+                        return;
+                    }
+
+                    searchStart = end;
+                }
+            }
+
+            var separator = command.IndexOf(' ');
+            if (separator >= 0)
+            {
+                fileName = command.Substring(0, separator);
+                arguments = command.Substring(separator + 1).Trim();
+            }
         }
 
         private static string NormalizeMsiUninstallArguments(string arguments)
@@ -232,9 +263,7 @@ namespace WpfApp1.Services.Libraries
             }
             else
             {
-                var separator = normalized.IndexOf(' ');
-                fileName = separator < 0 ? normalized : normalized.Substring(0, separator);
-                arguments = separator < 0 ? string.Empty : normalized.Substring(separator + 1).Trim();
+                SplitExecutableAndArguments(normalized, out fileName, out arguments);
             }
 
             if (Path.GetFileNameWithoutExtension(fileName).Equals("msiexec", StringComparison.OrdinalIgnoreCase))
