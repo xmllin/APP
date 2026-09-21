@@ -507,7 +507,7 @@ namespace WpfApp1.Pages
 					SetWindowsAdsDisabled(disabled);
 					return SettingOperationResult.Ok("Рекламные предложения Windows сохранены.");
 				case "AutoGameModeEnabled":
-					WriteDword(@"SoftwareMicrosoftGameBar", "AutoGameModeEnabled", disabled ? 1 : 0);
+					WriteDword(@"Software\Microsoft\GameBar", "AutoGameModeEnabled", disabled ? 1 : 0);
 					return SettingOperationResult.Ok("Игровой режим сохранён.");
 				case "UacNeverNotify":
 					return _securitySettings.SetUacNeverNotify(disabled);
@@ -530,9 +530,9 @@ namespace WpfApp1.Pages
 
 		private static bool AreStickyKeysDisabled()
 		{
-			return ReadUserString(AccessibilityStickyKeysPath, "Flags", "26") == "26"
-				&& ReadUserString(AccessibilityKeyboardResponsePath, "Flags", "2") == "2"
-				&& ReadUserString(AccessibilityToggleKeysPath, "Flags", "34") == "34";
+			return ReadUserString(AccessibilityStickyKeysPath, "Flags", string.Empty) == "26"
+				&& ReadUserString(AccessibilityKeyboardResponsePath, "Flags", string.Empty) == "2"
+				&& ReadUserString(AccessibilityToggleKeysPath, "Flags", string.Empty) == "34";
 		}
 
 		private static void SetStickyKeysDisabled(bool disabled)
