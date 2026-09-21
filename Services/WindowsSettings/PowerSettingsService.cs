@@ -111,6 +111,23 @@ namespace WpfApp1.Services.WindowsSettings
             catch (Exception ex) { return SettingOperationResult.Fail(ex.Message); }
         }
 
+        public async Task<bool> IsUsbPowerSavingDisabledAsync(CancellationToken token)
+        {
+            try
+            {
+                var result = await RunPowerShellAsync(
+                    "$devices = @(Get-CimInstance -Namespace root\\wmi -ClassName MSPower_DeviceEnable -ErrorAction SilentlyContinue | Where-Object { $_.InstanceName -match 'USB\\\\ROOT' }); " +
+                    "if ($devices.Count -eq 0) { 'NONE' } elseif (@($devices | Where-Object { $_.Enable -ne $false }).Count -eq 0) { '1' } else { '0' }",
+                    token,
+                    false).ConfigureAwait(false);
+                return string.Equals((result.StandardOutput ?? string.Empty).Trim(), "1", StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public async Task<SettingOperationResult> SetUsbPowerSavingDisabledAsync(bool disabled, CancellationToken token)
         {
             const string statePath = "usb-power-states.json";
