@@ -982,6 +982,30 @@ namespace WpfApp1.Pages
 			foreach (var toggle in GetAllToggleButtons())
 			{
 				var tag = toggle.Tag as string;
+
+				if (tag == "GameBar" && !_gameBarAvailable)
+				{
+					toggle.IsEnabled = false;
+					toggle.IsHitTestVisible = false;
+					toggle.Opacity = 0.5;
+					toggle.Cursor = Cursors.Arrow;
+					SetAdditionalStatusLabel("GameBar", "Недоступно: Xbox Game Bar не установлен", false);
+					continue;
+				}
+
+				if ((tag == "DisableCortana" || tag == "DisableCopilot") && !_privacySettings.IsFeatureSupported(tag))
+				{
+					toggle.IsEnabled = false;
+					toggle.IsHitTestVisible = false;
+					toggle.Opacity = 0.5;
+					toggle.Cursor = Cursors.Arrow;
+					SetAdditionalStatusLabel(
+						tag,
+						tag == "DisableCortana" ? "Недоступно: только Windows 10" : "Недоступно: только Windows 11",
+						false);
+					continue;
+				}
+
 				if (!RequiresAdministratorAccess(tag)) continue;
 				var allowed = isAdmin && !(tag == "PowerShellScripts" && _powerShellScriptsBusy);
 				toggle.IsEnabled = allowed;
