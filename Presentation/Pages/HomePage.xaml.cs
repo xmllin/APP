@@ -122,12 +122,6 @@ namespace WpfApp1.Pages
             }
         }
 
-        private static string NormalizeLogoKey(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value)) return string.Empty;
-            return new string(value.Where(char.IsLetterOrDigit).ToArray()).ToLowerInvariant();
-        }
-
         private List<string> GetRecentAppNames()
         {
             try
