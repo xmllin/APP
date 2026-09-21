@@ -174,6 +174,8 @@ namespace WpfApp1.Pages
 				CreateAdditionalToggleRow(_windowsAdsToggle, "Рекомендации и предложения Windows", "Отключение встроенных рекомендаций Windows"),
 				CreateAdditionalToggleRow(CreateGameModeToggle(), "Игровой режим", "Автоматически оптимизировать Windows для игр"),
 				CreateHagsRow(),
+				CreateAdditionalToggleRow(CreateManagedToggle("DisableUSBPowerSaving"), "Отключить энергосбережение USB", "Запретить перевод USB-устройств в режим энергосбережения"),
+				CreateAdditionalToggleRow(CreateManagedToggle("DisableSystemThrottling"), "Отключить системное дросселирование", "Отключить Power Throttling и восстановление после USB power drain"),
 				CreateAdditionalToggleRow(CreateManagedToggle("GameBar"), "Xbox Game Bar", "Разрешить игровой оверлей Xbox Game Bar"),
 				CreateAdditionalToggleRow(CreateManagedToggle("BackgroundRecording"), "Фоновая запись (DVR)", "Разрешить запись игр и захват в фоне"),
 				CreateAdditionalToggleRow(CreateManagedToggle("FullscreenOptimizations"), "Полноэкранная оптимизация", "Использовать полноэкранные оптимизации Windows"),
