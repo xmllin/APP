@@ -215,7 +215,6 @@ namespace WpfApp1.Pages
 			{
 				"DisableTelemetry",
 				"DisableAppDiagnostics",
-				"DisableActivity",
 				"DisablePerformance",
 				"DisableKeystrokes",
 				"DisableVoiceData",
