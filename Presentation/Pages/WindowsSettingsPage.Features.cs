@@ -762,7 +762,7 @@ namespace WpfApp1.Pages
 				return;
 			}
 
-			using (var backup = Registry.LocalMachine.OpenSubKey(MachineSettingsBackupPath + "\PageFile"))
+			using (var backup = Registry.LocalMachine.OpenSubKey(MachineSettingsBackupPath + "\\PageFile"))
 			{
 				var original = backup?.GetValue("PagingFiles") as string[];
 				if (original != null && original.Length > 0)
