@@ -365,7 +365,7 @@
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/Restore_down.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Windows Update"/></StackPanel>
                     </ComboBoxItem>
                     <ComboBoxItem Tag="Конфиденциальность">
-                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-shield.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Конфиденциальность"/></StackPanel>
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-shield.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Безопасность и конфиденциальность"/></StackPanel>
                     </ComboBoxItem>
                     <ComboBoxItem Tag="Дополнительные настройки">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Доп. настройки"/></StackPanel>
@@ -760,7 +760,7 @@
                         <StackPanel>
                             <Border Style="{StaticResource CategoryHeader}">
                                 <StackPanel>
-                                    <TextBlock Text="Конфиденциальность" FontSize="24" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Безопасность и конфиденциальность" FontSize="24" FontWeight="SemiBold"/>
                                     <TextBlock Text="Для некоторых настроек требуются права администратора" Foreground="#FFD34E" FontSize="11" Margin="0,3,0,0"/>
                                 </StackPanel>
                             </Border>
