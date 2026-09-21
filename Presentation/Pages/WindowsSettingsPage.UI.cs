@@ -811,16 +811,13 @@ namespace WpfApp1.Pages
 				SetManagedToggleState("ShowControlPanel");
 				SetManagedToggleState("ShowDesktopIcons");
 				SetManagedToggleState("ShortcutArrow");
-				SetManagedToggleState("ToastNotifications");
 				SetManagedToggleState("ClassicContextMenu");
 				SetManagedToggleState("ExplorerItemCheckboxes");
 				SetManagedToggleState("ExplorerSyncNotifications");
 				SetManagedToggleState("SystemSuggestions");
 				SetManagedToggleState("ExplorerCompactMode");
 				SetManagedToggleState("SnapAssistFlyout");
-				SetManagedToggleState("WindowShake");
 				SetManagedToggleState("GameBar");
-				SetManagedToggleState("BackgroundRecording");
 				SetManagedToggleState("FullscreenOptimizations");
 				SetManagedToggleState("DeveloperMode");
 				SetManagedToggleState("LongPathsEnabled");
@@ -832,11 +829,8 @@ namespace WpfApp1.Pages
 				SetManagedToggleState("DisablePreinstalledApps");
 				SetManagedToggleState("DisableErrorReporting");
 				SetManagedToggleState("DisableAdvertisingAndSuggestions");
-				SetManagedToggleState("DisableNewsAndInterests");
 				SetManagedToggleState("DisableActivityHistory");
-				SetManagedToggleState("HideMeetNowButton");
 				SetManagedToggleState("DisableLocationAndSensors");
-				SetManagedToggleState("DisableAutoLogger");
 				SetManagedToggleState("DisableCortana");
 				SetManagedToggleState("DisableCopilot");
 				SetManagedToggleState("DisableContentDeliveryManager");
