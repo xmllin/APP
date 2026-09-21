@@ -40,7 +40,7 @@ namespace WpfApp1.Services.WindowsSettings
                 case "ShowNetworkIcon": return ReadDword(DesktopIconsPath, "{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}", 1) == 0;
                 case "ShowControlPanel": return ReadDword(DesktopIconsPath, "{5399E694-6CE5-4D6C-8FCE-1D8870FDCBA0}", 1) == 0;
                 case "ShowDesktopIcons": return ReadDword(ExplorerAdvanced, "HideIcons", 0) == 0;
-                case "ShortcutArrow": return IsShortcutArrowVisible();
+                case "ShortcutArrow": return !IsShortcutArrowVisible();
                 case "ToastNotifications": return ReadDword(ToastPath, "ToastEnabled", 1) != 0;
                 case "ClassicContextMenu": return IsClassicContextMenuEnabled();
 
@@ -65,9 +65,9 @@ namespace WpfApp1.Services.WindowsSettings
                         && ReadDword(GameConfigPath, "GameDVR_FSEBehaviorMode", 0) == 0
                         && ReadDword(GameConfigPath, "GameDVR_HonorUserFSEBehaviorMode", 0) == 0;
 
-                case "NumLockOnBoot":
-                    return ReadDwordKeyboard(RegistryHive.LocalMachine, KeyboardPath, "InitialKeyboardIndicators", 0) == 2
-                        || ReadUserDword(KeyboardPath, "InitialKeyboardIndicators", 0) == 2;
+                        case "NumLockOnBoot":
+                    return ReadDefaultUserDword("InitialKeyboardIndicators", 0) == 2
+                        && ReadUserDword(KeyboardPath, "InitialKeyboardIndicators", 0) == 2;
                 case "DeveloperMode": return ReadMachineDword(AppModelUnlock, "AllowDevelopmentWithoutDevLicense", 0) == 1;
                 case "LongPathsEnabled": return ReadMachineDword(FileSystemPath, "LongPathsEnabled", 0) == 1;
 
@@ -100,7 +100,7 @@ namespace WpfApp1.Services.WindowsSettings
                     case "ShowNetworkIcon": return SetUserDword("ShowNetworkIcon", DesktopIconsPath, "{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}", enabled ? 0 : 1);
                     case "ShowControlPanel": return SetUserDword("ShowControlPanel", DesktopIconsPath, "{5399E694-6CE5-4D6C-8FCE-1D8870FDCBA0}", enabled ? 0 : 1);
                     case "ShowDesktopIcons": return SetUserDword("ShowDesktopIcons", ExplorerAdvanced, "HideIcons", enabled ? 0 : 1);
-                    case "ShortcutArrow": return SetShortcutArrow(enabled);
+                    case "ShortcutArrow": return SetShortcutArrow(!enabled);
                     case "ToastNotifications":
                         {
                             var r = SetUserDword("ToastNotifications", ToastPath, "ToastEnabled", enabled ? 1 : 0);
@@ -295,8 +295,15 @@ namespace WpfApp1.Services.WindowsSettings
         private int ReadUserDword(string path, string name, int fallback) =>
             ConvertToInt(_registry.ReadCurrentUser(path, name).Value, fallback);
 
-        private int ReadDwordKeyboard(RegistryHive hive, string path, string name, int fallback) =>
-            ConvertToInt(_registry.ReadLocalMachine(path, name).Value, fallback);
+        private int ReadDefaultUserDword(string name, int fallback)
+        {
+            try
+            {
+                using (var key = Registry.Users.OpenSubKey(@".DEFAULT\Control Panel\Keyboard"))
+                    return ConvertToInt(key?.GetValue(name), fallback);
+            }
+            catch { return fallback; }
+        }
 
         private int ReadUserString(string path, string name, string fallback)
         {
