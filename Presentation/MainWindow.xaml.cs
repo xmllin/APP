@@ -247,7 +247,6 @@ namespace WpfApp1
             LoadDownloadCache();
             ApplyWindowChrome(false);
             StateChanged += (_, __) => UpdateMaximizeButton();
-            Activated += (_, __) => Keyboard.ClearFocus();
             PreviewKeyDown += MainWindow_PreviewKeyDown;
             UpdateMaximizeButton();
             VersionText.Text = "Версия " + (typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "1.0.0");
@@ -261,12 +260,6 @@ namespace WpfApp1
             ConfigureNavigation();
             GetOrCreatePage("wallpapers");
             Navigate("home");
-            Activated += MainWindow_Activated;
-        }
-
-        private void MainWindow_Activated(object sender, EventArgs e)
-        {
-            Dispatcher.BeginInvoke(new Action(() => RootContentGrid.Focus()), DispatcherPriority.Input);
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
