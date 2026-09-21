@@ -25,6 +25,7 @@ namespace WpfApp1.Services.WindowsSettings
         public void SetHomeVisibility(bool visible)
         {
             _backup.BackupCurrentUserOnce("ExplorerHomeVisibility", HomeKey, "System.IsPinnedToNameSpaceTree");
+            _backup.BackupCurrentUserOnce("ExplorerHomeGraphFolder", HomeKey, "");
             _registry.WriteCurrentUser(HomeKey, "System.IsPinnedToNameSpaceTree", visible ? 1 : 0, RegistryValueKind.DWord);
             _registry.WriteCurrentUser(HomeKey, "", "CLSID_MSGraphHomeFolder", RegistryValueKind.String);
         }
