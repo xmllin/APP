@@ -55,7 +55,7 @@ namespace WpfApp1.Pages
 			try
 			{
 				await _windowsUpdate.ClearCacheAsync(CancellationToken.None);
-				MessageBox.Show("Кэш Windows Update очищен.", "Windows Update", MessageBoxButton.OK, MessageBoxImage.Information);
+				ShowToast("Кэш Windows Update очищен.");
 			}
 			catch (Exception exception) { MessageBox.Show("Не удалось очистить кэш Windows Update: " + exception.Message, "Windows Update", MessageBoxButton.OK, MessageBoxImage.Warning); }
 		}
