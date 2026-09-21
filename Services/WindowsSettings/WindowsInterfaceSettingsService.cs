@@ -150,8 +150,8 @@ namespace WpfApp1.Services.WindowsSettings
 
                                 if (!restoredDelay)
                                 {
-                                    var a = SetUserDword("SpeedUpExplorerFallback", serializePath, "StartupDelayInMSec", 2000);
-                                    if (!a.Success) return a;
+                                    var fallbackExplorer = SetUserDword("SpeedUpExplorerFallback", serializePath, "StartupDelayInMSec", 2000);
+                                    if (!fallbackExplorer.Success) return fallbackExplorer;
                                 }
 
                                 if (!restoredMenu)
@@ -165,8 +165,8 @@ namespace WpfApp1.Services.WindowsSettings
                                     : SettingOperationResult.Ok("Исходные задержки Проводника и меню восстановлены.");
                             }
 
-                            var a = SetUserDword("SpeedUpExplorer", serializePath, "StartupDelayInMSec", 0);
-                            if (!a.Success) return a;
+                            var explorerWrite = SetUserDword("SpeedUpExplorer", serializePath, "StartupDelayInMSec", 0);
+                            if (!explorerWrite.Success) return explorerWrite;
                             return SetUserString("SpeedUpMenus", desktopPath, "MenuShowDelay", "0");
                         }
                     case "DisableStartMenuWebSearch": return SetUserDword("DisableStartMenuWebSearch", SearchPolicy, "DisableSearchBoxSuggestions", enabled ? 1 : 0);
