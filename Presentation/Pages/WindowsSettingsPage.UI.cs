@@ -758,6 +758,7 @@ namespace WpfApp1.Pages
 				SetManagedToggleState("DisableErrorReporting");
 				SetManagedToggleState("DisableAdvertisingAndSuggestions");
 				SetManagedToggleState("DisableNewsAndInterests");
+				SetManagedToggleState("DisableActivityHistory");
 				SetManagedToggleState("HideMeetNowButton");
 				SetManagedToggleState("DisableLocationAndSensors");
 				SetManagedToggleState("DisableAutoLogger");
