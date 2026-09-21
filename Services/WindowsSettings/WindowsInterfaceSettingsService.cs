@@ -199,9 +199,10 @@ namespace WpfApp1.Services.WindowsSettings
             if (!r.Success) return r;
             r = SetUserDword("GameBarStartupPanel", GameBarPath, "ShowStartupPanel", enabled ? 1 : 0);
             if (!r.Success) return r;
-            return SetUserDword("GameBarNexus", GameBarPath, "UseNexusForGameBarEnabled", enabled ? 1 : 0);
+            r = SetUserDword("GameBarNexus", GameBarPath, "UseNexusForGameBarEnabled", enabled ? 1 : 0);
+            if (!r.Success) return r;
+            return SetUserDword("GameBarStartupTip", GameBarPath, "GamePanelStartupTipIndex", enabled ? 3 : 0);
         }
-
         private SettingOperationResult ApplyBackgroundRecording(bool enabled)
         {
             var value = enabled ? 1 : 0;
