@@ -64,12 +64,6 @@ namespace WpfApp1.Infrastructure.WindowsApis
 
                 throw new InvalidOperationException("explorer.exe не появился после перезапуска.");
             }
-            catch (Exception) when (Process.GetProcessesByName("explorer").Length > 0)
-            {
-                // Если Explorer уже поднялся, не превращаем долгий вспомогательный
-                // этап в ложную ошибку для пользователя.
-                return;
-            }
         }
     }
 }
