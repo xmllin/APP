@@ -139,7 +139,9 @@ namespace WpfApp1.Pages
 		private Border _systemSettingsPanel;
 		private Border _securityBehaviorPanel;
 		private readonly LibraryInstallationService _libraryInstallation = new LibraryInstallationService();
+		private readonly UwpPackageService _uwpPackageService = new UwpPackageService();
 		private readonly RegistrySettingsStore _registryStore = new RegistrySettingsStore();
+		private bool _gameBarAvailable = true;
 		private readonly SettingBackupService _settingBackup;
 		private readonly TaskbarSettingsService _taskbarSettings;
 		private readonly MouseSettingsService _mouseSettings;
