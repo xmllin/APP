@@ -1,0 +1,116 @@
+using System;
+using System.IO;
+using System.Linq;
+using Microsoft.Win32;
+using WpfApp1.Models;
+using WpfApp1.Services.Downloads;
+
+namespace WpfApp1.Services.Libraries
+{
+    public sealed class LibraryDetectionService
+    {
+        public LibraryItem Detect(LibraryDefinition definition)
+        {
+            if (definition == null) return null;
+
+            string installedVersion = null;
+            var installed = false;
+            var detectionType = (definition.DetectionType ?? string.Empty).ToLowerInvariant();
+
+            try
+            {
+                if (string.Equals(definition.InstallationType, "windowsFeature", StringComparison.OrdinalIgnoreCase))
+                {
+                    installed = IsNetFx3Enabled(out installedVersion);
+                }
+                else if (detectionType == "manual")
+                {
+                    var candidates = BuildDetectionCandidates(definition);
+                    foreach (var candidate in candidates)
+                    {
+                        installedVersion = FindUninstallEntry(candidate, out installed);
+                        if (installed) break;
+                    }
+                }
+                else if (detectionType == "registrydisplayname")
+                {
+                    installedVersion = FindUninstallEntry(definition.DetectionValue, out installed);
+                }
+                else if (detectionType == "registrykey")
+                {
+                    installed = RegistryKeyExists(definition.DetectionValue);
+                }
+                else if (detectionType == "file")
+                {
+                    installed = File.Exists(Environment.ExpandEnvironmentVariables(definition.DetectionValue ?? string.Empty));
+                }
+            }
+            catch
+            {
+                installed = false;
+            }
+
+            var status = installed ? LibraryInstallStatus.Installed : LibraryInstallStatus.Missing;
+            return new LibraryItem(definition, status, installedVersion);
+        }
+
+        private static bool IsNetFx3Enabled(out string installedVersion)
+        {
+            installedVersion = null;
+            using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5"))
+            {
+                if (key == null || Convert.ToInt32(key.GetValue("Install", 0)) != 1) return false;
+                installedVersion = key.GetValue("Version") as string ?? "3.5";
+                return true;
+            }
+        }
+
+        private static string[] BuildDetectionCandidates(LibraryDefinition definition)
+        {
+            var names = new[]
+            {
+                definition.DetectionValue,
+                definition.Name,
+                definition.Name?.Replace("Microsoft Visual C++ ", "Microsoft Visual C++ Redistributable "),
+                definition.Name?.Replace("Microsoft Visual C++ ", "Microsoft Visual C++ Redistributable " + (definition.Version ?? string.Empty) + " ")
+            };
+
+            return names.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+        }
+
+        private static string FindUninstallEntry(string displayName, out bool found)
+        {
+            found = false;
+            if (string.IsNullOrWhiteSpace(displayName)) return null;
+            foreach (var root in new[] { RegistryView.Registry64, RegistryView.Registry32 })
+            {
+                using (var baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, root))
+                using (var key = baseKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"))
+                {
+                    if (key == null) continue;
+                    foreach (var name in key.GetSubKeyNames())
+                    {
+                        using (var item = key.OpenSubKey(name))
+                        {
+                            var current = item?.GetValue("DisplayName") as string;
+                            if (string.IsNullOrWhiteSpace(current) || current.IndexOf(displayName, StringComparison.OrdinalIgnoreCase) < 0) continue;
+                            found = true;
+                            return item.GetValue("DisplayVersion") as string;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        private static bool RegistryKeyExists(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return false;
+            var separator = value.LastIndexOf('\\');
+            var path = separator > 0 ? value.Substring(0, separator) : value;
+            var valueName = separator > 0 ? value.Substring(separator + 1) : null;
+            using (var key = Registry.LocalMachine.OpenSubKey(path))
+                return key != null && (string.IsNullOrWhiteSpace(valueName) || key.GetValue(valueName) != null);
+        }
+    }
+}

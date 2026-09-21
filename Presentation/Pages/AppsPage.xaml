@@ -1,0 +1,297 @@
+<UserControl x:Class="WpfApp1.Pages.AppsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:WpfApp1.Services"
+    Background="Transparent" UseLayoutRounding="True" SnapsToDevicePixels="True">
+    <UserControl.Resources>
+        <local:AppIconConverter x:Key="AppIconConverter"/>
+        <local:CategoryColorConverter x:Key="CategoryColorConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Style x:Key="AppSelectCheckBox" TargetType="CheckBox">
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Border x:Name="checkBorder" Background="#10243A" BorderBrush="#31516E" BorderThickness="1" CornerRadius="8">
+                            <Image x:Name="checkMark" Source="{local:SvgImage Source=interface/white/category-check.svg}" Width="19" Height="19" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="checkBorder" Property="Background" Value="#183A5D"/>
+                                <Setter TargetName="checkBorder" Property="BorderBrush" Value="#4D99F5"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="checkBorder" Property="Background" Value="#1468D8"/>
+                                <Setter TargetName="checkBorder" Property="BorderBrush" Value="#5AA4FF"/>
+                                <Setter TargetName="checkMark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="AppCard" TargetType="Border" BasedOn="{StaticResource Card}">
+            <Setter Property="BorderBrush" Value="#000000"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#132B47"/>
+                    <Setter Property="BorderBrush" Value="#000000"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="Selected">
+                    <Setter Property="Background" Value="#132B47"/>
+                    <Setter Property="BorderBrush" Value="#5FD381"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="Tag" Value="Selected"/>
+                        <Condition Property="IsMouseOver" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="#132B47"/>
+                    <Setter Property="BorderBrush" Value="#5FD381"/>
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="CategoryButton" TargetType="Button">
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="Background" Value="#0B2035"/>
+            <Setter Property="BorderBrush" Value="#1D3B5A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="categoryBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="categoryBorder" Property="BorderBrush" Value="#367FCE"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="categoryBorder" Property="BorderBrush" Value="#5AA4FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SelectedCategoryButton" TargetType="Button" BasedOn="{StaticResource CategoryButton}">
+            <Setter Property="Background" Value="#0B2035"/>
+            <Setter Property="BorderBrush" Value="#5FD381"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+        </Style>
+        <Style x:Key="LibraryLikeComboBox" TargetType="ComboBox">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Background" Value="#0F2035"/>
+            <Setter Property="Foreground" Value="#F1F6FF"/>
+            <Setter Property="BorderBrush" Value="#24415F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="ComboBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6">
+                                <Grid>
+                                    <ContentPresenter Margin="10,0,28,0" HorizontalAlignment="Left" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" VerticalAlignment="Center"/>
+                                    <ToggleButton HorizontalAlignment="Stretch" Background="Transparent" BorderThickness="0" Cursor="Hand" IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press">
+                                        <ToggleButton.Template>
+                                            <ControlTemplate TargetType="ToggleButton"><Border Background="Transparent"><ContentPresenter/></Border></ControlTemplate>
+                                        </ToggleButton.Template>
+                                    </ToggleButton>
+                                    <Path Data="M 0 0 L 5 5 L 10 0" Stroke="#D8E7FF" StrokeThickness="1.5" Width="12" Height="8" Stretch="None" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,11,0" IsHitTestVisible="False"/>
+                                </Grid>
+                            </Border>
+                            <Popup x:Name="PART_Popup" AllowsTransparency="True" Focusable="False"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom"
+                                   PlacementTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                   PopupAnimation="Fade" StaysOpen="False">
+                                <Border MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                        MaxHeight="260" Background="#0F2035" BorderBrush="#367FCE"
+                                        BorderThickness="1" CornerRadius="8" Padding="2">
+                                    <ScrollViewer x:Name="CategoryScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                                                  CanContentScroll="False">
+                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ComboBorder" Property="Background" Value="#173250"/><Setter TargetName="ComboBorder" Property="BorderBrush" Value="#367FCE"/></Trigger>
+                            <Trigger Property="IsDropDownOpen" Value="True"><Setter TargetName="ComboBorder" Property="Background" Value="#173250"/><Setter TargetName="ComboBorder" Property="BorderBrush" Value="#4D99F5"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="LibraryLikeComboBoxItem" TargetType="ComboBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Foreground" Value="#F1F6FF"/>
+            <Setter Property="Background" Value="#10233A"/>
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="ItemBorder" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"><ContentPresenter HorizontalAlignment="Left"/></Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#173F67"/><Setter Property="Foreground" Value="#FFFFFF"/></Trigger>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#173250"/><Setter Property="Foreground" Value="#FFFFFF"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="36,28,36,42">
+                <Border Height="150" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="28" Margin="0,0,0,12">
+                    <Border.Background>
+                        <ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/>
+                    </Border.Background>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="82" Height="82" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Программы для Windows" FontSize="30" FontWeight="SemiBold"/>
+                            <TextBlock Text="Каталог программ с единым интерфейсом загрузки и официальными источниками." Foreground="#B9CAE2" FontSize="15" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <ComboBox x:Name="CategoryComboBox"
+                          Width="260"
+                          Height="38"
+                          HorizontalAlignment="Left"
+                          Margin="0"
+                          SelectionChanged="CategoryComboBox_SelectionChanged"
+                          Style="{StaticResource LibraryLikeComboBox}"
+                          ItemContainerStyle="{StaticResource LibraryLikeComboBoxItem}"/>
+
+                <Border x:Name="SystemHardwarePanel" Visibility="Collapsed" Background="#0B2035" BorderBrush="#1D3B5A" BorderThickness="1" CornerRadius="10" Padding="13,10" Margin="4,0,4,14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Width="28" Height="28" CornerRadius="8" Background="#475BB0" VerticalAlignment="Top">
+                            <Image Source="{local:SvgImage Source=interface/white/icons8-motherboard-50.svg}" Width="17" Height="17"/>
+                        </Border>
+
+                        <StackPanel Grid.Column="1" Margin="10,0,16,0" VerticalAlignment="Center">
+                            <TextBlock Text="Оборудование этого ПК" FontSize="12" FontWeight="SemiBold" Foreground="White"/>
+                            <TextBlock x:Name="SystemHardwareText" Margin="0,4,0,0" TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" FontSize="12" LineHeight="18"/>
+                        </StackPanel>
+
+                        <Button x:Name="RecommendedButton"
+                                Grid.Column="2"
+                                Content="Рекомендуемые"
+                                Click="Recommended_Click"
+                                Cursor="Hand"
+                                Style="{StaticResource GhostButton}"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Visibility="Collapsed"/>
+                    </Grid>
+                </Border>
+
+                <Grid Margin="0,0,0,12" Height="44">
+                    <TextBlock x:Name="CountText" FontSize="21" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Button x:Name="TopPreviousPageButton" Click="PreviousPage_Click" Style="{StaticResource PaginationButton}">
+                            <Image Source="{local:SvgImage Source=interface/white/back.svg}" Width="15" Height="15"/>
+                        </Button>
+                        <TextBlock x:Name="TopPageText" Text="1 / 1" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Margin="14,0"/>
+                        <Button x:Name="TopNextPageButton" Click="NextPage_Click" Style="{StaticResource PaginationButton}">
+                            <Image Source="{local:SvgImage Source=interface/white/next.svg}" Width="15" Height="15"/>
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <TextBlock x:Name="LoadingText" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Margin="0,0,16,0"/>
+                        <Button x:Name="DownloadSelectedButton" Content="Скачать выбранные" Click="DownloadSelected_Click" Cursor="Hand" Style="{StaticResource PrimaryButton}" Visibility="Hidden"/>
+                        <Button x:Name="CancelSelectButton" Content="Отмена" Click="CancelSelect_Click" Style="{StaticResource GhostButton}" Visibility="Hidden" Margin="8,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+
+                <ItemsControl x:Name="AppsItems" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" ItemWidth="300" ItemHeight="210"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="290" Height="200" Margin="5" Padding="16" Style="{StaticResource AppCard}" ClipToBounds="True" PreviewMouseLeftButtonDown="AppCard_PreviewMouseLeftButtonDown" MouseEnter="AppCard_MouseEnter" MouseLeave="AppCard_MouseLeave">
+                                <Grid>
+                                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Source="{Binding Icon, Converter={StaticResource AppIconConverter}}" Width="37" Height="37" Stretch="Uniform" VerticalAlignment="Center"/>
+                                        <Grid Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" ClipToBounds="True">
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                                <Grid Grid.Column="0" x:Name="AppNameViewport" ClipToBounds="True" SizeChanged="AppNameViewport_SizeChanged" PreviewMouseWheel="AppNameViewport_PreviewMouseWheel">
+                                                    <TextBlock x:Name="AppNameText" Text="{Binding Name}" FontSize="17" FontWeight="SemiBold" TextWrapping="NoWrap" HorizontalAlignment="Left" VerticalAlignment="Center" Loaded="AppNameText_Loaded">
+                                                        <TextBlock.RenderTransform><TranslateTransform/></TextBlock.RenderTransform>
+                                                    </TextBlock>
+                                                </Grid>
+                                                <Image Grid.Column="1" Width="22" Height="22" Margin="6,0,0,0" Stretch="Uniform" Visibility="{Binding IsBlockedInRussia, Converter={StaticResource BooleanToVisibilityConverter}}" Source="{local:SvgImage Source=interface/white/exclamation-circle_red.svg}" local:DelayedToolTipBehavior.IsEnabled="True">
+                                                    <Image.ToolTip>
+                                                        <ToolTip Content="Для скачивания может потребоваться VPN" Background="#0D1B2E" Foreground="#F1F6FF" BorderBrush="#24415F" BorderThickness="1" Padding="10,6" FontFamily="Segoe UI" FontSize="12"/>
+                                                    </Image.ToolTip>
+                                                </Image>
+                                                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,3,0,0">
+                                                    <TextBlock Text="{Binding Category}" Foreground="{Binding Category, Converter={StaticResource CategoryColorConverter}}" FontSize="12" FontWeight="SemiBold"/>
+                                                    <Border Background="#8C5A1A" BorderBrush="#B97B27" BorderThickness="1" CornerRadius="5" Padding="4,1" Margin="6,0,0,0" VerticalAlignment="Center" Visibility="{Binding ShowVpnBadge, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                        <TextBlock Text="VPN" Foreground="White" FontSize="8" FontWeight="Bold"/>
+                                                    </Border>
+                                                </StackPanel>
+                                        </Grid>
+                                        <Border Grid.Column="2" Grid.Row="1" Background="#1A8F61" CornerRadius="6" Padding="7,3" Margin="8,5,0,0" VerticalAlignment="Top" Visibility="{Binding IsRecommended, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <TextBlock Text="Рекомендуемое" FontSize="10" FontWeight="SemiBold" Foreground="White"/>
+                                        </Border>
+                                        <CheckBox x:Name="SelectCheckBox" Grid.Column="2" Tag="{Binding}" Checked="AppCheckBox_Checked" Unchecked="AppCheckBox_Unchecked" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Style="{StaticResource AppSelectCheckBox}"/>
+                                    </Grid>
+                                    <StackPanel Grid.Row="1" Margin="0,13,0,10">
+                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" MaxHeight="52"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Tag="{Binding}" Click="Download_Click" Loaded="DownloadButton_Loaded" Cursor="Hand" Width="120" HorizontalContentAlignment="Center" Style="{StaticResource PrimaryButton}" Margin="0,0,8,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="Скачать"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button Tag="{Binding}" Click="Details_Click" Cursor="Hand" Width="120" HorizontalContentAlignment="Center" Focusable="False" IsTabStop="False" Style="{StaticResource GhostButton}">
+                                            <TextBlock Text="Подробнее"/>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <StackPanel x:Name="BottomPaginationPanel" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,18,0,0">
+                    <Button x:Name="PreviousPageButton" Click="PreviousPage_Click" Style="{StaticResource PaginationButton}">
+                        <Image Source="{local:SvgImage Source=interface/white/back.svg}" Width="16" Height="16"/>
+                    </Button>
+                    <TextBlock x:Name="PageText" Text="1 / 1" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Margin="14,0"/>
+                    <Button x:Name="NextPageButton" Click="NextPage_Click" Style="{StaticResource PaginationButton}">
+                        <Image Source="{local:SvgImage Source=interface/white/next.svg}" Width="16" Height="16"/>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

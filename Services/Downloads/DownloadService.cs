@@ -1,0 +1,217 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using WpfApp1.Models;
+using WpfApp1.Pages;
+using WpfApp1.Infrastructure.HTTP;
+
+namespace WpfApp1.Services.Downloads
+{
+    public class DownloadService
+    {
+        private static readonly HttpDownloadClient HttpDownloads = new HttpDownloadClient();
+        private readonly Dictionary<string, IDownloadProvider> _providers;
+
+        public DownloadService()
+        {
+            _providers = new Dictionary<string, IDownloadProvider>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "Direct", new DirectDownloadProvider() },
+                { "Official", new OfficialDownloadProvider() },
+                { "Website", new OfficialPageDownloadProvider() },
+                { "GitHub", new GitHubDownloadProvider() },
+                { "Chromium", new ChromiumDownloadProvider() }
+            };
+        }
+
+        public async Task<DownloadInfo> ResolveAsync(AppDefinition app, CancellationToken token)
+        {
+            if (app == null || app.Download == null)
+                throw new InvalidOperationException("Для приложения не настроен источник загрузки.");
+
+            ValidateWindowsCompatibility(app.Download);
+            if (!_providers.TryGetValue(app.Download.Type ?? string.Empty, out var provider))
+                throw new InvalidOperationException("Неизвестный тип загрузки: " + app.Download.Type);
+
+            try
+            {
+                return await provider.ResolveAsync(app, token);
+            }
+            catch (Exception ex)
+            {
+                DownloadLog.Error("Не удалось определить источник загрузки для " + app.Name + ".", ex);
+                throw;
+            }
+        }
+
+        private static void ValidateWindowsCompatibility(DownloadDefinition definition)
+        {
+            if (definition == null) return;
+            var platform = PlatformDetectionService.Current;
+            if (!platform.IsWindows)
+                throw new InvalidOperationException("Эта загрузка предназначена для Windows.");
+            if (definition.MinimumWindowsBuild.HasValue && platform.WindowsBuild > 0 &&
+                platform.WindowsBuild < definition.MinimumWindowsBuild.Value)
+                throw new InvalidOperationException("Эта версия программы требует более новую версию Windows.");
+            if (definition.MaximumWindowsBuild.HasValue && platform.WindowsBuild > 0 &&
+                platform.WindowsBuild > definition.MaximumWindowsBuild.Value)
+                throw new InvalidOperationException("Эта версия программы не поддерживает текущую сборку Windows.");
+        }
+
+        public async Task<string> DownloadAsync(AppDefinition app, IProgress<DownloadProgress> progress, CancellationToken token, PauseController pauseController = null)
+        {
+            var info = await ResolveAsync(app, token);
+            return await DownloadResolvedAsync(app, info, progress, token, pauseController);
+        }
+
+        public async Task<string> DownloadAsync(AppDefinition app, DownloadInfo info, IProgress<DownloadProgress> progress, CancellationToken token, PauseController pauseController = null)
+        {
+            if (app == null || info == null || string.IsNullOrWhiteSpace(info.Url))
+                throw new InvalidOperationException("Не выбран файл загрузки.");
+            return await DownloadResolvedAsync(app, info, progress, token, pauseController);
+        }
+
+        private static async Task<string> DownloadResolvedAsync(
+            AppDefinition app, DownloadInfo info, IProgress<DownloadProgress> progress, CancellationToken token, PauseController pauseController)
+        {
+            var targetDir = DownloadSettings.GetFolder();
+            Directory.CreateDirectory(targetDir);
+
+            if (!HasRealExtension(info.FileName))
+            {
+                try
+                {
+                    var metadata = new DownloadMetadataService();
+                    var remoteName = await metadata.GetFileNameAsync(info.Url, token);
+                    if (!string.IsNullOrWhiteSpace(remoteName)) info.FileName = remoteName;
+                }
+                catch (OperationCanceledException) { throw; }
+                catch { }
+            }
+
+            var safeName = SanitizeFileName(info.FileName);
+            var target = GetUniquePath(Path.Combine(targetDir, safeName));
+            var partial = target + ".part";
+            var partialMeta = partial + ".json";
+            var existingLength = PreparePartialFile(partial, partialMeta, info.Url);
+
+            try
+            {
+                await HttpDownloads.DownloadResumableAsync(info.Url, partial, partialMeta, existingLength, info, app.Download, progress, token, pauseController);
+                await FileValidator.ValidateAsync(partial, app.Download, token);
+                File.Move(partial, target, true);
+                TryDeleteFile(partialMeta);
+                AddHistory(app, target, info.Source ?? app.Download.Type);
+                return target;
+            }
+            catch (TaskCanceledException ex) when (!token.IsCancellationRequested)
+            {
+                throw new TimeoutException("Время ожидания загрузки истекло.", ex);
+            }
+            catch (OperationCanceledException)
+            {
+                // A user cancellation should leave no half-downloaded installer behind.
+                TryDeleteFile(partial);
+                TryDeleteFile(partialMeta);
+                TryDeleteFile(target);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                DownloadLog.Error("Ошибка загрузки файла для " + app.Name + ".", ex);
+                throw;
+            }
+        }
+
+        private static long PreparePartialFile(string partial, string metadataPath, string url)
+        {
+            try
+            {
+                if (!File.Exists(partial))
+                {
+                    TryDeleteFile(metadataPath);
+                    return 0;
+                }
+                var storedUrl = File.Exists(metadataPath) ? File.ReadAllText(metadataPath) : string.Empty;
+                if (!string.Equals(storedUrl, url, StringComparison.OrdinalIgnoreCase))
+                {
+                    TryDeleteFile(partial);
+                    TryDeleteFile(metadataPath);
+                    return 0;
+                }
+                return new FileInfo(partial).Length;
+            }
+            catch
+            {
+                TryDeleteFile(partial);
+                TryDeleteFile(metadataPath);
+                return 0;
+            }
+        }
+
+        private static bool HasRealExtension(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return false;
+            var ext = Path.GetExtension(value);
+            return !string.IsNullOrWhiteSpace(ext) && ext.Length > 1;
+        }
+
+        private static void AddHistory(AppDefinition app, string path, string source)
+        {
+            var fileInfo = new FileInfo(path);
+            DownloadHistoryService.Add(new DownloadRecord
+            {
+                Name = app.Name,
+                FileName = fileInfo.Name,
+                FullPath = path,
+                Source = source,
+                Status = "Завершено",
+                SizeText = FormatSize(fileInfo.Length),
+                DownloadedAt = DateTime.Now
+            });
+
+            if (MainWindow.Current != null && MainWindow.Current.MainContent.Content is DownloadsPage page)
+                page.RefreshHistory();
+        }
+
+        private static string FormatSize(long bytes)
+        {
+            const double kb = 1024d;
+            const double mb = kb * 1024d;
+            const double gb = mb * 1024d;
+            if (bytes >= gb) return string.Format("{0:0.0} ГБ", bytes / gb);
+            if (bytes >= mb) return string.Format("{0:0.0} МБ", bytes / mb);
+            if (bytes >= kb) return string.Format("{0:0.0} КБ", bytes / kb);
+            return string.Format("{0} Б", bytes);
+        }
+
+        private static string GetUniquePath(string path)
+        {
+            if (!File.Exists(path)) return path;
+            var dir = Path.GetDirectoryName(path);
+            var name = Path.GetFileNameWithoutExtension(path);
+            var ext = Path.GetExtension(path);
+            var i = 2;
+            while (File.Exists(Path.Combine(dir, name + " (" + i + ")" + ext))) i++;
+            return Path.Combine(dir, name + " (" + i + ")" + ext);
+        }
+
+        private static string SanitizeFileName(string name)
+        {
+            name = name ?? string.Empty;
+            foreach (var c in Path.GetInvalidFileNameChars()) name = name.Replace(c, '_');
+            return string.IsNullOrWhiteSpace(name) ? "download" : name;
+        }
+
+        private static void TryDeleteFile(string path)
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(path) && File.Exists(path)) File.Delete(path);
+            }
+            catch { }
+        }
+    }
+}

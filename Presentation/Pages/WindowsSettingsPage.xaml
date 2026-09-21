@@ -1,0 +1,843 @@
+<UserControl x:Class="WpfApp1.Pages.WindowsSettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:WpfApp1.Services"
+    Background="Transparent">
+    <UserControl.Resources>
+        <Style x:Key="ExplorerToggleButton" TargetType="ToggleButton">
+            <Setter Property="Width" Value="44"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="#FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="WindowsFeatureToggle_PreviewMouseLeftButtonDown"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid>
+                            <Border x:Name="ToggleTrack" Background="Transparent" BorderBrush="#FFFFFF" BorderThickness="1" CornerRadius="13">
+                                <Ellipse x:Name="ToggleThumb" Width="18" Height="18" Fill="#FFFFFF" HorizontalAlignment="Left" Margin="3,0,0,0">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="ThumbTransform" X="0"/>
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="ToggleTrack" Property="Background" Value="#58AEFF"/>
+                                <Setter TargetName="ToggleTrack" Property="BorderBrush" Value="#FFFFFF"/>
+                                <Setter TargetName="ToggleThumb" Property="Fill" Value="#FFFFFF"/>
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ThumbTransform" Storyboard.TargetProperty="X" To="20" Duration="0:0:0.18"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ThumbTransform" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.18"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ToggleTrack" Property="Background" Value="#173A65"/>
+                                <Setter TargetName="ToggleTrack" Property="BorderBrush" Value="#FFFFFF"/>
+                                <Setter TargetName="ToggleTrack" Property="BorderThickness" Value="1.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CategoryButton" TargetType="Button">
+            <Setter Property="Height" Value="46"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#D6E6FA"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="CategoryBorder" Background="{TemplateBinding Background}" CornerRadius="9">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Tag" Value="Selected">
+                                <Setter TargetName="CategoryBorder" Property="Background" Value="#1877F2"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="CategoryBorder" Property="Background" Value="#173A65"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SettingRow" TargetType="Border">
+            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="Margin" Value="0,1,0,0"/>
+            <Setter Property="BorderBrush" Value="#1C3A5E"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style x:Key="CategoryHeader" TargetType="Border">
+            <Setter Property="Background" Value="#0D2340"/>
+            <Setter Property="BorderBrush" Value="#21496F"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="16,11"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+        <Style x:Key="SettingGroupHeader" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#76A8DE"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="16,12,16,5"/>
+        </Style>
+        <Style x:Key="DarkComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Width" Value="210"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Background" Value="#0F2035"/>
+            <Setter Property="BorderBrush" Value="#24415F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#F1F6FF"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="MinWidth" Value="220"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="ComboBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6">
+                                <Grid>
+                                    <ContentPresenter Margin="10,0,28,0" HorizontalAlignment="Left" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" VerticalAlignment="Center"/>
+                                    <ToggleButton HorizontalAlignment="Stretch" Background="Transparent" BorderThickness="0" Cursor="Hand" IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press">
+                                        <ToggleButton.Template>
+                                            <ControlTemplate TargetType="ToggleButton">
+                                                <Border Background="Transparent">
+                                                    <ContentPresenter/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </ToggleButton.Template>
+                                    </ToggleButton>
+                                    <Path Data="M 0 0 L 5 5 L 10 0" Stroke="#D8E7FF" StrokeThickness="1.5" Width="12" Height="8" Stretch="None" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,11,0" IsHitTestVisible="False"/>
+                                </Grid>
+                            </Border>
+                            <Popup x:Name="PART_Popup" AllowsTransparency="True" Focusable="False"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom"
+                                   PlacementTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                   PopupAnimation="Fade" StaysOpen="False">
+                                <Border MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                        MaxHeight="260" Background="#0F2035" BorderBrush="#367FCE"
+                                        BorderThickness="1" CornerRadius="8" Padding="2">
+                                    <ScrollViewer x:Name="SettingsCategoryScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                                                  CanContentScroll="False">
+                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ComboBorder" Property="Background" Value="#173250"/>
+                                <Setter TargetName="ComboBorder" Property="BorderBrush" Value="#367FCE"/>
+                            </Trigger>
+                            <Trigger Property="IsDropDownOpen" Value="True">
+                                <Setter TargetName="ComboBorder" Property="Background" Value="#173250"/>
+                                <Setter TargetName="ComboBorder" Property="BorderBrush" Value="#4D99F5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="DarkComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Background" Value="#10233A"/>
+            <Setter Property="Foreground" Value="#F1F6FF"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="ItemBorder" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Left"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#173250"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#173250"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="AppSliderStyle" TargetType="Slider">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Foreground" Value="#58AEFF"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Slider">
+                        <Grid>
+                            <Track x:Name="PART_Track"
+                                   Minimum="{TemplateBinding Minimum}"
+                                   Maximum="{TemplateBinding Maximum}"
+                                   Value="{TemplateBinding Value}"
+                                   IsDirectionReversed="False">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Background="#58AEFF" BorderBrush="#58AEFF" BorderThickness="0" Command="Slider.DecreaseLarge" Height="4"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Background="#1C3858" BorderBrush="#1C3858" BorderThickness="0" Command="Slider.IncreaseLarge" Height="4"/>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Width="14" Height="14" Background="#EAF3FF" BorderBrush="#58AEFF" BorderThickness="2" Cursor="Hand">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Ellipse Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="2"/>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <ScrollViewer x:Name="SettingsScrollViewer" VerticalScrollBarVisibility="Auto" Margin="0">
+            <StackPanel x:Name="SettingsStack" Margin="36,28,36,110">
+                <Border Style="{StaticResource SettingRow}">
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock Text="Отключить залипание клавиш" FontWeight="SemiBold"/>
+                            <TextBlock Text="Отключить Sticky Keys, Toggle Keys и Filter Keys" Foreground="#82A5CF" FontSize="11"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock x:Name="DisableStickyKeysLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ToggleButton x:Name="DisableStickyKeysToggle" Tag="DisableStickyKeys" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource SettingRow}">
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock Text="Отключить онлайн-поиск через Bing" FontWeight="SemiBold"/>
+                            <TextBlock Text="Отключить веб-подсказки и предложения поиска Windows" Foreground="#82A5CF" FontSize="11"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock x:Name="DisableBingSearchLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ToggleButton x:Name="DisableBingSearchToggle" Tag="DisableBingSearch" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource SettingRow}">
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock Text="Отключить гибернацию" FontWeight="SemiBold"/>
+                            <TextBlock Text="Отключить hiberfil.sys и гибридный сон" Foreground="#82A5CF" FontSize="11"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock x:Name="DisableHibernationLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ToggleButton x:Name="DisableHibernationToggle" Tag="DisableHibernation" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource SettingRow}">
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock Text="Отключить SmartScreen" FontWeight="SemiBold"/>
+                            <TextBlock Text="Отключить проверку приложений и загружаемых файлов" Foreground="#82A5CF" FontSize="11"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock x:Name="DisableSmartScreenLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ToggleButton x:Name="DisableSmartScreenToggle" Tag="DisableSmartScreen" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource SettingRow}">
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock Text="Отключить целостность памяти" FontWeight="SemiBold"/>
+                            <TextBlock Text="Отключить целостность памяти (HVCI)" Foreground="#82A5CF" FontSize="11"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock x:Name="DisableMemoryIntegrityLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ToggleButton x:Name="DisableMemoryIntegrityToggle" Tag="DisableMemoryIntegrity" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource SettingRow}">
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock Text="UAC: никогда не уведомлять" FontWeight="SemiBold"/>
+                            <TextBlock Text="Автоматически повышать права без запроса. Механизм UAC остаётся включён." Foreground="#82A5CF" FontSize="11"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock x:Name="DisableUacLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Width="112" TextAlignment="Right" Margin="0,0,12,0"/>
+                            <ToggleButton x:Name="DisableUacToggle" Tag="UacNeverNotify" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource SettingRow}">
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock Text="Отключить файл подкачки" FontWeight="SemiBold"/>
+                            <TextBlock Text="Отключить системный pagefile и сохранить текущую конфигурацию" Foreground="#82A5CF" FontSize="11"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock x:Name="DisablePageFileLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ToggleButton x:Name="DisablePageFileToggle" Tag="DisablePageFile" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource SettingRow}">
+                    <Grid>
+                        <StackPanel>
+                            <TextBlock Text="Отключить авто-шифрование BitLocker" FontWeight="SemiBold"/>
+                            <TextBlock Text="Запретить автоматическое шифрование устройства" Foreground="#82A5CF" FontSize="11"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock x:Name="DisableBitLockerAutoEncryptionLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ToggleButton x:Name="DisableBitLockerAutoEncryptionToggle" Tag="DisableBitLockerAutoEncryption" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <StackPanel Visibility="Collapsed">
+                    <TextBlock x:Name="WebSearchStatusText"/>
+                    <Button x:Name="WebSearchToggleButton" Click="WebSearchToggleButton_Click"/>
+                </StackPanel>
+                <Border x:Name="WindowsSettingsBanner" Height="150" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="28">
+                    <Border.Background>
+                        <ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/>
+                    </Border.Background>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="82" Height="82" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Настройки Windows под вашим контролем" FontSize="34" FontWeight="SemiBold" TextWrapping="NoWrap"/>
+                            <TextBlock Text="Настройте Windows под себя" Foreground="#B9CAE2" FontSize="16" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <ComboBox x:Name="SettingsCategoryComboBox"
+                          Width="210"
+                          Height="38"
+                          SelectedIndex="0"
+                          HorizontalAlignment="Left"
+                          Margin="0,12,0,0"
+                          SelectionChanged="SettingsCategoryComboBox_SelectionChanged"
+                          Style="{StaticResource DarkComboBoxStyle}"
+                          ItemContainerStyle="{StaticResource DarkComboBoxItemStyle}">
+                    <ComboBoxItem Tag="Все">
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/list-tree.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Все"/></StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="Проводник">
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-folder-open.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Проводник"/></StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="Рабочий стол">
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-app-folder.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Рабочий стол"/></StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="Панель задач">
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-apps-list.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Панель задач"/></StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="Энергопотребление">
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/cpu.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Энергопотребление"/></StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="Мышь">
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Мышь"/></StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="Windows Update">
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/Restore_down.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Windows Update"/></StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="Конфиденциальность">
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-shield.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Конфиденциальность"/></StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="Дополнительные настройки">
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Доп. настройки"/></StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="Безопасность и поведение">
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-shield.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Безопасность и поведение"/></StackPanel>
+                    </ComboBoxItem>
+                </ComboBox>
+                <StackPanel>
+                    <TextBlock Text="Настройки применяются для текущего пользователя Windows." Foreground="#87A7D0" FontSize="12" Margin="0,0,0,10"/>
+                    <Border x:Name="ExplorerSettingsPanel" Background="#0A1D39" BorderBrush="#173A61" BorderThickness="1,0,1,0" CornerRadius="11" Padding="0,4">
+                        <StackPanel>
+                            <Border Style="{StaticResource CategoryHeader}">
+                                <StackPanel>
+                                    <TextBlock Text="Проводник" FontSize="24" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Для некоторых настроек требуются права администратора" Foreground="#FFD34E" FontSize="11" Margin="0,3,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border x:Name="HiddenFilesCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Скрытые файлы и папки" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Показывать скрытые элементы в проводнике" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="ShowHiddenFilesLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="ShowHiddenFilesToggle" Tag="HiddenFiles" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="FileExtensionsCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Расширения файлов" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Показывать расширения известных типов файлов" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="ShowFileExtensionsLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="ShowFileExtensionsToggle" Tag="FileExtensions" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="GalleryCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Скрыть раздел «Галерея»" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Скрывать раздел «Галерея» в области навигации" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="ShowGalleryLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="ShowGalleryToggle" Tag="Gallery" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="OpenThisPcCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Стартовая страница проводника" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Открывать «Этот компьютер» вместо «Главная»" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="OpenThisPcLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="OpenThisPcToggle" Tag="OpenThisPc" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="ExplorerHomeCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Скрыть раздел «Главная»" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Cкрывать раздел «Главная» в области навигации" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="ExplorerHomeLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="ExplorerHomeToggle" Tag="ExplorerHome" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="ShowRecentFilesCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Показывать недавно использованные файлы" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Отображать недавние документы на главной странице Проводника" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="ShowRecentFilesLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="ShowRecentFilesToggle" Tag="ShowRecentFiles" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="ShowFrequentFoldersCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Показывать часто используемые папки" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Отображать избранные папки в панели быстрого доступа" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="ShowFrequentFoldersLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="ShowFrequentFoldersToggle" Tag="ShowFrequentFolders" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="NetworkCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Скрыть раздел «Сеть»" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Скрывать раздел «Сеть» в области навигации" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="HideNetworkLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="HideNetworkToggle" Tag="Network" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="DownloadsCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Скрыть раздел «Загрузки»" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Скрывать «Загрузки» в области навигации" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="HideDownloadsLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="HideDownloadsToggle" Tag="HideDownloads" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="DocumentsCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock><Run Text="Скрыть раздел «Документы»"/></TextBlock>
+                                        <TextBlock Text="Скрывать «Документы» в области навигации" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="HideDocumentsLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="HideDocumentsToggle" Tag="HideDocuments" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="VideosCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Скрыть раздел «Видео»" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Скрывать «Видео» в области навигации" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="HideVideosLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="HideVideosToggle" Tag="HideVideos" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="PicturesCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Скрыть раздел «Изображения»" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Скрывать «Изображения» в области навигации" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="HidePicturesLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="HidePicturesToggle" Tag="HidePictures" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="MusicCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Скрыть раздел «Музыка»" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Скрывать «Музыка» в области навигации" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="HideMusicLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="HideMusicToggle" Tag="HideMusic" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="DesktopCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Скрыть раздел «Рабочий стол»" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Скрывать «Рабочий стол» в области навигации" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="HideDesktopLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="HideDesktopToggle" Tag="HideDesktop" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="ShortcutSuffixCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Новые ярлыки" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Убирать окончание «Ярлык» у новых ярлыков" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="RemoveShortcutSuffixLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="RemoveShortcutSuffixToggle" Tag="ShortcutSuffix" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="TempCleanupCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Очистить папку Temp" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="TempCleanupStatus" Text="Удаляются только доступные временные файлы текущего пользователя" Foreground="#82A5CF" FontSize="11" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button x:Name="ClearTempButton" Content="Очистить" Click="ClearTempButton_Click" Style="{StaticResource GhostButton}" Padding="10,5" Height="30" Width="105"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                    <Border x:Name="DesktopSettingsPanel" Background="#0A1D39" BorderBrush="#173A61" BorderThickness="1,0,1,0" CornerRadius="11" Padding="0,4" Margin="0,10,0,0">
+                        <StackPanel>
+                            <Border Style="{StaticResource CategoryHeader}">
+                                <TextBlock Text="Рабочий стол" FontSize="24" FontWeight="SemiBold"/>
+                            </Border>
+                            <Border x:Name="ThisPcIconCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Этот компьютер" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Показывать иконку на рабочем столе" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="ShowThisPcLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="ShowThisPcToggle" Tag="ThisPcIcon" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="RecycleBinIconCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Корзина" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Показывать иконку на рабочем столе" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="ShowRecycleBinLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="ShowRecycleBinToggle" Tag="RecycleBinIcon" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="ShowSecondsInSystemClockCard" Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Показывать секунды в часах Windows" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Отображать секунды на системных часах в панели задач" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="ShowSecondsInSystemClockLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="ShowSecondsInSystemClockToggle" Tag="ShowSecondsInSystemClock" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                    <Border x:Name="TaskbarSettingsPanel" Background="#0A1D39" BorderBrush="#173A61" BorderThickness="1,0,1,0" CornerRadius="11" Padding="0,4" Margin="0,10,0,0">
+                        <StackPanel>
+                            <Border Style="{StaticResource CategoryHeader}">
+                                <TextBlock Text="Панель задач" FontSize="24" FontWeight="SemiBold"/>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                    <Border x:Name="PowerSettingsPanel" Background="#0A1D39" BorderBrush="#173A61" BorderThickness="1,0,1,0" CornerRadius="11" Padding="0,4" Margin="0,10,0,0">
+                        <StackPanel>
+                            <Border Style="{StaticResource CategoryHeader}">
+                                <TextBlock Text="Энергопотребление" FontSize="24" FontWeight="SemiBold"/>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Режим электропитания" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Сбалансированная, высокая производительность, экономия энергии" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <ComboBox x:Name="PowerSchemeComboBox" Width="0" MinWidth="0" Style="{StaticResource DarkComboBoxStyle}" ItemContainerStyle="{StaticResource DarkComboBoxItemStyle}" Margin="0,0,8,0"/>
+                                        <Button x:Name="PowerSchemeApplyButton" Content="Применить" Click="PowerSchemeApplyButton_Click" Style="{StaticResource GhostButton}" Padding="10,5" Margin="0,0,0,0" Width="105"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                    <Border x:Name="MouseSettingsPanel" Background="#0A1D39" BorderBrush="#173A61" BorderThickness="1,0,1,0" CornerRadius="11" Padding="0,4" Margin="0,10,0,0">
+                        <StackPanel>
+                            <Border Style="{StaticResource CategoryHeader}">
+                                <TextBlock Text="Мышь" FontSize="24" FontWeight="SemiBold"/>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Скорость указателя" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Значение от 1 до 20" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock Text="{Binding ElementName=MouseSpeedSlider, Path=Value, StringFormat={}{0:0}}" Foreground="#F1F6FF" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0" Width="22" TextAlignment="Center"/>
+                                        <Slider x:Name="MouseSpeedSlider" Width="170" Minimum="1" Maximum="20" Value="10" SmallChange="1" LargeChange="1" IsMoveToPointEnabled="True" IsSnapToTickEnabled="False" TickPlacement="None" Foreground="#58AEFF" Style="{StaticResource AppSliderStyle}" Margin="0,0,8,0" ValueChanged="MouseSlider_ValueChanged"/>
+                                        <Button x:Name="MouseSpeedDefaultButton" Content="По умолчанию" Click="MouseSpeedDefault_Click" Style="{StaticResource GhostButton}" Padding="10,5" Margin="0,0,0,0" Height="30"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Строки прокрутки за раз" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Количество строк при одном шаге колеса; от 1 до 100" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock Text="{Binding ElementName=MouseScrollSlider, Path=Value, StringFormat={}{0:0}}" Foreground="#F1F6FF" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0" Width="22" TextAlignment="Center"/>
+                                        <Slider x:Name="MouseScrollSlider" Width="170" Minimum="1" Maximum="100" Value="5" SmallChange="1" LargeChange="1" IsMoveToPointEnabled="True" IsSnapToTickEnabled="False" TickPlacement="None" Foreground="#58AEFF" Style="{StaticResource AppSliderStyle}" Margin="0,0,8,0" ValueChanged="MouseSlider_ValueChanged"/>
+                                        <Button x:Name="MouseScrollDefaultButton" Content="По умолчанию" Click="MouseScrollDefault_Click" Style="{StaticResource GhostButton}" Padding="10,5" Margin="0,0,0,0" Height="30"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Отключить ускорение мыши" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Отключить повышенную чувствительность при быстрых движениях" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="MouseAccelerationStatusText" Text="Включено" Foreground="#DDEBFF" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="MouseAccelerationToggle" Tag="MouseAcceleration" Style="{StaticResource ExplorerToggleButton}" Margin="0,0,8,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <StackPanel>
+                                    <TextBlock Text="Открыть параметры мыши Windows" FontWeight="SemiBold"/>
+                                    <Button x:Name="MouseSettingsButton" Content="Открыть настройки мыши" Click="MouseSettingsButton_Click" Style="{StaticResource GhostButton}" HorizontalAlignment="Left" Padding="12,6" Margin="0,8,0,0" Width="190" Height="30"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                    <Border x:Name="WindowsUpdateSettingsPanel" Background="#0A1D39" BorderBrush="#173A61" BorderThickness="1" CornerRadius="11" Padding="0,4" Margin="0,10,0,0">
+                        <StackPanel>
+                            <Border Style="{StaticResource CategoryHeader}">
+                                <StackPanel>
+                                    <TextBlock Text="Windows Update" FontSize="24" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Для некоторых настроек требуются права администратора" Foreground="#FFD34E" FontSize="11" Margin="0,3,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <StackPanel>
+                                    <TextBlock Text="Приостановить службу Windows Update" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="PauseWindowsUpdateStatus" Text="Дата окончания не установлена" Foreground="#82A5CF" FontSize="11" Margin="0,3,0,0"/>
+                                    <Button x:Name="PauseWindowsUpdateButton" Content="Приостановить до 01.01.2077" Click="PauseWindowsUpdateButton_Click" HorizontalAlignment="Left" Style="{StaticResource GhostButton}" Padding="12,6" Margin="0,8,0,0" Height="30" Width="190"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <StackPanel>
+                                    <TextBlock Text="Очистить кэш Windows Update" FontWeight="SemiBold"/>
+                                    <Button x:Name="ClearWindowsUpdateCacheButton" Content="Очистить" Click="ClearWindowsUpdateCacheButton_Click" HorizontalAlignment="Left" Style="{StaticResource GhostButton}" Padding="12,6" Margin="0,8,0,0" Height="30" Width="105"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Запретить Windows Update" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Запретить автоматический запуск службы обновлений" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="DisableWindowsUpdateLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="DisableWindowsUpdateToggle" Tag="DisableWindowsUpdate" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Запретить обновление драйверов через центр обновления" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Не искать драйверы через Windows Update" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="DisableDriverUpdatesLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="DisableDriverUpdatesToggle" Tag="DisableDriverUpdates" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Запретить зарезервированное хранилище для обновлений" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Освободить место, зарезервированное Windows" Foreground="#82A5CF" FontSize="11"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="DisableReservedStorageLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="DisableReservedStorageToggle" Tag="DisableReservedStorage" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                    <Border x:Name="PrivacySettingsPanel" Background="#0A1D39" BorderBrush="#173A61" BorderThickness="1" CornerRadius="11" Padding="0,4" Margin="0,10,0,0">
+                        <StackPanel>
+                            <Border Style="{StaticResource CategoryHeader}">
+                                <StackPanel>
+                                    <TextBlock Text="Конфиденциальность" FontSize="24" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Для некоторых настроек требуются права администратора" Foreground="#FFD34E" FontSize="11" Margin="0,3,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <TextBlock Text="Запретить всю телеметрию" FontWeight="SemiBold"/>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="DisableTelemetryLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="DisableTelemetryToggle" Tag="DisableTelemetry" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <TextBlock Text="Запретить диагностику приложений" FontWeight="SemiBold"/>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="DisableAppDiagnosticsLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="DisableAppDiagnosticsToggle" Tag="DisableAppDiagnostics" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <TextBlock Text="Запретить сбор и публикацию данных об активности пользователя" FontWeight="SemiBold"/>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="DisableActivityLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="DisableActivityToggle" Tag="DisableActivity" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <TextBlock Text="Запретить сбор данных о производительности системы" FontWeight="SemiBold"/>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="DisablePerformanceLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="DisablePerformanceToggle" Tag="DisablePerformance" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <TextBlock Text="Запретить сбор данных о нажатиях клавиш" FontWeight="SemiBold"/>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="DisableKeystrokesLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="DisableKeystrokesToggle" Tag="DisableKeystrokes" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource SettingRow}">
+                                <Grid>
+                                    <TextBlock Text="Запретить обновление голосовых данных" FontWeight="SemiBold"/>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock x:Name="DisableVoiceDataLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="DisableVoiceDataToggle" Tag="DisableVoiceData" Checked="WindowsFeatureToggle_Changed" Unchecked="WindowsFeatureToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        <Border x:Name="ToastNotification" Background="#173A61" BorderBrush="#2B6ECB" BorderThickness="1" CornerRadius="10" Padding="14,10" VerticalAlignment="Bottom" Margin="36,0,36,96" MaxWidth="430" HorizontalAlignment="Center" Visibility="Collapsed" Panel.ZIndex="100">
+            <TextBlock x:Name="ToastText" Foreground="#F1F6FF" FontSize="13" FontWeight="SemiBold" Text="" TextWrapping="Wrap"/>
+        </Border>
+        <Grid VerticalAlignment="Bottom" Margin="36,0,53,12">
+            <Border Background="#0B2035" BorderBrush="#1D3B5A" BorderThickness="1"
+                    CornerRadius="11" Padding="14" IsHitTestVisible="False">
+            </Border>
+            <DockPanel LastChildFill="False" Margin="14">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" DockPanel.Dock="Left">
+                    <Image Source="{local:SvgImage Source=interface/white/info-circle.svg}" Width="27" Height="23" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Для применения некоторых настроек требуется перезапуск проводника" Foreground="#85A8D2" FontSize="13" VerticalAlignment="Center"/>
+                </StackPanel>
+                <Button x:Name="RestartExplorerButton" Content="Перезапустить проводник" Click="RestartExplorerButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" DockPanel.Dock="Right" Padding="10,5" FontSize="12" Margin="18,0,0,0" Width="170"/>
+                <Button x:Name="RestartAsAdminButton" Content="Перезапустить от администратора" Click="RestartAsAdminButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" DockPanel.Dock="Right" Padding="10,5" FontSize="12" Margin="18,0,0,0" Height="30" Width="220"/>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</UserControl>

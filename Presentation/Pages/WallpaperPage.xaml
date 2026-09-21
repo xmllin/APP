@@ -1,0 +1,146 @@
+<UserControl x:Class="WpfApp1.Pages.WallpaperPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:WpfApp1.Services"
+    Background="Transparent">
+    <UserControl.Resources>
+        <Style x:Key="WallpaperCategoryButton" TargetType="Button">
+            <Setter Property="Background" Value="#0F2035"/>
+            <Setter Property="BorderBrush" Value="#24415F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="16,9"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="CategoryBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="9" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Tag" Value="Selected">
+                                <Setter TargetName="CategoryBorder" Property="Background" Value="#1468D8"/>
+                                <Setter TargetName="CategoryBorder" Property="BorderBrush" Value="#1468D8"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Trigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}" Value="Normal"/>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsMouseOver}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="CategoryBorder" Property="Background" Value="#173250"/>
+                                <Setter TargetName="CategoryBorder" Property="BorderBrush" Value="#367FCE"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}" Value="Normal"/>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsPressed}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="CategoryBorder" Property="Background" Value="#1C4168"/>
+                            </MultiDataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="36,28,36,42">
+                <Border Height="150" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="28" Margin="0,0,0,12">
+                    <Border.Background>
+                        <ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/>
+                    </Border.Background>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="82" Height="82" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Обои для рабочего стола" FontSize="30" FontWeight="SemiBold"/>
+                            <TextBlock Text="Коллекция из публичного GitHub-репозитория." Foreground="#B9CAE2" FontSize="15" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Grid Margin="0,6,0,22">
+                    <Button Content="Обновить библиотеку" HorizontalAlignment="Right"
+                            Style="{StaticResource GhostButton}" Click="RefreshLibrary_Click"/>
+                </Grid>
+                <WrapPanel x:Name="CategoryPanel" Margin="0,0,0,18"/>
+
+                <Grid Margin="0,0,0,12">
+                    <TextBlock x:Name="CountText" FontSize="21" FontWeight="SemiBold"/>
+                    <TextBlock x:Name="LoadingText" HorizontalAlignment="Right" Foreground="{StaticResource MutedBrush}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,0">
+                        <Button x:Name="TopPreviousPageButton" Click="PreviousPage_Click" Style="{StaticResource PaginationButton}">
+                            <Image Source="{local:SvgImage Source=interface/white/back.svg}" Width="15" Height="15"/>
+                        </Button>
+                        <TextBlock x:Name="TopPageText" Text="1 / 1" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Margin="10,0"/>
+                        <Button x:Name="TopNextPageButton" Click="NextPage_Click" Style="{StaticResource PaginationButton}">
+                            <Image Source="{local:SvgImage Source=interface/white/next.svg}" Width="15" Height="15"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+                <ItemsControl x:Name="WallpaperItems">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource WallpaperTileButton}" Tag="{Binding IsSelected}" Click="Preview_Click">
+                                <Border Width="285" Height="178" CornerRadius="14" ClipToBounds="True" Background="#0B1828">
+                                    <Border.Clip>
+                                        <RectangleGeometry RadiusX="14" RadiusY="14" Rect="0,0,285,178"/>
+                                    </Border.Clip>
+                                    <Grid ClipToBounds="True" SnapsToDevicePixels="True">
+                                        <Border Background="#13263A">
+                                            <TextBlock Text="Preview недоступен" Foreground="{StaticResource MutedBrush}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Thumbnail}" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                        </Border>
+                                        <Image Source="{Binding Thumbnail}" Stretch="UniformToFill"/>
+                                        <Border VerticalAlignment="Bottom" Height="58" ClipToBounds="True">
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <GradientStop Color="#00000000" Offset="0"/>
+                                                    <GradientStop Color="#DD07111F" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                        </Border>
+                                        <StackPanel VerticalAlignment="Bottom" Margin="14,0,14,11">
+                                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding SizeText}" FontSize="11" Foreground="#D6E1EF"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <StackPanel x:Name="BottomPaginationPanel" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,18,0,0">
+                    <Button x:Name="PreviousPageButton" Click="PreviousPage_Click" Style="{StaticResource PaginationButton}">
+                        <Image Source="{local:SvgImage Source=interface/white/back.svg}" Width="15" Height="15"/>
+                    </Button>
+                    <TextBlock x:Name="PageText" Text="1 / 1" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Margin="10,0"/>
+                    <Button x:Name="NextPageButton" Click="NextPage_Click" Style="{StaticResource PaginationButton}">
+                        <Image Source="{local:SvgImage Source=interface/white/next.svg}" Width="15" Height="15"/>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

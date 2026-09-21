@@ -1,0 +1,173 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:WpfApp1.Services"
+    xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+    Title="Icon Search" Width="1260" Height="800" MinWidth="1260" MinHeight="800"
+    WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanResize"
+    AllowsTransparency="False" Background="#07111F" Foreground="#EEF5FF" UseLayoutRounding="True" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="LowQuality"
+    shell:WindowChrome.WindowChrome="{StaticResource AppWindowChrome}">
+    <Border Background="{StaticResource BgBrush}" BorderBrush="#000000" BorderThickness="2" CornerRadius="12" ClipToBounds="True">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="64"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="26"/>
+                <RowDefinition Height="0"/>
+            </Grid.RowDefinitions>
+
+            <Border x:Name="TitleBar" Grid.Row="0" Background="#0A1728" BorderBrush="#1B3048" BorderThickness="0,0,0,1"
+                       Panel.ZIndex="1000" shell:WindowChrome.IsHitTestVisibleInChrome="True" 
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="18,0,0,0">
+                        <Border Width="34" Height="34" CornerRadius="9" Background="#176BE0">
+                            <Image Source="{local:SvgImage Source=interface/white/fluent-arrow-download.svg}" Width="20" Height="20" Stretch="Uniform"/>
+                        </Border>
+                        <TextBlock Text="Icon Search" FontSize="18" FontWeight="SemiBold" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <Border x:Name="SearchContainer" Width="300" Height="36" HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Background="#0D1D31" BorderBrush="#284664" BorderThickness="1" CornerRadius="20">
+                        <Grid Margin="12,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" shell:WindowChrome.IsHitTestVisibleInChrome="True" x:Name="SearchBox" Margin="4,0,8,0" Background="Transparent" BorderThickness="0"
+                                     Foreground="#EAF2FF" FontSize="14" VerticalContentAlignment="Center"
+                                     CaretBrush="White" Text="Поиск программ..." TextChanged="SearchBox_TextChanged"
+                                     GotFocus="SearchBox_GotFocus" LostFocus="SearchBox_LostFocus"/>
+                            <Image Grid.Column="1" Source="{local:SvgImage Source=interface/white/fluent-search.svg}" Width="18" Height="18"
+                                   VerticalAlignment="Center" IsHitTestVisible="False"/>
+                        </Grid>
+                    </Border>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,8,0">
+                        <Button shell:WindowChrome.IsHitTestVisibleInChrome="True" Click="Minimize_Click" Style="{StaticResource TopBarButton}"><Image Source="{local:SvgImage Source=interface/white/fluent-subtract.svg}" Width="16" Height="16"/></Button>
+                        <Button shell:WindowChrome.IsHitTestVisibleInChrome="True" x:Name="MaximizeButton" Click="Maximize_Click" Style="{StaticResource TopBarButton}">
+                            <Image x:Name="MaximizeIcon" Source="{local:SvgImage Source=interface/white/fluent-square.svg}" Width="16" Height="16"/>
+                        </Button>
+                        <Button shell:WindowChrome.IsHitTestVisibleInChrome="True" Click="Close_Click" Style="{StaticResource TopBarCloseButton}"><Image Source="{local:SvgImage Source=interface/white/fluent-dismiss.svg}" Width="16" Height="16"/></Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+                <Grid x:Name="RootContentGrid" Grid.Row="1" Focusable="True" FocusVisualStyle="{x:Null}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="SidebarColumn" Width="260"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border x:Name="SidebarBorder" Grid.Column="0" Background="#091624" BorderBrush="#1B3048" BorderThickness="0,0,1,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel x:Name="NavPanel" Margin="6,14,6,10">
+                            <TextBlock x:Name="MainSectionLabel" Text="ОСНОВНОЕ" FontSize="11" Foreground="#58718F" Margin="18,0,0,8" Visibility="Collapsed"/>
+                            <Button x:Name="HomeNav" Tag="Selected" Style="{StaticResource NavButton}" Click="Nav_Click">
+                                <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-home.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Главная" VerticalAlignment="Center"/></StackPanel>
+                            </Button>
+                            <Button x:Name="AppsNav" Style="{StaticResource NavButton}" Click="Nav_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{local:SvgImage Source=interface/white/world-download.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Программы" VerticalAlignment="Center"/></StackPanel>
+                            </Button>
+                            <Button x:Name="UwpAppsNav" Style="{StaticResource NavButton}" Click="Nav_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="UWP-приложения" VerticalAlignment="Center"/></StackPanel>
+                            </Button>
+                            <Button x:Name="LibrariesNav" Style="{StaticResource NavButton}" Click="Nav_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Библиотеки и компоненты" VerticalAlignment="Center"/></StackPanel>
+                            </Button>
+                            <Button x:Name="WindowsNav" Style="{StaticResource NavButton}" Click="Nav_Click">
+                                <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/brand-windows.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Настройки Windows" VerticalAlignment="Center"/></StackPanel>
+                            </Button>
+                            <Button x:Name="WindowsActivationNav" Style="{StaticResource NavButton}" Click="Nav_Click">
+                                <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/brand-windows.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Активация Windows" VerticalAlignment="Center"/></StackPanel>
+                            </Button>
+                            <Button x:Name="WallpapersNav" Style="{StaticResource NavButton}" Click="Nav_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{local:SvgImage Source=interface/white/category-media.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Обои" VerticalAlignment="Center"/></StackPanel>
+                            </Button>
+                            <Border Height="1" Background="#1A3048" Margin="14,16"/>
+
+                            <Button x:Name="DownloadsNav" Style="{StaticResource NavButton}" Click="Nav_Click">
+                                <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-arrow-download.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Загрузки" VerticalAlignment="Center"/></StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <StackPanel x:Name="SystemNavigationPanel" Grid.Row="1" Margin="6,10,6,10">
+                            <TextBlock x:Name="SystemSectionLabel" Text="ДОПОЛНИТЕЛЬНО" FontSize="11" Foreground="#58718F" Margin="18,0,0,8" Visibility="Collapsed"/>
+                            <Button x:Name="SettingsNav" Style="{StaticResource NavButton}" Click="Nav_Click">
+                                <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Настройки" VerticalAlignment="Center"/></StackPanel>
+                            </Button>
+                            <Button x:Name="ProfileNav" Style="{StaticResource NavButton}" Click="Nav_Click">
+                                <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-person.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Профиль" VerticalAlignment="Center"/></StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <ContentControl x:Name="MainContent" Grid.Column="1"/>
+            </Grid>
+
+            <Border x:Name="StatusBar" Grid.Row="2" Background="#091624" BorderBrush="#1B3048" BorderThickness="0,1,0,0" Padding="12,0"
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid x:Name="StatusBarContent" VerticalAlignment="Center" ClipToBounds="False">
+                    <TextBlock x:Name="VersionText" VerticalAlignment="Center" Foreground="White" FontSize="11"/>
+                    <TextBlock x:Name="ClockText" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" FontSize="14"/>
+                </Grid>
+            </Border>
+
+            <Border x:Name="DownloadToast" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                    Margin="0,0,24,24" Padding="12,10" Background="#102A45" BorderBrush="#3D8FE8"
+                    BorderThickness="1" CornerRadius="10" Visibility="Collapsed" Opacity="0" Panel.ZIndex="20" MinWidth="280">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border x:Name="DownloadToastIconHost" Width="28" Height="28" CornerRadius="8" Background="#176BE0" Margin="0,0,10,0">
+                        <Image x:Name="DownloadToastIcon" Source="{local:SvgImage Source=interface/white/fluent-arrow-download.svg}" Width="16" Height="16"/>
+                    </Border>
+                    <TextBlock Grid.Column="1" x:Name="DownloadToastText" VerticalAlignment="Center" Foreground="#EEF5FF"
+                               FontSize="13" TextWrapping="Wrap" MaxWidth="360"/>
+                    <Button Grid.Column="2" Width="26" Height="26" Margin="10,0,0,0" Padding="0" Background="Transparent" BorderBrush="Transparent"
+                            Cursor="Hand" ToolTip="Закрыть" Click="CloseDownloadToast_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="Root" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                                <Image Source="{local:SvgImage Source=interface/white/fluent-dismiss.svg}" Width="14" Height="14"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Root" Property="Background" Value="#173250"/>
+                                                    <Setter TargetName="Root" Property="BorderBrush" Value="#367FCE"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter TargetName="Root" Property="Background" Value="#21496F"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+
+        </Grid>
+    </Border>
+</Window>

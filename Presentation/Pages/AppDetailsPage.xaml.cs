@@ -1,0 +1,354 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using WpfApp1.Models;
+using WpfApp1.Services;
+using WpfApp1.Services.Downloads;
+
+namespace WpfApp1.Pages
+{
+    public partial class AppDetailsPage : UserControl
+    {
+        private readonly MainWindow _main;
+        private readonly DownloadService _downloads = new DownloadService();
+        private readonly GitHubDownloadProvider _github = new GitHubDownloadProvider();
+        private readonly ChromiumDownloadProvider _chromium = new ChromiumDownloadProvider();
+        private readonly OfficialPageDownloadProvider _official = new OfficialPageDownloadProvider();
+        private readonly DownloadMetadataService _metadata = new DownloadMetadataService();
+        private readonly AppDefinition _app;
+        private IReadOnlyList<AppRelease> _releases;
+        private DownloadInfo _displayedInfo;
+        private DownloadInfo _resolvedInitialDownload;
+
+        public AppDetailsPage(MainWindow main, AppDefinition app)
+        {
+            InitializeComponent();
+            _main = main;
+            _app = app ?? new AppDefinition { Name = "Приложение" };
+            DataContext = _app;
+
+            DownloadInfo initialInfo = null;
+            if (_app.Download != null)
+            {
+                var initialFileName = _app.Download.FileName;
+                if (!HasRealExtension(initialFileName) && Uri.TryCreate(_app.Download.Url, UriKind.Absolute, out var initialUri))
+                    initialFileName = System.IO.Path.GetFileName(initialUri.AbsolutePath);
+
+                if (_main.TryGetCachedAppDownloadInfo(_app, out var cachedAppInfo))
+                    initialInfo = cachedAppInfo;
+                else
+                {
+                    initialInfo = new DownloadInfo
+                    {
+                        Url = _app.Download.Url,
+                        FileName = initialFileName,
+                        Source = _app.Download.Type,
+                        Version = VersionNormalizer.ExtractMostSpecific(_app.Download.FileName, _app.Download.Url)
+                    };
+                }
+            }
+            if (initialInfo != null && _main.TryGetCachedDownloadInfo(initialInfo.Url, out var cachedInfo))
+                initialInfo = cachedInfo;
+
+            ApplyDownloadDetails(initialInfo);
+            Loaded += AppDetailsPage_Loaded;
+        }
+
+        private async void AppDetailsPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= AppDetailsPage_Loaded;
+            var releaseProvider = GetReleaseProvider();
+            if (releaseProvider == null)
+            {
+                if (_app.Download != null)
+                {
+                    try
+                    {
+                        var cachedInfo = _main.TryGetCachedAppDownloadInfo(_app, out var appCachedInfo) ? appCachedInfo : null;
+                        if (cachedInfo != null)
+                        {
+                            _resolvedInitialDownload = cachedInfo;
+                            _main.CacheDownloadInfo(cachedInfo);
+                            ApplyDownloadDetails(cachedInfo);
+                        }
+                        else
+                        {
+                            using (var resolveCts = new CancellationTokenSource(TimeSpan.FromSeconds(20)))
+                            {
+                                var resolved = await _downloads.ResolveAsync(_app, resolveCts.Token);
+                                if (resolved != null)
+                                {
+                                    _resolvedInitialDownload = resolved;
+                                    _main.CacheDownloadInfo(resolved);
+                                    _main.CacheAppDownloadInfo(_app, resolved);
+                                    ApplyDownloadDetails(resolved);
+                                }
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // Keep the configured metadata so the Download button can retry later.
+                    }
+                    catch (Exception ex)
+                    {
+                        _main.ShowNotification("Не удалось получить сведения о файле «" + _app.Name + "»: " + NotificationFormatter.FormatGeneralError(ex), NotificationKind.Warning, "download-metadata:" + (_app.Id ?? _app.Name));
+                    }
+                }
+
+                ReleaseVersionText.Text = "Официальный установщик";
+                return;
+            }
+
+            VersionComboBox.Visibility = Visibility.Visible;
+            if (_main.TryGetCachedReleases(_app, out var cachedReleases))
+            {
+                ApplyReleases(cachedReleases);
+                return;
+            }
+
+            DownloadStatusText.Text = "Загрузка списка версий…";
+            try
+            {
+                using (var loadCts = new CancellationTokenSource(TimeSpan.FromSeconds(25)))
+                    _releases = await releaseProvider.GetReleasesAsync(_app, loadCts.Token);
+                _main.CacheReleases(_app, _releases);
+                ApplyReleases(_releases);
+            }
+            catch (OperationCanceledException)
+            {
+                VersionComboBox.IsEnabled = false;
+                DownloadStatusText.Text = "Не удалось загрузить список версий.";
+                _main.ShowNotification("Не удалось загрузить список версий для «" + _app.Name + "». Проверьте подключение к интернету.", NotificationKind.Warning, "releases-timeout:" + (_app.Id ?? _app.Name));
+            }
+            catch (Exception ex)
+            {
+                VersionComboBox.IsEnabled = false;
+                DownloadStatusText.Text = "Не удалось получить версии.";
+                _main.ShowNotification("Не удалось получить версии «" + _app.Name + "»: " + NotificationFormatter.FormatGeneralError(ex), NotificationKind.Error, "releases-error:" + (_app.Id ?? _app.Name) + ":" + ex.GetType().FullName);
+            }
+        }
+
+        private void ApplyReleases(IReadOnlyList<AppRelease> releases)
+        {
+            _releases = PrepareReleaseItems(releases);
+            VersionComboBox.ItemsSource = _releases;
+            VersionComboBox.IsEnabled = _releases.Count > 0;
+            if (_releases.Count > 0)
+                VersionComboBox.SelectedIndex = 0;
+
+            DownloadStatusText.Text = _releases.Count == 0 ? "Стабильные версии не найдены." : string.Empty;
+            // This field is intentionally never changed in SelectionChanged.
+            if (_releases.Count > 0)
+                ReleaseVersionText.Text = string.IsNullOrWhiteSpace(_releases[0].Version) ? "Не определена" : _releases[0].Version;
+
+            ApplyDownloadDetails(_releases.Count > 0 ? _releases[0].Download : null);
+        }
+
+        private static List<AppRelease> PrepareReleaseItems(IEnumerable<AppRelease> releases)
+        {
+            var unique = (releases ?? Enumerable.Empty<AppRelease>())
+                .Where(item => item != null && item.Download != null)
+                .GroupBy(item => VersionNormalizer.Normalize(item.Version ?? string.Empty) + "|" + (item.Download.Format ?? string.Empty), StringComparer.OrdinalIgnoreCase)
+                .Select(group => group.OrderByDescending(item => item.PublishedAt ?? DateTime.MinValue).First())
+                .OrderByDescending(item => VersionInfo.Parse(item.Version))
+                .ThenByDescending(item => item.PublishedAt ?? DateTime.MinValue)
+                .ToList();
+
+            foreach (var group in unique.GroupBy(item => VersionNormalizer.Normalize(item.Version ?? string.Empty), StringComparer.OrdinalIgnoreCase))
+            {
+                var formats = group.Select(item => item.Download.Format)
+                    .Where(format => !string.IsNullOrWhiteSpace(format) && !string.Equals(format, "Не указан", StringComparison.OrdinalIgnoreCase) && !string.Equals(format, "Файл", StringComparison.OrdinalIgnoreCase))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+
+                foreach (var item in group)
+                {
+                    var version = string.IsNullOrWhiteSpace(item.Version) ? "Последняя" : item.Version;
+                    item.DisplayVersion = formats.Count > 1 && !string.IsNullOrWhiteSpace(item.Download.Format)
+                        ? version + " · " + item.Download.Format
+                        : version;
+                }
+            }
+            return unique;
+        }
+
+        private void ApplyDownloadDetails(DownloadInfo info)
+        {
+            if (!string.IsNullOrWhiteSpace(info?.Url) && _main.TryGetCachedDownloadInfo(info.Url, out var cachedInfo))
+                info = cachedInfo;
+            _displayedInfo = info;
+            if (info == null)
+            {
+                ReleaseFormatText.Text = "Не указан";
+                ReleaseSizeText.Text = "Не указан";
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(info.Version) && !string.IsNullOrWhiteSpace(_app?.Download?.Url))
+                info.Version = VersionNormalizer.ExtractMostSpecific(_app.Download.FileName, _app.Download.Url);
+
+            if (!string.IsNullOrWhiteSpace(info.Url) && !_main.TryGetCachedAppDownloadInfo(_app, out _))
+                _main.CacheAppDownloadInfo(_app, info);
+
+            ReleaseFormatText.Text = info.Format;
+            ReleaseSizeText.Text = info.SizeBytes.HasValue ? FormatSize(info.SizeBytes.Value) : "Не указан";
+            if (!HasRealExtension(info.FileName) && !string.IsNullOrWhiteSpace(info.Url))
+                _ = LoadDownloadFileNameAsync(info);
+            else if (!info.SizeBytes.HasValue && !string.IsNullOrWhiteSpace(info.Url))
+                _ = LoadDownloadSizeAsync(info);
+        }
+
+        private async Task LoadDownloadFileNameAsync(DownloadInfo info)
+        {
+            try
+            {
+                var name = await _metadata.GetFileNameAsync(info.Url, CancellationToken.None);
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    info.FileName = name;
+                    _main.CacheDownloadInfo(info);
+                    if (ReferenceEquals(_displayedInfo, info))
+                        ReleaseFormatText.Text = info.Format;
+                }
+                if (!info.SizeBytes.HasValue)
+                    await LoadDownloadSizeAsync(info);
+            }
+            catch { }
+        }
+
+        private async Task LoadDownloadSizeAsync(DownloadInfo info)
+        {
+            try
+            {
+                var size = await _metadata.GetSizeAsync(info.Url, CancellationToken.None);
+                if (!size.HasValue) return;
+                info.SizeBytes = size.Value;
+                _main.CacheDownloadInfo(info);
+                if (ReferenceEquals(_displayedInfo, info))
+                    ReleaseSizeText.Text = FormatSize(size.Value);
+            }
+            catch { }
+        }
+
+        private void VersionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!IsInitialized) return;
+            if (VersionComboBox.SelectedItem is AppRelease release)
+                ApplyDownloadDetails(release.Download);
+        }
+
+        private static bool HasRealExtension(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return false;
+            var extension = System.IO.Path.GetExtension(value);
+            return !string.IsNullOrWhiteSpace(extension) && extension.Length > 1;
+        }
+
+        private static string FormatSize(long bytes)
+        {
+            if (bytes >= 1024L * 1024L * 1024L) return string.Format("{0:0.0} ГБ", bytes / (1024d * 1024d * 1024d));
+            if (bytes >= 1024L * 1024L) return string.Format("{0:0.0} МБ", bytes / (1024d * 1024d));
+            if (bytes >= 1024L) return string.Format("{0:0.0} КБ", bytes / 1024d);
+            return bytes + " Б";
+        }
+
+        private IReleaseDownloadProvider GetReleaseProvider()
+        {
+            if (string.Equals(_app.Download?.Type, "GitHub", StringComparison.OrdinalIgnoreCase)) return _github;
+            if (string.Equals(_app.Download?.Type, "Chromium", StringComparison.OrdinalIgnoreCase)) return _chromium;
+            if (string.Equals(_app.Download?.Type, "Website", StringComparison.OrdinalIgnoreCase)) return _official;
+            return null;
+        }
+
+        private async void Download_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedRelease = VersionComboBox.SelectedItem as AppRelease;
+            var selectedInfo = selectedRelease?.Download;
+            var downloadKey = (_app.Name ?? _app.Id ?? "download").ToLowerInvariant();
+            CancellationTokenSource cts;
+            PauseController pauseController;
+            if (!_main.TryRegisterDownload(_app.Name, downloadKey, out cts, out pauseController)) return;
+
+            DownloadButton.IsEnabled = false;
+            DownloadStatusText.Text = "Загрузка…";
+            try
+            {
+                var progress = new Progress<DownloadProgress>(details => _main.UpdateDownloadProgress(downloadKey, details, _app.Name));
+                if (selectedInfo != null)
+                    await _downloads.DownloadAsync(_app, selectedInfo, progress, cts.Token, pauseController);
+                else if (_resolvedInitialDownload != null && !string.Equals(_app.Id, "discord", StringComparison.OrdinalIgnoreCase))
+                    await _downloads.DownloadAsync(_app, _resolvedInitialDownload, progress, cts.Token, pauseController);
+                else
+                    await _downloads.DownloadAsync(_app, progress, cts.Token, pauseController);
+
+                _main.CompleteDownload(downloadKey, _app.Name);
+                DownloadStatusText.Text = "Загрузка завершена.";
+            }
+            catch (OperationCanceledException)
+            {
+                _main.NotifyDownloadCancelled(downloadKey, _app.Name);
+                _main.RemoveDownload(downloadKey);
+                DownloadStatusText.Text = "Загрузка отменена.";
+            }
+            catch (Exception ex)
+            {
+                _main.NotifyDownloadError(downloadKey, _app.Name, ex);
+                _main.RemoveDownload(downloadKey);
+                DownloadStatusText.Text = "Не удалось скачать файл.";
+            }
+            finally
+            {
+                DownloadButton.IsEnabled = true;
+            }
+        }
+
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
+            var previousPage = _main.GetAppDetailsOrigin();
+            _main.Navigate(previousPage ?? "home");
+        }
+
+        public void GoBack()
+        {
+            Back_Click(null, null);
+        }
+
+        private void VersionField_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            VersionComboBox.IsDropDownOpen = !VersionComboBox.IsDropDownOpen;
+            e.Handled = true;
+        }
+
+        private void Website_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            OpenWebsite(e.Uri?.ToString());
+            e.Handled = true;
+        }
+
+        private void OpenWebsite_Click(object sender, RoutedEventArgs e)
+        {
+            OpenWebsite(_app.Website);
+            Keyboard.ClearFocus();
+        }
+
+        private void WebsiteTextBox_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            OpenWebsite(_app.Website);
+            e.Handled = true;
+        }
+
+        private static void OpenWebsite(string value)
+        {
+            if (Uri.TryCreate(value, UriKind.Absolute, out var uri) &&
+                (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+                Process.Start(new ProcessStartInfo { FileName = uri.AbsoluteUri, UseShellExecute = true });
+        }
+    }
+}

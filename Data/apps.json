@@ -1,0 +1,868 @@
+[
+  {
+    "id": "firefox",
+    "name": "Firefox",
+    "description": "Быстрый и приватный веб-браузер с открытым исходным кодом.",
+    "category": "Браузеры",
+    "icon": "logos/Firefox.svg",
+    "website": "https://www.mozilla.org/firefox/windows/",
+    "download": {
+      "type": "Website"
+    }
+  },
+  {
+    "id": "tor-browser",
+    "name": "Tor Browser",
+    "description": "Веб-браузер с повышенной конфиденциальностью на базе Firefox.",
+    "category": "Браузеры",
+    "icon": "logos/Tor_Browser.svg",
+    "website": "https://download.torproject.org/ru/tor-browser-for-desktop/",
+    "isBlockedInRussia": true,
+    "download": {
+      "type": "Website",
+      "allowArchitectureFallback": true
+    }
+  },
+  {
+    "id": "chrome",
+    "name": "Google Chrome",
+    "description": "Популярный браузер от Google с высокой скоростью и широкой поддержкой расширений.",
+    "category": "Браузеры",
+    "icon": "logos/chrome.svg",
+    "website": "https://www.google.com/chrome/",
+    "download": {
+      "type": "Direct",
+      "url": "https://dl.google.com/chrome/install/ChromeStandaloneSetup64.exe",
+      "fileName": "ChromeStandaloneSetup64.exe"
+    }
+  },
+  {
+    "id": "librewolf",
+    "name": "LibreWolf",
+    "description": "Приватная версия Firefox с усиленными настройками безопасности.",
+    "category": "Браузеры",
+    "icon": "logos/LibreWolf.svg",
+    "website": "https://librewolf.net/installation/windows/",
+    "download": {
+      "type": "Website"
+    }
+  },
+  {
+    "id": "opera",
+    "name": "Opera",
+    "description": "Современный браузер с дополнительными встроенными функциями.",
+    "category": "Браузеры",
+    "icon": "logos/Opera.svg",
+    "website": "https://www.opera.com/",
+    "download": {
+      "type": "Direct",
+      "url": "https://net.geo.opera.com/opera/stable/windows",
+      "fileName": "OperaSetup.exe"
+    }
+  },
+  {
+    "id": "opera-gx",
+    "name": "Opera GX",
+    "description": "Браузер Opera, оптимизированный для игроков.",
+    "category": "Браузеры",
+    "icon": "logos/Opera_GX.svg",
+    "website": "https://www.opera.com/gx",
+    "download": {
+      "type": "Direct",
+      "url": "https://net.geo.opera.com/opera_gx/stable/windows",
+      "fileName": "OperaGXSetup.exe"
+    }
+  },
+  {
+    "id": "chromium",
+    "name": "Chromium",
+    "description": "Открытая основа для Chrome и множества современных браузеров.",
+    "category": "Браузеры",
+    "icon": "logos/chromium.svg",
+    "website": "https://www.chromium.org/",
+    "download": {
+      "type": "Chromium"
+    }
+  },
+  {
+    "id": "telegram",
+    "name": "Telegram",
+    "description": "Быстрый мессенджер для сообщений, каналов и обмена файлами.",
+    "isBlockedInRussia": true,
+    "category": "Общение",
+    "icon": "logos/Telegram.svg",
+    "website": "https://telegram.org/",
+    "download": {
+      "type": "Direct",
+      "url": "https://telegram.org/dl/desktop/win64",
+      "fileName": "TelegramSetup.exe",
+      "architecture": "x64"
+    }
+  },
+  {
+    "id": "discord",
+    "name": "Discord",
+    "description": "Платформа для общения, голосовых каналов и сообществ.",
+    "isBlockedInRussia": true,
+    "category": "Общение",
+    "icon": "logos/discord.svg",
+    "website": "https://discord.com/",
+    "download": {
+      "type": "Direct",
+      "url": "https://discord.com/api/downloads/distributions/app/installers/latest?channel=stable&platform=win&arch={discordArch}",
+      "fileName": "DiscordSetup.exe"
+    }
+  },
+  {
+    "id": "steam",
+    "name": "Steam",
+    "description": "Цифровая платформа для покупки, загрузки и запуска игр.",
+    "category": "Игры",
+    "icon": "logos/Steam.svg",
+    "website": "https://store.steampowered.com/about/",
+    "download": {
+      "type": "Direct",
+      "url": "https://cdn.akamai.steamstatic.com/client/installer/SteamSetup.exe",
+      "fileName": "SteamSetup.exe"
+    }
+  },
+  {
+    "id": "7zip",
+    "name": "7-Zip",
+    "description": "Бесплатный архиватор с высокой степенью сжатия.",
+    "category": "Архиваторы",
+    "icon": "logos/7zip.png",
+    "website": "https://www.7-zip.org/",
+    "download": {
+      "type": "GitHub",
+      "repository": "ip7z/7zip",
+      "assetPattern": "7z*-{arch}.exe"
+    }
+  },
+  {
+    "id": "winrar",
+    "name": "WinRAR",
+    "description": "Мощный архиватор с поддержкой RAR, ZIP и других форматов.",
+    "category": "Архиваторы",
+    "icon": "logos/WinRAR.png",
+    "website": "https://www.win-rar.com/download.html",
+    "download": {
+      "type": "Website"
+    }
+  },
+  {
+    "id": "qbittorrent",
+    "name": "qBittorrent",
+    "description": "Бесплатный торрент-клиент без лишних рекламных компонентов.",
+    "category": "Загрузки",
+    "icon": "logos/qbittorrent.png",
+    "website": "https://www.qbittorrent.org/download",
+    "download": {
+      "type": "GitHub",
+      "repository": "qbittorrent/qBittorrent",
+      "assetPattern": "qbittorrent_*_{arch}_setup.exe"
+    }
+  },
+  {
+    "id": "nvidia-app",
+    "name": "NVIDIA App",
+    "description": "Единое приложение NVIDIA для драйверов и настроек видеокарты.",
+    "category": "Драйверы",
+    "icon": "logos/NVIDIA_APP.png",
+    "website": "https://www.nvidia.com/en-us/software/nvidia-app/",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": [
+      "gpu:nvidia",
+      "gpu:nvidia:geforce"
+    ]
+  },
+  {
+    "id": "amd-software-adrenalin",
+    "name": "AMD Software: Adrenalin Edition",
+    "description": "Официальное приложение AMD для драйверов и настроек видеокарт Radeon.",
+    "category": "Драйверы",
+    "icon": "logos/AMD.png",
+    "website": "https://www.amd.com/en/products/software/adrenalin.html",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": [
+      "gpu:amd",
+      "gpu:amd:radeon"
+    ]
+  },
+  {
+    "id": "intel-driver-support-assistant",
+    "name": "Intel Driver & Support Assistant",
+    "description": "Официальная проверка и обновление драйверов Intel для процессора и графики.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.intel.com/content/www/us/en/support/detect.html",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": [
+      "cpu:intel",
+      "gpu:intel"
+    ]
+  },
+  {
+    "id": "amd-chipset-software",
+    "name": "AMD Chipset Drivers",
+    "description": "Официальные драйверы чипсета AMD для процессора и материнской платы.",
+    "category": "Драйверы",
+    "icon": "logos/AMD.png",
+    "website": "https://www.amd.com/en/support/download/drivers.html",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": [
+      "cpu:amd",
+      "cpu:amd:ryzen"
+    ]
+  },
+  {
+    "id": "asus-armoury-crate",
+    "name": "ASUS Armoury Crate",
+    "description": "Центр обновления драйверов и управления устройствами ASUS.",
+    "category": "Драйверы",
+    "icon": "logos/ARMOURY_CRATE.png",
+    "website": "https://www.asus.com/supportonly/armoury%20crate/helpdesk_download/",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": []
+  },
+  {
+    "id": "msi-center",
+    "name": "MSI Center",
+    "description": "Официальный центр обновления драйверов и управления материнскими платами MSI.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.msi.com/Landing/MSI-Center",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": [
+      "motherboard:msi"
+    ]
+  },
+  {
+    "id": "gigabyte-control-center",
+    "name": "GIGABYTE Control Center",
+    "description": "Утилита GIGABYTE для драйверов, BIOS и управления материнской платой.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.gigabyte.com/Consumer/Software/GIGABYTE-Control-Center",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": [
+      "motherboard:gigabyte"
+    ]
+  },
+  {
+    "id": "asrock-auto-driver-installer",
+    "name": "ASRock Auto Driver Installer",
+    "description": "Официальный установщик драйверов для материнских плат ASRock.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.asrock.com/support/index.asp#AMD",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": []
+  },
+  {
+    "id": "makutweaker",
+    "name": "MakuTweaker",
+    "description": "Набор твиков и настроек для оптимизации Windows.",
+    "category": "Утилиты",
+    "icon": "logos/MakuTweaker.png",
+    "website": "https://adderly.top/makutweaker",
+    "download": {
+      "type": "Website",
+      "minimumWindowsBuild": 17763
+    }
+  },
+  {
+    "id": "lightshot",
+    "name": "Lightshot",
+    "description": "Простой инструмент для создания и быстрого редактирования скриншотов.",
+    "category": "Утилиты",
+    "icon": "logos/lightshot.png",
+    "website": "https://app.prntscr.com/",
+    "download": {
+      "type": "Direct",
+      "url": "https://app.prntscr.com/build/setup-lightshot.exe",
+      "fileName": "setup-lightshot.exe"
+    }
+  },
+  {
+    "id": "happ",
+    "name": "Happ",
+    "description": "Кроссплатформенный клиент для управления прокси-подключениями.",
+    "category": "Сеть",
+    "icon": "logos/happ.png",
+    "website": "https://www.happ.su/main/ru",
+    "download": {
+      "type": "Direct",
+      "url": "https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe",
+      "fileName": "HappSetup.exe"
+    }
+  },
+  {
+    "id": "minersearch",
+    "name": "MinerSearch",
+    "description": "Утилита для поиска и удаления подозрительных майнеров в Windows.",
+    "category": "Безопасность",
+    "icon": "logos/MinerSearch.png",
+    "website": "https://github.com/BlendLog/MinerSearch",
+    "download": {
+      "type": "GitHub",
+      "repository": "BlendLog/MinerSearch",
+      "assetPattern": "MinerSearch_v*.*"
+    }
+  },
+  {
+    "id": "zapret",
+    "name": "Zapret",
+    "description": "Инструмент для обхода некоторых сетевых ограничений и DPI-фильтрации.",
+    "category": "Сеть",
+    "icon": "logos/Zapret.png",
+    "website": "https://github.com/Flowseal/zapret-discord-youtube",
+    "download": {
+      "type": "GitHub",
+      "owner": "Flowseal",
+      "repository": "zapret-discord-youtube",
+      "assetPattern": "zapret-discord-youtube-*.zip"
+    }
+  },
+  {
+    "id": "tg-ws-proxy",
+    "name": "TG-WS-Proxy",
+    "description": "Локальный MTProto-прокси для Telegram через WebSocket.",
+    "category": "Сеть",
+    "icon": "logos/Tg-ws-proxy.png",
+    "website": "https://github.com/Flowseal/tg-ws-proxy",
+    "download": {
+      "type": "GitHub",
+      "owner": "Flowseal",
+      "repository": "tg-ws-proxy",
+      "assets": {
+        "x64": "TgWsProxy_windows.exe",
+        "arm64": "TgWsProxy_windows_arm64.exe",
+        "win7-x64": "TgWsProxy_windows_7_64bit.exe",
+        "win7-x86": "TgWsProxy_windows_7_32bit.exe"
+      }
+    }
+  },
+  {
+    "id": "nuclear",
+    "name": "Nuclear",
+    "description": "Бесплатный музыкальный плеер с открытым исходным кодом.",
+    "category": "Мультимедиа",
+    "icon": "logos/Nuclear.png",
+    "website": "https://github.com/nukeop/nuclear",
+    "download": {
+      "type": "GitHub",
+      "repository": "nukeop/nuclear",
+      "assetPattern": "Nuclear_*_x64-setup.exe"
+    }
+  },
+  {
+    "id": "omniget",
+    "name": "OmniGet",
+    "description": "Универсальный загрузчик контента из множества интернет-сервисов.",
+    "category": "Загрузки",
+    "icon": "logos/omniget.png",
+    "website": "https://github.com/tonhowtf/omniget",
+    "download": {
+      "type": "GitHub",
+      "repository": "tonhowtf/omniget",
+      "assetPattern": "omniget-cli-*-x86_64-pc-windows-msvc.zip"
+    }
+  },
+  {
+    "id": "lamzu-aurora",
+    "name": "LAMZU Aurora",
+    "description": "Утилита для настройки и обновления мыши LAMZU Aurora.",
+    "category": "Устройства",
+    "icon": "logos/Lamzu_aurora.png",
+    "website": "https://lamzu.com/pages/download",
+    "download": {
+      "type": "Direct",
+      "url": "https://download.s21i.co99.net/34008927/0/0/ABUIABBQGAAg4P6J0QYojoCu7Qc.rar?f=LAMZU-Aurora-1.0.31-setup%281%29.rar&v=1780645729",
+      "fileName": "LAMZU-Aurora-1.0.31.rar"
+    }
+  },
+  {
+    "id": "lamzu-thorn-v2-firmware",
+    "name": "LAMZU THORN V2 Firmware",
+    "description": "Инструмент обновления прошивки мыши LAMZU THORN V2.",
+    "category": "Устройства",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://lamzu.com/pages/download",
+    "download": {
+      "type": "Direct",
+      "url": "https://cdn.shopify.com/s/files/1/0581/9675/4466/files/Thorn_v2_Firmware_fa3b115e-4613-4e23-819c-79eb6318b653.rar?v=1783492014",
+      "fileName": "LAMZU-THORN-V2-Firmware.rar"
+    }
+  },
+  {
+    "id": "lamzu-maya-x-firmware",
+    "name": "LAMZU MAYA X Firmware",
+    "description": "Инструмент обновления прошивки LAMZU MAYA X и её приёмника.",
+    "category": "Устройства",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://lamzu.com/pages/download",
+    "download": {
+      "type": "Direct",
+      "url": "https://cdn.shopify.com/s/files/1/0581/9675/4466/files/v0.0.0.19_Maya_X_1_1.7z?v=1779088398",
+      "fileName": "LAMZU-MAYA-X-Firmware.7z"
+    }
+  },
+  {
+    "id": "lamzu-maya-champion-firmware",
+    "name": "LAMZU MAYA Champion Edition Firmware",
+    "description": "Инструмент обновления прошивки LAMZU MAYA Champion Edition.",
+    "category": "Устройства",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://lamzu.com/pages/download",
+    "download": {
+      "type": "Direct",
+      "url": "https://cdn.shopify.com/s/files/1/0581/9675/4466/files/LAMZU_MAYA_Champion_Edition_00.00.00.19.rar?v=1781083418",
+      "fileName": "LAMZU-MAYA-Champion-Firmware.rar"
+    }
+  },
+  {
+    "id": "lamzu-inca-firmware",
+    "name": "LAMZU INCA Firmware",
+    "description": "Инструмент обновления прошивки мыши LAMZU INCA.",
+    "category": "Устройства",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://lamzu.com/pages/download",
+    "download": {
+      "type": "Direct",
+      "url": "https://cdn.shopify.com/s/files/1/0581/9675/4466/files/LAMZU_INCA_00.00.00.19.rar?v=1781082939",
+      "fileName": "LAMZU-INCA-Firmware.rar"
+    }
+  },
+  {
+    "id": "lamzu-paro-aurora-firmware",
+    "name": "LAMZU PARO AURORA Firmware",
+    "description": "Инструмент обновления прошивки LAMZU PARO AURORA.",
+    "category": "Устройства",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://lamzu.com/pages/download",
+    "download": {
+      "type": "Direct",
+      "url": "https://cdn.shopify.com/s/files/1/0581/9675/4466/files/LAMZU_PARO_AURORA_00.00.00.19.rar?v=1781082939",
+      "fileName": "LAMZU-PARO-AURORA-Firmware.rar"
+    }
+  },
+  {
+    "id": "lamzu-tachi-firmware",
+    "name": "LAMZU TACHI Update Tool",
+    "description": "Утилита обновления устройств серии LAMZU TACHI.",
+    "category": "Устройства",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://lamzu.com/pages/download",
+    "download": {
+      "type": "Direct",
+      "url": "https://cdn.shopify.com/s/files/1/0581/9675/4466/files/TACHI_Update_Tools_00.15.zip?v=1755079582",
+      "fileName": "LAMZU-TACHI-Update-Tool.zip"
+    }
+  },
+  {
+    "id": "autoruns",
+    "name": "Autoruns",
+    "description": "Расширенный менеджер автозапуска компонентов Windows.",
+    "category": "Система",
+    "icon": "logos/autoruns.png",
+    "website": "https://learn.microsoft.com/sysinternals/downloads/autoruns",
+    "download": {
+      "type": "Direct",
+      "url": "https://download.sysinternals.com/files/Autoruns.zip",
+      "fileName": "Autoruns.zip"
+    }
+  },
+  {
+    "id": "hwmonitor",
+    "name": "HWMonitor",
+    "description": "Мониторинг температуры, напряжений и состояния оборудования.",
+    "category": "Система",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.cpuid.com/softwares/hwmonitor.html",
+    "download": {
+      "type": "Website"
+    }
+  },
+  {
+    "id": "vlc",
+    "name": "VLC",
+    "description": "Универсальный медиаплеер с поддержкой множества форматов.",
+    "category": "Мультимедиа",
+    "icon": "logos/VLC.svg",
+    "website": "https://www.videolan.org/vlc/",
+    "download": {
+      "type": "Website"
+    }
+  },
+  {
+    "id": "mpc-hc",
+    "name": "MPC-HC",
+    "description": "Лёгкий медиаплеер для Windows с классическим интерфейсом.",
+    "category": "Мультимедиа",
+    "icon": "logos/mpc_hc.png",
+    "website": "https://github.com/clsid2/mpc-hc",
+    "download": {
+      "type": "GitHub",
+      "repository": "clsid2/mpc-hc",
+      "assetPattern": "*x64.exe"
+    }
+  },
+  {
+    "id": "eartrumpet",
+    "name": "EarTrumpet",
+    "description": "Удобный микшер громкости Windows с управлением по приложениям.",
+    "category": "Утилиты",
+    "icon": "logos/EarTrumpet.png",
+    "website": "https://eartrumpet.app/",
+    "download": {
+      "type": "Official",
+      "url": "https://install.eartrumpet.app/dev/EarTrumpet.Package.appinstaller",
+      "fileName": "EarTrumpet.Package.appinstaller"
+    }
+  },
+  {
+    "id": "rufus",
+    "name": "Rufus",
+    "description": "Инструмент для создания загрузочных USB-накопителей.",
+    "category": "Система",
+    "icon": "logos/Rufus.png",
+    "website": "https://rufus.ie/",
+    "download": {
+      "type": "GitHub",
+      "repository": "pbatard/rufus",
+      "assetPattern": "rufus*.exe"
+    }
+  },
+  {
+    "id": "windhawk",
+    "name": "Windhawk",
+    "description": "Платформа для модификации и настройки интерфейса Windows.",
+    "category": "Настройка Windows",
+    "icon": "logos/Windhawk.png",
+    "website": "https://windhawk.net/",
+    "download": {
+      "type": "GitHub",
+      "repository": "ramensoftware/windhawk",
+      "assetPattern": "*Windhawk*.exe"
+    }
+  },
+  {
+    "id": "quicklook",
+    "name": "QuickLook",
+    "description": "Быстрый просмотр файлов по пробелу в стиле macOS.",
+    "category": "Утилиты",
+    "icon": "logos/QuickLook.png",
+    "website": "https://github.com/QL-Win/QuickLook",
+    "download": {
+      "type": "GitHub",
+      "repository": "QL-Win/QuickLook",
+      "assetPattern": "QuickLook-*.exe"
+    }
+  },
+  {
+    "id": "notepads",
+    "name": "Notepads",
+    "description": "Современный блокнот Windows с вкладками и удобным интерфейсом.",
+    "category": "Офис",
+    "icon": "logos/Notepads.png",
+    "website": "https://github.com/0x7c13/Notepads",
+    "download": {
+      "type": "GitHub",
+      "repository": "0x7c13/Notepads",
+      "assetPattern": "*Notepads*.*"
+    }
+  },
+  {
+    "id": "notepadpp",
+    "name": "Notepad++",
+    "description": "Быстрый текстовый редактор и редактор исходного кода.",
+    "category": "Разработка",
+    "icon": "logos/Notepad++.png",
+    "website": "https://notepad-plus-plus.org/",
+    "download": {
+      "type": "GitHub",
+      "repository": "notepad-plus-plus/notepad-plus-plus",
+      "assetPattern": "npp.*.Installer.{arch}.exe"
+    }
+  },
+  {
+    "id": "vscode",
+    "name": "Visual Studio Code",
+    "description": "Быстрый редактор кода с расширениями для разработки.",
+    "category": "Разработка",
+    "icon": "logos/Visual_code.png",
+    "website": "https://code.visualstudio.com/download",
+    "download": {
+      "type": "Website"
+    }
+  },
+  {
+    "id": "visualstudio",
+    "name": "Visual Studio",
+    "description": "Полноценная IDE Microsoft для профессиональной разработки.",
+    "category": "Разработка",
+    "icon": "logos/Visual_studio.png",
+    "website": "https://visualstudio.microsoft.com/",
+    "download": {
+      "type": "Direct",
+      "url": "https://aka.ms/vs/17/release/vs_community.exe",
+      "fileName": "VisualStudioSetup.exe"
+    }
+  },
+  {
+    "id": "aida64",
+    "name": "AIDA64",
+    "description": "Подробная диагностика и информация об аппаратном обеспечении ПК.",
+    "category": "Система",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.aida64.com/",
+    "download": {
+      "type": "Website",
+      "minimumWindowsBuild": 10240
+    }
+  },
+  {
+    "id": "everything",
+    "name": "Everything",
+    "description": "Мгновенный поиск файлов и папок в Windows.",
+    "category": "Утилиты",
+    "icon": "logos/everything.png",
+    "website": "https://www.voidtools.com/downloads/",
+    "download": {
+      "type": "Website"
+    }
+  },
+  {
+    "id": "driverbooster",
+    "name": "Driver Booster",
+    "description": "Инструмент для поиска и обновления драйверов Windows.",
+    "category": "Драйверы",
+    "icon": "logos/Driver_booster.png",
+    "website": "https://www.iobit.com/en/driver-booster.php",
+    "download": {
+      "type": "Direct",
+      "url": "https://www.iobit.com/downloadcenter.php?product=driver-booster-free-new&insur=en_db",
+      "fileName": "DriverBoosterSetup.exe"
+    },
+    "recommendationTags": []
+  },
+  {
+    "id": "glaryutilities5",
+    "name": "Glary Utilities 5",
+    "description": "Набор инструментов для обслуживания и оптимизации Windows.",
+    "category": "Утилиты",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.glarysoft.com/glary-utilities/",
+    "download": {
+      "type": "Direct",
+      "url": "https://www.glarysoft.com/aff/download2.php?s=GU",
+      "fileName": "GlaryUtilitiesSetup.exe"
+    }
+  },
+  {
+    "id": "malwarebytes",
+    "name": "Malwarebytes",
+    "description": "Защита Windows от вредоносного и нежелательного программного обеспечения.",
+    "category": "Безопасность",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.malwarebytes.com/mwb-download/",
+    "download": {
+      "type": "Website"
+    }
+  },
+  {
+    "id": "virustotal",
+    "name": "VirusTotal",
+    "description": "Онлайн-сервис для проверки файлов и ссылок множеством защитных систем.",
+    "category": "Безопасность",
+    "icon": "logos/Virustotal.png",
+    "website": "https://www.virustotal.com/",
+    "download": {
+      "type": "Direct",
+      "url": "https://www.virustotal.com/static/bin/vtuploader2.2.exe",
+      "fileName": "VirusTotalUploader.exe"
+    },
+    "isBlockedInRussia": true
+  },
+  {
+    "id": "amd-auto-detect",
+    "name": "AMD Auto-Detect and Install Tool",
+    "description": "Официальный инструмент AMD для автоматического определения Radeon и Ryzen Chipset и установки совместимых драйверов.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.amd.com/en/support/download/drivers.html",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": []
+  },
+  {
+    "id": "amd-ryzen-master",
+    "name": "AMD Ryzen Master",
+    "description": "Официальная утилита AMD для мониторинга и настройки совместимых процессоров Ryzen.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.amd.com/en/products/software/ryzen-master.html",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": []
+  },
+  {
+    "id": "amd-cleanup-utility",
+    "name": "AMD Cleanup Utility",
+    "description": "Официальная утилита AMD для удаления установленных графических драйверов AMD перед чистой установкой.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.amd.com/en/resources/support-articles/faqs/GPU-601.html",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": []
+  },
+  {
+    "id": "intel-graphics-software",
+    "name": "Intel Graphics Software",
+    "description": "Панель управления и функции для совместимых встроенных и дискретных графических решений Intel.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.intel.com/content/www/us/en/download/785597/intel-graphics-software.html",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": [
+      "gpu:intel"
+    ]
+  },
+  {
+    "id": "intel-xtu",
+    "name": "Intel Extreme Tuning Utility",
+    "description": "Утилита Intel для мониторинга и расширенной настройки поддерживаемых процессоров и платформ.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.intel.com/content/www/us/en/download/29183/intel-extreme-tuning-utility-intel-xtu.html",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": []
+  },
+  {
+    "id": "msi-driver-utility-installer",
+    "name": "MSI Driver Utility Installer",
+    "description": "Официальный автоматический установщик драйверов и утилит MSI для совместимых материнских плат.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.msi.com/support/technical_details/MB_Driver_Update",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": []
+  },
+  {
+    "id": "snappy-driver-installer-origin",
+    "name": "Snappy Driver Installer Origin",
+    "description": "Оффлайн-инструмент для поиска и установки драйверов Windows из каталога.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.glenn.delahoy.com/snappy-driver-installer-origin/",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": []
+  },
+  {
+    "id": "driver-store-explorer",
+    "name": "Driver Store Explorer (RAPR)",
+    "description": "Открытый инструмент для просмотра и управления пакетами драйверов в Driver Store Windows.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://github.com/lostindark/DriverStoreExplorer",
+    "download": {
+      "type": "GitHub",
+      "repository": "lostindark/DriverStoreExplorer",
+      "assetPattern": "*.zip"
+    },
+    "recommendationTags": []
+  },
+  {
+    "id": "display-driver-uninstaller",
+    "name": "Display Driver Uninstaller (DDU)",
+    "description": "Утилита для глубокой очистки графических драйверов перед новой установкой.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.wagnardsoft.com/",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": []
+  },
+  {
+    "id": "nvcleanstall",
+    "name": "NVCleanstall",
+    "description": "Инструмент TechPowerUp для выборочной и чистой установки драйвера NVIDIA.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.techpowerup.com/nvcleanstall/",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": []
+  },
+  {
+    "id": "asus-driverhub",
+    "name": "ASUS DriverHub",
+    "description": "Официальная утилита ASUS для автоматического определения системы и установки совместимых драйверов и утилит.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://driverhub.asus.com/",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": [
+      "motherboard:asus"
+    ]
+  },
+  {
+    "id": "asrock-app-shop",
+    "name": "ASRock Live Update & APP Shop",
+    "description": "Официальная утилита ASRock для загрузки и обновления драйверов, BIOS и фирменных приложений.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.asrock.com/feature/appshop/",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": [
+      "motherboard:asrock"
+    ]
+  },
+  {
+    "id": "asrock-a-tuning",
+    "name": "ASRock Motherboard Utility (A-Tuning)",
+    "description": "Фирменная утилита ASRock для мониторинга, вентиляторов и настройки совместимых материнских плат.",
+    "category": "Драйверы",
+    "icon": "interface/white/fluent-app-folder.svg",
+    "website": "https://www.asrock.com/support/index.asp",
+    "download": {
+      "type": "Website"
+    },
+    "recommendationTags": []
+  }
+]

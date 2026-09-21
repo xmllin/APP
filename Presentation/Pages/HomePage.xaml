@@ -1,0 +1,188 @@
+﻿<UserControl x:Class="WpfApp1.Pages.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:WpfApp1.Services"
+    Background="Transparent">
+    <UserControl.Resources>
+        <local:AppIconConverter x:Key="AppIconConverter"/>
+        <local:CategoryColorConverter x:Key="CategoryColorConverter"/>
+        <Style x:Key="RecentAppCard" TargetType="Border" BasedOn="{StaticResource Card}">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#132B47"/>
+                    <Setter Property="BorderBrush" Value="#367FCE"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="HomeTileButton" TargetType="Button" BasedOn="{StaticResource CardButton}">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="TileBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="14" Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                <Path Data="M 0,0 L 5,5 L 0,10" Stroke="#78B9F5" StrokeThickness="1.8" Width="6" Height="11" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="TileBorder" Property="Background" Value="#132B47"/>
+                                <Setter TargetName="TileBorder" Property="BorderBrush" Value="#367FCE"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="TileBorder" Property="Background" Value="#183A60"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
+        <StackPanel Margin="36,28,36,42">
+
+            <Border Height="150" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="28">
+                <Border.Background>
+                    <ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/>
+                </Border.Background>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="82" Height="82" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Всё необходимое для Windows" FontSize="30" FontWeight="SemiBold" TextWrapping="NoWrap"/>
+                        <TextBlock Text="Программы, инструменты, настройки и обои — в одном месте."
+                       Foreground="#B9CAE2" FontSize="15" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <Border Height="1" Background="#21476E" Margin="0,24,0,12"/>
+            <TextBlock Text="Основные разделы" FontSize="22" FontWeight="SemiBold" Margin="0,0,0,14"/>
+            <WrapPanel HorizontalAlignment="Center">
+                <Button Style="{StaticResource HomeTileButton}" Click="Apps_Click" Margin="10,0,10,10" Height="99" Width="340">
+                    <StackPanel Orientation="Horizontal" Margin="18">
+                        <Image Source="{local:SvgImage Source=interface/white/world-download.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
+                        <StackPanel>
+                            <TextBlock Text="Программы" FontSize="17" FontWeight="SemiBold"/>
+                            <TextBlock Text="Популярные программы и утилиты" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource HomeTileButton}" Click="UwpApps_Click" Height="99" Width="340" Margin="10,0,10,10">
+                    <StackPanel Orientation="Horizontal" Margin="18">
+                        <Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
+                        <StackPanel>
+                            <TextBlock Text="UWP-приложения" FontSize="17" FontWeight="SemiBold"/>
+                            <TextBlock Text="Управление приложениями Windows" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource HomeTileButton}" Click="Libraries_Click" Margin="10,0,10,10" Height="99" Width="340">
+                    <StackPanel Orientation="Horizontal" Margin="18">
+                        <Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
+                        <StackPanel>
+                            <TextBlock Text="Библиотеки и компоненты" FontSize="17" FontWeight="SemiBold"/>
+                            <TextBlock Text="Системные компоненты и среды выполнения" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource HomeTileButton}" Click="Windows_Click" Margin="10,0,10,10" Height="99" Width="340">
+                    <StackPanel Orientation="Horizontal" Margin="18">
+                        <Image Source="{local:SvgImage Source=interface/white/brand-windows.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
+                        <StackPanel>
+                            <TextBlock Text="Настройки Windows" FontSize="17" FontWeight="SemiBold"/>
+                            <TextBlock Text="Параметры, обновления и инструменты" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource HomeTileButton}" Click="Activation_Click" Margin="10,0,10,10" Height="99" Width="340">
+                    <StackPanel Orientation="Horizontal" Margin="18">
+                        <Image Source="{local:SvgImage Source=interface/white/brand-windows.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
+                        <StackPanel>
+                            <TextBlock Text="Активация Windows" FontSize="17" FontWeight="SemiBold"/>
+                            <TextBlock Text="Статус лицензии и активация" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource HomeTileButton}" Click="Wallpaper_Click" Margin="10,0,10,10" Height="99" Width="340">
+                    <StackPanel Orientation="Horizontal" Margin="18">
+                        <Image Source="{local:SvgImage Source=interface/white/category-media.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
+                        <StackPanel>
+                            <TextBlock Text="Обои" FontSize="17" FontWeight="SemiBold"/>
+                            <TextBlock Text="Красивые обои для рабочего стола" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource HomeTileButton}" Click="Downloads_Click" Margin="10,0,10,10" Height="99" Width="340">
+                    <StackPanel Orientation="Horizontal" Margin="18">
+                        <Image Source="{local:SvgImage Source=interface/white/fluent-arrow-download.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
+                        <StackPanel>
+                            <TextBlock Text="Загрузки" FontSize="17" FontWeight="SemiBold"/>
+                            <TextBlock Text="Ваши скачанные файлы и история" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Button>
+            </WrapPanel>
+            <Border Height="1" Background="#21476E" Margin="0,16,0,12"/>
+            <TextBlock Text="Дополнительные разделы" FontSize="22" FontWeight="SemiBold" Margin="0,0,0,14"/>
+            <WrapPanel HorizontalAlignment="Center">
+                <Button Style="{StaticResource HomeTileButton}" Click="Settings_Click" Margin="10,0,10,10" Height="99" Width="320">
+                    <StackPanel Orientation="Horizontal" Margin="18">
+                        <Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
+                        <StackPanel>
+                            <TextBlock Text="Настройки" FontSize="17" FontWeight="SemiBold"/>
+                            <TextBlock Text="Внешний вид и параметры программы" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource HomeTileButton}" Click="Profile_Click" Height="99" Width="320" Margin="10,0,10,10">
+                    <StackPanel Orientation="Horizontal" Margin="18">
+                        <Image Source="{local:SvgImage Source=interface/white/fluent-person.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
+                        <StackPanel>
+                            <TextBlock Text="Профиль" FontSize="17" FontWeight="SemiBold"/>
+                            <TextBlock Text="Информация о вашем компьютере" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Button>
+            </WrapPanel>
+            <Border Height="1" Background="#21476E" Margin="0,24,0,12"/>
+            <TextBlock Text="Недавние" FontSize="21" FontWeight="SemiBold" Margin="0,0,0,12"/>
+            <ScrollViewer x:Name="RecentScrollViewer" HorizontalContentAlignment="Center" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled" SizeChanged="RecentScrollViewer_SizeChanged">
+                <ItemsControl x:Name="RecentItems" HorizontalAlignment="Center">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="180" Height="140" Margin="5" Padding="10" Style="{StaticResource RecentAppCard}" ClipToBounds="True">
+                                <Button Click="RecentApp_Click" Tag="{Binding}" Style="{StaticResource {x:Type Button}}" 
+                        Background="Transparent" BorderThickness="0" Cursor="Hand" Padding="0" Content="{Binding}">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="Transparent" CornerRadius="8">
+                                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Image Source="{Binding Icon, Converter={StaticResource AppIconConverter}}" Width="53" Height="53" Stretch="Uniform" HorizontalAlignment="Center"/>
+                                                    <StackPanel Grid.Row="1" Margin="0,10,0,0" HorizontalAlignment="Center" TextBlock.TextAlignment="Center">
+                                                        <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" TextWrapping="Wrap" MaxWidth="130" MaxHeight="32"/>
+                                                        <TextBlock Text="{Binding Category}" Foreground="{Binding Category, Converter={StaticResource CategoryColorConverter}}" FontSize="12" FontWeight="SemiBold" Margin="0,4,0,0" TextTrimming="CharacterEllipsis" MaxWidth="130"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
