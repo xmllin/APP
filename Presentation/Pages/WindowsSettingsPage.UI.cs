@@ -339,7 +339,6 @@ namespace WpfApp1.Pages
 			taskbarPanel.Children.Add(CreateAdditionalToggleRow(taskbarTaskView, "Показывать представление задач", "Показывать кнопку Task View на панели задач"));
 			taskbarPanel.Children.Add(CreateAdditionalValueRow("Поиск на панели задач", "Выбрать отображение поиска на панели задач", searchBoxMode));
 			taskbarPanel.Children.Add(CreateAdditionalToggleRow(taskbarLastActive, "Переключаться на последнее окно", "Щелчок по сгруппированной кнопке открывает последнее активное окно"));
-			taskbarPanel.Children.Add(CreateAdditionalToggleRow(DisableBingSearchToggle, "Отключить веб-поиск Windows", "Отключить веб-подсказки и поиск Bing в Windows"));
 			taskbarPanel.Children.Add(CreateAdditionalToggleRow(_taskbarEndTaskToggle, "Завершать задачи с панели задач", "Добавить команду завершения приложения в меню панели задач"));
 			if (secondsRow != null)
 				taskbarPanel.Children.Add(secondsRow);
