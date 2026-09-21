@@ -101,15 +101,15 @@ namespace WpfApp1.Services
             layout.Children.Add(messageBlock);
 
             var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
-            var ok = CreateButton(confirm ? "Нет" : "ОК", false);
-            ok.Click += (sender, args) => { dialog.DialogResult = confirm ? false : true; };
-            buttons.Children.Add(ok);
             if (confirm)
             {
                 var yes = CreateButton("Да", true);
                 yes.Click += (sender, args) => dialog.DialogResult = true;
                 buttons.Children.Add(yes);
             }
+            var ok = CreateButton(confirm ? "Нет" : "ОК", false);
+            ok.Click += (sender, args) => { dialog.DialogResult = confirm ? false : true; };
+            buttons.Children.Add(ok);
             Grid.SetRow(buttons, 1);
             layout.Children.Add(buttons);
             shell.Children.Add(layout);
