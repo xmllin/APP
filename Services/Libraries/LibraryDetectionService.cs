@@ -50,7 +50,11 @@ namespace WpfApp1.Services.Libraries
                 installed = false;
             }
 
-            var status = installed ? LibraryInstallStatus.Installed : LibraryInstallStatus.Missing;
+            var status = installed
+                ? LibraryInstallStatus.Installed
+                : !definition.CanInstallAutomatically
+                    ? LibraryInstallStatus.Manual
+                    : LibraryInstallStatus.Missing;
             return new LibraryItem(definition, status, installedVersion);
         }
 
