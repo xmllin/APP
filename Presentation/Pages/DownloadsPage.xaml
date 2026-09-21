@@ -127,7 +127,7 @@
                         <TextBlock Text="История загрузок" FontSize="18" FontWeight="SemiBold"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Button Click="OpenFolder_Click" Style="{StaticResource GhostButton}" Margin="0,0,8,0"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-folder-open.svg}" Width="16" Height="16" Margin="0,0,6,0"/><TextBlock Text="Открыть папку"/></StackPanel></Button>
-                            <Button Click="ClearDownloads_Click" Style="{StaticResource GhostButton}"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/clock-x.svg}" Width="16" Height="16" Margin="0,0,6,0"/><TextBlock Text="Очистить загрузки"/></StackPanel></Button>
+                            <Button Click="ClearDownloads_Click" Style="{StaticResource GhostButton}"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/clock-x.svg}" Width="16" Height="16" Margin="0,0,6,0"/><TextBlock Text="Очистить историю загрузок"/></StackPanel></Button>
                         </StackPanel>
                     </Grid>
                     <ItemsControl x:Name="DownloadItems">
