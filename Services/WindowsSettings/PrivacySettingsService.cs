@@ -236,8 +236,13 @@ namespace WpfApp1.Services.WindowsSettings
         {
             var changes = new List<RegistryChange>
             {
+                MachineDword(LegacyDataCollection, "AllowTelemetry", disabled ? 0 : 1),
+                MachineDword(Legacy32, "AllowTelemetry", disabled ? 0 : 1),
                 MachineDword(DataCollection, "AllowTelemetry", disabled ? 0 : 1),
                 MachineDword(DataCollection, "MaxTelemetryAllowed", disabled ? 0 : 1),
+                MachineDword(DataCollection, "AllowCommercialDataPipeline", disabled ? 0 : 1),
+                MachineDword(DataCollection, "AllowDeviceNameInTelemetry", disabled ? 0 : 1),
+                MachineDword(DataCollection, "MicrosoftEdgeDataOptIn", disabled ? 0 : 1),
                 MachineDword(DataCollection, "AllowDeviceNameInDiagnosticData", disabled ? 0 : 1),
                 MachineDword(DataCollection, "AllowWAPPReports", disabled ? 0 : 1),
                 MachineDword(DataCollection, "DoNotShowFeedbackNotifications", disabled ? 1 : 0),
@@ -267,7 +272,18 @@ namespace WpfApp1.Services.WindowsSettings
                 MachineDword(LegacyInput, "RestrictImplicitInkCollection", disabled ? 1 : 0),
 
                 UserDword(Voice, "HasAccepted", disabled ? 0 : 1),
-                MachineDword(Speech, "AllowSpeechModelUpdate", disabled ? 0 : 1)
+                MachineDword(Speech, "AllowSpeechModelUpdate", disabled ? 0 : 1),
+
+                UserDword(@"Software\Microsoft\Siuf\Rules", "NumberOfSIUFInPeriod", disabled ? 0 : 1),
+                UserDword(@"Software\Policies\Microsoft\Windows\EdgeUI", "DisableMFUTracking", disabled ? 1 : 0),
+                UserDword(@"Software\Policies\Microsoft\Assistance\Client\1.0", "NoExplicitFeedback", disabled ? 1 : 0),
+                UserDword(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "Start_TrackProgs", disabled ? 0 : 1),
+
+                MachineDword(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", "NoConnectedUser", disabled ? 3 : 0),
+                MachineDword(@"SYSTEM\CurrentControlSet\Services\DiagTrack", "Start", disabled ? 4 : 3),
+                MachineDword(@"SYSTEM\CurrentControlSet\Services\dmwappushservice", "Start", disabled ? 4 : 3),
+                MachineDword(@"SYSTEM\CurrentControlSet\Services\DcpSvc", "Start", disabled ? 4 : 3),
+                MachineDword(@"SYSTEM\CurrentControlSet\Services\diagnosticshub.standardcollector.service", "Start", disabled ? 4 : 3)
             };
 
             try
@@ -292,6 +308,15 @@ namespace WpfApp1.Services.WindowsSettings
                         _backup.BackupCurrentUserOnce(backupName, change.Path, change.Name);
                         _registry.WriteCurrentUser(change.Path, change.Name, change.NewValue, change.Kind);
                     }
+                }
+
+                if (disabled)
+                {
+                    try
+                    {
+                        _registry.DeleteCurrentUser(@"Software\Microsoft\Siuf\Rules", "PeriodInNanoSeconds");
+                    }
+                    catch { }
                 }
 
                 return SettingOperationResult.Ok("Параметры телеметрии сохранены.", true);
