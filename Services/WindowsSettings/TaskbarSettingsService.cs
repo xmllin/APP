@@ -173,7 +173,7 @@ namespace WpfApp1.Services.WindowsSettings
         {
             return WriteStringSetting(
                 "TaskbarSearchBoxMode",
-                @"Software\\Microsoft\\Windows\\CurrentVersion\\Search",
+                @"Software\Microsoft\Windows\CurrentVersion\Search",
                 "SearchboxTaskbarMode",
                 Math.Clamp(value, 0, Environment.OSVersion.Version.Build >= 22000 ? 3 : 2),
                 true);
