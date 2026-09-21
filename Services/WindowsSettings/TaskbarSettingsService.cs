@@ -62,7 +62,7 @@ namespace WpfApp1.Services.WindowsSettings
                 Widgets = ReadBool(Advanced, "TaskbarDa", null, true),
                 TaskViewButton = ReadBool(Advanced, "ShowTaskViewButton", null, true),
                 LastActiveClick = ReadBool(Advanced, "LastActiveClick", null, false),
-                SearchBoxTaskbarMode = ReadIntString(@"Software\\Microsoft\\Windows\\CurrentVersion\\Search", "SearchboxTaskbarMode", 3),
+                SearchBoxTaskbarMode = ReadIntString(@"Software\Microsoft\Windows\CurrentVersion\Search", "SearchboxTaskbarMode", 3),
                 Alignment = ReadIntString(AlignmentPath, "SystemSettings_DesktopTaskbar_Al", 1),
                 MultiMonitorMode = ReadIntString(MultiMonitorModePath, "SystemSettings_Taskbar_MultiMonTaskbarMode", 0, "SystemSettings_DesktopTaskbar_MultiMonTaskbarMode"),
                 GroupingMode = ReadIntString(GlomPath, "SystemSettings_DesktopTaskbar_GroupingMode", 0),
