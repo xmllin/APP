@@ -613,9 +613,14 @@ namespace WpfApp1.Pages
 			var index = Math.Min(_highlightColorCombo.SelectedIndex, colors.Length - 1);
 			using (var key = Registry.CurrentUser.CreateSubKey(ColorsPath))
 			{
-				key?.SetValue("Hilight", colors[index], RegistryValueKind.String);
-				key?.SetValue("HightLight", colors[index], RegistryValueKind.String);
-				key?.SetValue("HotTrackingColor", tracking[index], RegistryValueKind.String);
+				if (key == null) throw new InvalidOperationException("Не удалось открыть параметры цвета выделения.");
+				key.SetValue("Hilight", colors[index], RegistryValueKind.String);
+				key.SetValue("HightLight", colors[index], RegistryValueKind.String);
+				key.SetValue("HotTrackingColor", tracking[index], RegistryValueKind.String);
+				if (!string.Equals(key.GetValue("Hilight", null) as string, colors[index], StringComparison.OrdinalIgnoreCase)
+					|| !string.Equals(key.GetValue("HightLight", null) as string, colors[index], StringComparison.OrdinalIgnoreCase)
+					|| !string.Equals(key.GetValue("HotTrackingColor", null) as string, tracking[index], StringComparison.OrdinalIgnoreCase))
+					throw new InvalidOperationException("Windows не сохранила цвет выделения.");
 			}
 			RefreshExplorer();
 		}
@@ -662,9 +667,14 @@ namespace WpfApp1.Pages
 				var index = Math.Min(_highlightColorCombo.SelectedIndex, colors.Length - 1);
 				using (var key = Registry.CurrentUser.CreateSubKey(ColorsPath))
 				{
-					key?.SetValue("Hilight", colors[index], RegistryValueKind.String);
-					key?.SetValue("HightLight", colors[index], RegistryValueKind.String);
-					key?.SetValue("HotTrackingColor", tracking[index], RegistryValueKind.String);
+					if (key == null) throw new InvalidOperationException("Не удалось открыть параметры цвета выделения.");
+					key.SetValue("Hilight", colors[index], RegistryValueKind.String);
+					key.SetValue("HightLight", colors[index], RegistryValueKind.String);
+					key.SetValue("HotTrackingColor", tracking[index], RegistryValueKind.String);
+					if (!string.Equals(key.GetValue("Hilight", null) as string, colors[index], StringComparison.OrdinalIgnoreCase)
+						|| !string.Equals(key.GetValue("HightLight", null) as string, colors[index], StringComparison.OrdinalIgnoreCase)
+						|| !string.Equals(key.GetValue("HotTrackingColor", null) as string, tracking[index], StringComparison.OrdinalIgnoreCase))
+						throw new InvalidOperationException("Windows не сохранила цвет выделения.");
 				}
 				RefreshExplorer();
 				ShowToast("Цвет выделения применён.");
@@ -742,24 +752,39 @@ namespace WpfApp1.Pages
 			{
 				BackupMachineMultiString(MemoryManagementPath, "PagingFiles", "PageFile");
 				using (var key = Registry.LocalMachine.CreateSubKey(MemoryManagementPath))
-					key?.SetValue("PagingFiles", new string[0], RegistryValueKind.MultiString);
+				{
+					if (key == null) throw new InvalidOperationException("Не удалось открыть настройки файла подкачки.");
+					key.SetValue("PagingFiles", new string[0], RegistryValueKind.MultiString);
+				}
+
+				if (!IsPageFileDisabled())
+					throw new InvalidOperationException("Windows не подтвердила отключение файла подкачки.");
 				return;
 			}
 
-			using (var backup = Registry.LocalMachine.OpenSubKey(MachineSettingsBackupPath + "\\PageFile"))
+			using (var backup = Registry.LocalMachine.OpenSubKey(MachineSettingsBackupPath + "\PageFile"))
 			{
 				var original = backup?.GetValue("PagingFiles") as string[];
 				if (original != null && original.Length > 0)
 				{
 					using (var key = Registry.LocalMachine.CreateSubKey(MemoryManagementPath))
-						key?.SetValue("PagingFiles", original, RegistryValueKind.MultiString);
+					{
+						if (key == null) throw new InvalidOperationException("Не удалось открыть настройки файла подкачки.");
+						key.SetValue("PagingFiles", original, RegistryValueKind.MultiString);
+					}
 				}
 				else
 				{
 					using (var key = Registry.LocalMachine.OpenSubKey(MemoryManagementPath, true))
-						key?.DeleteValue("PagingFiles", false);
+					{
+						if (key != null)
+							key.DeleteValue("PagingFiles", false);
+					}
 				}
 			}
+
+			if (IsPageFileDisabled())
+				throw new InvalidOperationException("Windows не подтвердила восстановление файла подкачки.");
 		}
 
     }
