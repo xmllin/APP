@@ -79,7 +79,7 @@ namespace WpfApp1.Services.WindowsSettings
                     RestoreMachine(PolicyPath, "DisableDualScan");
                     RestoreMachine(PolicyPath + @"\AU", "NoAutoUpdate");
                     foreach (var service in new[] { "wuauserv", "UsoSvc", "WaaSMedicSvc" }) RestoreMachine(@"SYSTEM\CurrentControlSet\Services\" + service, "Start");
-                    if (!_fileBackup.Restore(HostsBackupName, hosts)) ApplyHostsBlock(false);
+                    ApplyHostsBlock(false);
                     await RunBestEffortAsync("schtasks.exe", "/change /tn \"\\Microsoft\\Windows\\WindowsUpdate\\Scheduled Start\" /enable", token);
                     await RunBestEffortAsync("schtasks.exe", "/change /tn \"\\Microsoft\\Windows\\UpdateOrchestrator\\Universal Orchestrator Start\" /enable", token);
                     await RunBestEffortAsync("net.exe", "start UsoSvc", token);
@@ -176,24 +176,49 @@ namespace WpfApp1.Services.WindowsSettings
         {
             var path = GetHostsPath();
             if (!File.Exists(path)) return;
-            var markerStart = "# WpfApp1 Windows Update block";
+
+            const string markerStart = "# WpfApp1 Windows Update block START";
+            const string markerEnd = "# WpfApp1 Windows Update block END";
+
             var lines = File.ReadAllLines(path).ToList();
-            lines = lines.Where(line => !line.Contains(markerStart, StringComparison.OrdinalIgnoreCase)
-                && !line.Contains("127.0.0.1 index.wp.microsoft.com", StringComparison.OrdinalIgnoreCase)
-                && !line.Contains("127.0.0.1 update.microsoft.com", StringComparison.OrdinalIgnoreCase)
-                && !line.Contains("127.0.0.1 slscr.update.microsoft.com", StringComparison.OrdinalIgnoreCase)
-                && !line.Contains("127.0.0.1 fe2.update.microsoft.com", StringComparison.OrdinalIgnoreCase)).ToList();
+            var cleaned = new System.Collections.Generic.List<string>(lines.Count);
+            var insideOwnedBlock = false;
+
+            foreach (var line in lines)
+            {
+                if (string.Equals(line.Trim(), markerStart, StringComparison.OrdinalIgnoreCase))
+                {
+                    insideOwnedBlock = true;
+                    continue;
+                }
+
+                if (string.Equals(line.Trim(), markerEnd, StringComparison.OrdinalIgnoreCase))
+                {
+                    insideOwnedBlock = false;
+                    continue;
+                }
+
+                if (!insideOwnedBlock)
+                    cleaned.Add(line);
+            }
+
             if (enabled)
             {
-                lines.Add(markerStart);
-                lines.Add("127.0.0.1 index.wp.microsoft.com");
-                lines.Add("127.0.0.1 update.microsoft.com");
-                lines.Add("127.0.0.1 slscr.update.microsoft.com");
-                lines.Add("127.0.0.1 fe2.update.microsoft.com");
-            }
-            File.WriteAllLines(path, lines);
-        }
+                if (cleaned.Count > 0 && !string.IsNullOrWhiteSpace(cleaned[cleaned.Count - 1]))
+                    cleaned.Add(string.Empty);
 
+                cleaned.Add(markerStart);
+                cleaned.Add("127.0.0.1 index.wp.microsoft.com");
+                cleaned.Add("127.0.0.1 update.microsoft.com");
+                cleaned.Add("127.0.0.1 slscr.update.microsoft.com");
+                cleaned.Add("127.0.0.1 fe2.update.microsoft.com");
+                cleaned.Add(markerEnd);
+            }
+
+            var tempPath = path + ".wpfapp1.tmp";
+            File.WriteAllLines(tempPath, cleaned);
+            File.Move(tempPath, path, true);
+        }
         private static string GetHostsPath()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "System32", "drivers", "etc", "hosts");
