@@ -74,7 +74,6 @@ namespace WpfApp1.Pages
 			if (_hostWindow != null) _hostWindow.Activated += HostWindow_Activated;
 			if (SettingsCategoryComboBox != null && SettingsCategoryComboBox.SelectedItem is ComboBoxItem categoryItem)
 				SetSettingsCategoryVisibility(categoryItem.Tag as string);
-			UpdateWebSearchStatus();
 			LoadExplorerSettings();
 			RefreshMouseSettings();
 			ApplyAdminToggleLockState();
@@ -800,7 +799,6 @@ namespace WpfApp1.Pages
 					_hagsToggle.IsEnabled = hagsSupported && IsAdministrator();
 					SetToggle(_hagsToggle, hagsSupported && _securitySettings.IsHardwareGpuSchedulingEnabled());
 				}
-				UpdateWebSearchStatus();
 				if (PowerSchemeComboBox != null && !PowerSchemeComboBox.IsDropDownOpen && !PowerSchemeComboBox.IsKeyboardFocusWithin)
 				{
 					var guid = await _powerSettings.GetActiveSchemeGuidAsync(CancellationToken.None);
