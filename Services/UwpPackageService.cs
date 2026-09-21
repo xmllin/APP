@@ -24,9 +24,11 @@ namespace WpfApp1.Services
         {
             const string command = @"
 $items = @();
-try { $items += @(Get-AppxPackage | Where-Object { $_.Name } | ForEach-Object { [pscustomobject]@{ Name=$_.Name; PackageFullName=$_.PackageFullName; Version=$_.Version.ToString(); Publisher=$_.Publisher; InstallLocation=$_.InstallLocation; Scope='CurrentUser' } }) } catch {}
-try { $items += @(Get-AppxPackage -AllUsers | Where-Object { $_.Name } | ForEach-Object { [pscustomobject]@{ Name=$_.Name; PackageFullName=$_.PackageFullName; Version=$_.Version.ToString(); Publisher=$_.Publisher; InstallLocation=$_.InstallLocation; Scope='AllUsers' } }) } catch {}
-try { $items += @(Get-AppxProvisionedPackage -Online | ForEach-Object { [pscustomobject]@{ Name=$_.DisplayName; PackageFullName=$_.PackageName; Version=$_.Version; Publisher=$_.PublisherId; InstallLocation=''; Scope='Provisioned' } }) } catch {}
+$successCount = 0;
+try { $items += @(Get-AppxPackage -ErrorAction Stop | Where-Object { $_.Name } | ForEach-Object { [pscustomobject]@{ Name=$_.Name; PackageFullName=$_.PackageFullName; Version=$_.Version.ToString(); Publisher=$_.Publisher; InstallLocation=$_.InstallLocation; Scope='CurrentUser' } }); $successCount++ } catch {}
+try { $items += @(Get-AppxPackage -AllUsers -ErrorAction Stop | Where-Object { $_.Name } | ForEach-Object { [pscustomobject]@{ Name=$_.Name; PackageFullName=$_.PackageFullName; Version=$_.Version.ToString(); Publisher=$_.Publisher; InstallLocation=$_.InstallLocation; Scope='AllUsers' } }); $successCount++ } catch {}
+try { $items += @(Get-AppxProvisionedPackage -Online -ErrorAction Stop | ForEach-Object { [pscustomobject]@{ Name=$_.DisplayName; PackageFullName=$_.PackageName; Version=$_.Version; Publisher=$_.PublisherId; InstallLocation=''; Scope='Provisioned' } }); $successCount++ } catch {}
+if($successCount -eq 0) { throw 'Не удалось получить список AppX-пакетов ни одним из доступных способов.' }
 $items | Sort-Object Name,Scope | ConvertTo-Json -Compress";
             var output = await _powershell.RunAsync(command, token, false, 90).ConfigureAwait(false);
             progress?.Report(20);
