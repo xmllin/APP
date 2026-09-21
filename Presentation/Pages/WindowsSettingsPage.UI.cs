@@ -208,8 +208,7 @@ namespace WpfApp1.Pages
 				CreateAdditionalToggleRow(CreateGameModeToggle(), "Игровой режим", "Автоматическое включение режима Windows Game Mode для игр"),
 				CreateHagsRow(),
 				CreateAdditionalToggleRow(CreateManagedToggle("GameBar"), "Xbox Game Bar", "Управлять игровым оверлеем Xbox Game Bar"),
-				CreateAdditionalToggleRow(CreateManagedToggle("BackgroundRecording"), "Фоновая запись (DVR)", "Управлять Game DVR и фоновой записью игр"),
-				CreateAdditionalToggleRow(CreateManagedToggle("FullscreenOptimizations"), "Полноэкранная оптимизация", "Управлять полноэкранными оптимизациями Windows")
+				CreateAdditionalToggleRow(CreateManagedToggle("FullscreenOptimizations"), "Оптимизация для игр в оконном режиме", "Управлять настройкой Windows для оптимизации игр в оконном режиме")
 			};
 
 			var systemRows = new List<UIElement>
