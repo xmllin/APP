@@ -100,19 +100,22 @@ namespace WpfApp1.Services.WindowsSettings
 
         public bool IsSystemPowerThrottlingDisabled()
         {
-            var power = _registry.ReadLocalMachine(@"SYSTEM\CurrentControlSet\Control\Power\PowerThrottling", "PowerThrottlingOff").Value;
-            var usb = _registry.ReadLocalMachine(@"SYSTEM\CurrentControlSet\Control\USB\AutomaticSurpriseRemoval", "AttemptRecoveryFromUsbPowerDrain").Value;
-            return Convert.ToInt32(power ?? 0) == 1 && Convert.ToInt32(usb ?? 1) == 0;
+            var value = _registry.ReadLocalMachine(
+                @"SYSTEM\CurrentControlSet\Control\Power\PowerThrottling",
+                "PowerThrottlingOff").Value;
+            return Convert.ToInt32(value ?? 0) == 1;
         }
 
         public SettingOperationResult SetSystemPowerThrottlingDisabled(bool disabled)
         {
             try
             {
-                _backup.BackupLocalMachineOnce("PowerThrottlingOff", @"SYSTEM\CurrentControlSet\Control\Power\PowerThrottling", "PowerThrottlingOff");
-                _backup.BackupLocalMachineOnce("UsbPowerDrainRecovery", @"SYSTEM\CurrentControlSet\Control\USB\AutomaticSurpriseRemoval", "AttemptRecoveryFromUsbPowerDrain");
-                _registry.WriteLocalMachine(@"SYSTEM\CurrentControlSet\Control\Power\PowerThrottling", "PowerThrottlingOff", disabled ? 1 : 0, Microsoft.Win32.RegistryValueKind.DWord);
-                _registry.WriteLocalMachine(@"SYSTEM\CurrentControlSet\Control\USB\AutomaticSurpriseRemoval", "AttemptRecoveryFromUsbPowerDrain", disabled ? 0 : 1, Microsoft.Win32.RegistryValueKind.DWord);
+                const string path = @"SYSTEM\CurrentControlSet\Control\Power\PowerThrottling";
+                const string name = "PowerThrottlingOff";
+
+                _backup.BackupLocalMachineOnce("PowerThrottlingOff", path, name);
+                _registry.WriteLocalMachine(path, name, disabled ? 1 : 0, Microsoft.Win32.RegistryValueKind.DWord);
+
                 return IsSystemPowerThrottlingDisabled() == disabled
                     ? SettingOperationResult.Ok("Системное дросселирование сохранено.")
                     : SettingOperationResult.Fail("Windows не сохранила настройку системного дросселирования.");
