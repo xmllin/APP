@@ -34,7 +34,10 @@ namespace WpfApp1.Pages
 		{
 			using (var key = Registry.CurrentUser.OpenSubKey(path, writable: true))
 			{
-				key?.DeleteValue(name, throwOnMissingValue: false);
+				if (key == null) return;
+				key.DeleteValue(name, throwOnMissingValue: false);
+				if (key.GetValue(name, null) != null)
+					throw new InvalidOperationException("Не удалось удалить значение реестра " + name + ".");
 			}
 		}
 
