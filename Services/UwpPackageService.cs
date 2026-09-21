@@ -20,6 +20,25 @@ namespace WpfApp1.Services
             _powershell = powershell ?? new PowerShellRunner(new SystemProcessRunner());
         }
 
+        public async Task<bool> IsPackageInstalledAsync(string packageName, CancellationToken token)
+        {
+            if (string.IsNullOrWhiteSpace(packageName))
+                return false;
+
+            var escaped = packageName.Replace("'", "''");
+            var command = "if (@(Get-AppxPackage -AllUsers -Name '" + escaped + "' -ErrorAction SilentlyContinue).Count -gt 0 -or " +
+                          "@(Get-AppxPackage -Name '" + escaped + "' -ErrorAction SilentlyContinue).Count -gt 0) { '1' } else { '0' }";
+            try
+            {
+                var output = await _powershell.RunAsync(command, token, false, 30).ConfigureAwait(false);
+                return string.Equals((output ?? string.Empty).Trim(), "1", StringComparison.Ordinal);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public async Task<IReadOnlyList<UwpPackageInfo>> GetInstalledPackagesAsync(CancellationToken token, IProgress<int> progress = null)
         {
             const string command = @"
