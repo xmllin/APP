@@ -204,9 +204,6 @@ namespace WpfApp1.Pages
 			try
 			{
 				var policy = ReadPowerShellScriptsPolicyFromRegistry();
-				if (string.IsNullOrWhiteSpace(policy))
-					policy = await _libraryInstallation.GetPowerShellScriptsPolicyAsync(CancellationToken.None);
-
 				var enabled = IsPowerShellScriptsEnabled(policy);
 				_loadingExplorerSettings = true;
 				SetToggle(_powerShellScriptsToggle, enabled);
@@ -230,7 +227,7 @@ namespace WpfApp1.Pages
 				"ExecutionPolicy");
 			return snapshot.Exists && snapshot.Value != null
 				? Convert.ToString(snapshot.Value)
-				: string.Empty;
+				: "Undefined";
 		}
 
 		private async void PowerShellScriptsToggle_Changed(object sender, RoutedEventArgs e)
