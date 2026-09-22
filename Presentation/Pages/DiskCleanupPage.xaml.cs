@@ -234,7 +234,10 @@ namespace Nexora.Pages
         private void SetBusy(bool busy, string status)
         {
             ScanButton.IsEnabled = !busy;
-            SetPageStatus(status, NotificationKind.Info);
+            if (busy)
+                SetPageStatus(status, NotificationKind.Info);
+            else
+                PageStatusText.Text = status;
         }
 
         private void SetPageStatus(string status, NotificationKind kind)
