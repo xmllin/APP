@@ -188,7 +188,7 @@ namespace WpfApp1.Pages
                     case ActivationStage.Completed:
 
                         _activationInProgress = false;
-                        ActivationStatusText.Text = "Выполняется активация. Это может занять до минуты";
+                        ActivationStatusText.Text = "Windows активирована";
                         ActivationStatusText.Foreground =
                             new SolidColorBrush(
                                 Color.FromRgb(50, 205, 50));
