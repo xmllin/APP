@@ -194,22 +194,7 @@ namespace Nexora.Pages
 
             var openItem = new MenuItem
             {
-                Header = new StackPanel
-                {
-                    Orientation = Orientation.Horizontal,
-                    Children =
-                    {
-                        new Image
-                        {
-                            Source = new System.Windows.Media.Imaging.BitmapImage(
-                                new Uri("pack://application:,,,/interface/white/fluent-folder-open.svg")),
-                            Width = 16,
-                            Height = 16,
-                            Margin = new Thickness(0, 0, 7, 0)
-                        },
-                        new TextBlock { Text = "Открыть папку", VerticalAlignment = VerticalAlignment.Center }
-                    }
-                },
+                Header = "Открыть папку",
                 Cursor = Cursors.Hand
             };
             openItem.Click += OpenCleanupFolder_Click;
