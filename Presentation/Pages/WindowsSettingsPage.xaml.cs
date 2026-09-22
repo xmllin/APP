@@ -193,6 +193,7 @@ namespace WpfApp1.Pages
 			AttachMovedSettingsRows();
 			MoveAdditionalSettingsToBottom();
 			RemoveObsoleteSettingRows();
+			EnsureRestartHints();
 			LoadExplorerSettings();
 			ApplyAdminToggleLockState();
 		}
