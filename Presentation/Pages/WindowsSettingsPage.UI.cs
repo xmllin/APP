@@ -640,19 +640,175 @@ namespace Nexora.Pages
 		{
 			foreach (var row in FindVisualElements<Border>(SettingsStack))
 			{
-				if (row.Style != (Style)FindResource("SettingRow")) continue;
-				if (!(row.Child is Grid grid)) continue;
-				var textPanel = grid.Children.OfType<StackPanel>().FirstOrDefault();
-				if (textPanel == null) continue;
-				if (textPanel.Children.OfType<TextBlock>().Any(x => x.Text == "Для применения требуется перезапуск Проводника либо перезапуск Windows.")) continue;
-				textPanel.Children.Add(new TextBlock
+				if (row.Style != (Style)FindResource("SettingRow"))
+					continue;
+
+				var tag = FindVisualElements<ToggleButton>(row)
+					.Select(toggle => toggle.Tag as string)
+					.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
+
+				var hint = GetRestartHintText(tag);
+				if (string.IsNullOrWhiteSpace(hint))
 				{
-					Text = "Для применения требуется перезапуск Проводника либо перезапуск Windows.",
-					Foreground = new SolidColorBrush(Color.FromRgb(105, 137, 176)),
-					FontSize = 10,
-					TextWrapping = TextWrapping.Wrap,
-					Margin = new Thickness(0, 3, 0, 0)
-				});
+					if (ReferenceEquals(row, GetSettingRow(MouseAccelerationToggle)))
+						hint = GetRestartHintText("MouseAcceleration");
+					else if (FindVisualElements<ComboBox>(row).Any(combo => ReferenceEquals(combo, PowerSchemeComboBox)))
+						hint = GetRestartHintText("PowerScheme");
+					else if (FindVisualElements<Button>(row).Any(button =>
+						ReferenceEquals(button, PauseWindowsUpdateButton) ||
+						ReferenceEquals(button, StartWindowsUpdateButton) ||
+						ReferenceEquals(button, ClearWindowsUpdateCacheButton)))
+						hint = GetRestartHintText("WindowsUpdateAction");
+				}
+
+				if (string.IsNullOrWhiteSpace(hint))
+					continue;
+
+				if (!(row.Child is Grid grid))
+				{
+					if (row.Child is StackPanel stack)
+						AddRestartHint(stack, hint);
+					continue;
+				}
+
+				var textPanel = grid.Children.OfType<StackPanel>().FirstOrDefault(panel =>
+					panel.Children.OfType<TextBlock>().Any());
+				if (textPanel != null)
+					AddRestartHint(textPanel, hint);
+			}
+		}
+
+		private static void AddRestartHint(StackPanel panel, string hint)
+		{
+			if (panel == null || string.IsNullOrWhiteSpace(hint))
+				return;
+
+			var existing = panel.Children.OfType<TextBlock>()
+				.FirstOrDefault(x => (x.Text ?? string.Empty).StartsWith("Для применения", StringComparison.OrdinalIgnoreCase));
+			if (existing != null)
+			{
+				existing.Text = hint;
+				existing.Foreground = new SolidColorBrush(Color.FromRgb(255, 211, 78));
+				existing.FontSize = 10;
+				existing.TextWrapping = TextWrapping.Wrap;
+				existing.Margin = new Thickness(0, 3, 0, 0);
+				return;
+			}
+
+			panel.Children.Add(new TextBlock
+			{
+				Text = hint,
+				Foreground = new SolidColorBrush(Color.FromRgb(255, 211, 78)),
+				FontSize = 10,
+				TextWrapping = TextWrapping.Wrap,
+				Margin = new Thickness(0, 3, 0, 0)
+			});
+		}
+
+		private static string GetRestartHintText(string tag)
+		{
+			if (string.IsNullOrWhiteSpace(tag))
+				return null;
+
+			switch (tag)
+			{
+				// Настройки оболочки Windows: значения записываются сразу,
+				// но визуальное состояние Проводника обновляется после его перезапуска.
+				case "HiddenFiles":
+				case "FileExtensions":
+				case "Gallery":
+				case "OpenThisPc":
+				case "ExplorerHome":
+				case "ShowRecentFiles":
+				case "ShowFrequentFolders":
+				case "Network":
+				case "HideDownloads":
+				case "HideDocuments":
+				case "HideVideos":
+				case "HidePictures":
+				case "HideMusic":
+				case "HideDesktop":
+				case "ShortcutSuffix":
+				case "ThisPcIcon":
+				case "RecycleBinIcon":
+				case "ShowSecondsInSystemClock":
+				case "HideUserFiles":
+				case "HideNetworkIcon":
+				case "HideControlPanel":
+				case "ShortcutArrow":
+				case "ExplorerSyncNotifications":
+				case "ExplorerCompactMode":
+				case "SnapAssistFlyout":
+				case "ClassicContextMenu":
+				case "ExplorerItemCheckboxes":
+				case "SpeedUpExplorerAndMenus":
+				case "SystemSuggestions":
+				case "DisableStartMenuWebSearch":
+				case "DisableStartRecommended":
+				case "DisablePreinstalledApps":
+				case "DisableContentDeliveryManager":
+				case "DisableAdvertisingAndSuggestions":
+				case "DisableNewsAndInterests":
+				case "HideMeetNowButton":
+				case "DisableCortana":
+				case "DisableCopilot":
+					return "Для применения требуется перезапуск Проводника.";
+
+				// Настройки, для которых связанные службы/компоненты Windows
+				// в текущей реализации явно возвращают RequiresRestart=true.
+				case "LongPathsEnabled":
+				case "DisableSettings365Ads":
+				case "DisableWindowsUpdate":
+				case "DisableSmartScreen":
+				case "DisableMemoryIntegrity":
+				case "DisableVbs":
+				case "HardwareGpuScheduling":
+				case "DisablePageFile":
+				case "DisableBitLockerAutoEncryption":
+				case "DisableTelemetry":
+				case "DisableErrorReporting":
+				case "DisableLocationAndSensors":
+				case "DisableAutoLogger":
+				case "DisableFindMyDevice":
+				case "DisableDeliveryOptimization":
+				case "BackgroundRecording":
+					return "Для применения требуется перезапуск Windows.";
+
+				case "PowerScheme":
+				case "MouseAcceleration":
+				case "DisableDriverUpdates":
+				case "DisableReservedStorage":
+				case "DisableAppDiagnostics":
+				case "DisableActivity":
+				case "DisablePerformance":
+				case "DisableKeystrokes":
+				case "DisableVoiceData":
+				case "DisableStickyKeys":
+				case "DisableBingSearch":
+				case "GameBar":
+				case "FullscreenOptimizations":
+				case "AutoGameModeEnabled":
+				case "DeveloperMode":
+				case "NumLockOnBoot":
+				case "SystemSuggestions":
+				case "DisablePreinstalledApps":
+				case "DisableHibernation":
+				case "DisableUSBPowerSaving":
+				case "DisableSystemThrottling":
+				case "UacNeverNotify":
+				case "DisableLockScreenBlur":
+				case "EnableDarkTheme":
+				case "EnableClipboard":
+				case "ClipboardHistory":
+				case "ReduceContextMenuDelay":
+				case "DisableWindowsAds":
+					return "Для применения перезапуск не требуется — настройка применяется сразу.";
+
+				case "WindowsUpdateAction":
+					return "Для применения перезапуск не требуется.";
+
+				default:
+					return "Для применения перезапуск не требуется — настройка применяется сразу.";
 			}
 		}
 
