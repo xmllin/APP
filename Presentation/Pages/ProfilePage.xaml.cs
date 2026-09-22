@@ -69,7 +69,6 @@ namespace Nexora.Pages
             CpuText.Text = "Определение процессора…";
             GpuText.Text = "Определение видеокарты…";
             MotherboardText.Text = "Определение материнской платы…";
-            StorageText.Text = "Определение дисков…";
         }
 
         private void ApplyHardwareInfo(SystemHardwareInfo info)
