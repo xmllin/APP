@@ -192,7 +192,6 @@ namespace Nexora.Pages
 			var titleBlock = new TextBlock { Text = title, FontWeight = FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap };
 			text.Children.Add(titleBlock);
 			text.Children.Add(new TextBlock { Text = description, Foreground = new SolidColorBrush(Color.FromRgb(130, 165, 207)), FontSize = 11, TextWrapping = TextWrapping.Wrap });
-			text.Children.Add(new TextBlock { Text = "Для применения требуется перезапуск Проводника либо перезапуск Windows.", Foreground = new SolidColorBrush(Color.FromRgb(105, 137, 176)), FontSize = 10, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 3, 0, 0) });
 			var controls = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
 			controls.Children.Add(label);
 			controls.Children.Add(toggle);
