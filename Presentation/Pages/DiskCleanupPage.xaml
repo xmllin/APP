@@ -3,6 +3,65 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Nexora.Services"
     Background="Transparent">
+    <UserControl.Resources>
+        <Style x:Key="CleanupItemCard" TargetType="Border" BasedOn="{StaticResource Card}">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="0,0,0,9"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#132B47"/>
+                    <Setter Property="BorderBrush" Value="#367FCE"/>
+                </Trigger>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter Property="Background" Value="#123B2A"/>
+                    <Setter Property="BorderBrush" Value="#2ED573"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="CleanupCheckBox" TargetType="CheckBox">
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid Width="24" Height="24">
+                            <Border x:Name="CheckBoxBorder"
+                                    Width="22" Height="22"
+                                    CornerRadius="6"
+                                    Background="#0F2237"
+                                    BorderBrush="#36516E"
+                                    BorderThickness="1"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"/>
+                            <Path x:Name="CheckMark"
+                                  Data="M 4,11 L 9,16 L 19,6"
+                                  Stroke="#FFFFFF"
+                                  StrokeThickness="2"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"
+                                  Visibility="Collapsed"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="CheckBoxBorder" Property="Background" Value="#1F9E64"/>
+                                <Setter TargetName="CheckBoxBorder" Property="BorderBrush" Value="#2ED573"/>
+                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="CheckBoxBorder" Property="BorderBrush" Value="#64B5FF"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="CheckBoxBorder" Property="Opacity" Value="0.45"/>
+                                <Setter TargetName="CheckMark" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
             <StackPanel Margin="36,28,36,42">
@@ -52,7 +111,7 @@
                 <ItemsControl x:Name="CleanupItemsControl">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Style="{StaticResource Card}" Padding="16" Margin="0,0,0,9">
+                            <Border Style="{StaticResource CleanupItemCard}" MouseLeftButtonUp="CleanupItemCard_MouseLeftButtonUp">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -65,7 +124,8 @@
                                               VerticalAlignment="Center"
                                               Margin="0,0,12,0"
                                               IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                              IsEnabled="{Binding HasData}"/>
+                                              IsEnabled="{Binding HasData}"
+                                              Style="{StaticResource CleanupCheckBox}"/>
 
                                     <Border Grid.Column="1" Width="38" Height="38" CornerRadius="9"
                                             Background="#10233A" Margin="0,0,12,0">
@@ -74,21 +134,33 @@
                                     </Border>
 
                                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="SemiBold"/>
-                                        <TextBlock Text="{Binding Description}" Foreground="#91A8C5" FontSize="12" TextWrapping="Wrap" Margin="0,3,12,0"/>
-                                        <TextBlock Text="{Binding Path}" Foreground="#58718F" FontSize="11" TextTrimming="CharacterEllipsis" Margin="0,3,12,0"/>
-                                        <TextBlock Text="{Binding Status}" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,5,0,0"/>
+                                        <TextBlock Text="{Binding Name}" FontSize="17" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding Description}" Foreground="#9DB6D4" FontSize="13" TextWrapping="Wrap" Margin="0,3,12,0"/>
+                                        <TextBlock Text="{Binding Path}" Foreground="#6888AB" FontSize="12" TextTrimming="CharacterEllipsis" Margin="0,3,12,0"/>
+                                        <TextBlock Text="{Binding Status}" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,5,0,0"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding SizeText}" HorizontalAlignment="Right" FontSize="14" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding SizeText}" HorizontalAlignment="Right" FontSize="16" FontWeight="SemiBold"/>
                                         <Button Content="Очистить"
                                                 Click="CleanItem_Click"
                                                 Tag="{Binding}"
                                                 Style="{StaticResource GhostButton}"
+                                                Cursor="Hand"
                                                 Margin="0,8,0,0"
                                                 Padding="12,7"
                                                 IsEnabled="{Binding ActionVisible}"/>
+                                        <Button Click="OpenCleanupFolder_Click"
+                                                Tag="{Binding}"
+                                                Style="{StaticResource GhostButton}"
+                                                Cursor="Hand"
+                                                Margin="0,6,0,0"
+                                                Padding="12,7">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="{local:SvgImage Source=interface/white/fluent-folder-open.svg}" Width="15" Height="15" Margin="0,0,6,0"/>
+                                                <TextBlock Text="Открыть папку"/>
+                                            </StackPanel>
+                                        </Button>
                                     </StackPanel>
                                 </Grid>
                             </Border>
