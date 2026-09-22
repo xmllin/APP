@@ -150,7 +150,7 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer x:Name="AppsScrollViewer" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" SizeChanged="AppsScrollViewer_SizeChanged">
             <StackPanel Margin="36,28,36,42">
                 <Border Height="150" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="28" Margin="0,0,0,12">
                     <Border.Background>
@@ -221,7 +221,7 @@
                     </StackPanel>
                 </Grid>
 
-                <ItemsControl x:Name="AppsItems" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
+                <ItemsControl x:Name="AppsItems" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" SizeChanged="AppsItems_SizeChanged">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" ItemWidth="300" ItemHeight="210"/>
