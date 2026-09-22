@@ -117,7 +117,9 @@ namespace Nexora.Services
 
         private void NoButton_Click(object sender, RoutedEventArgs e)
         {
-            DialogResultValue = MessageBoxResult.No;
+            DialogResultValue = _buttons == MessageBoxButton.OKCancel
+                ? MessageBoxResult.Cancel
+                : MessageBoxResult.No;
             DialogResult = false;
             Close();
         }
