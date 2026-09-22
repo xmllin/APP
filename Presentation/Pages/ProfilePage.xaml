@@ -53,7 +53,7 @@
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
-        <StackPanel Margin="32,26,32,38">
+        <StackPanel Margin="36,28,36,42">
             <Border Height="170" MinHeight="170" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="20" Margin="0,0,0,18">
                 <Border.Background><ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/></Border.Background>
                 <Grid VerticalAlignment="Center">
