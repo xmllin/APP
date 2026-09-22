@@ -595,9 +595,9 @@ namespace WpfApp1.Pages
 			}
 			if (DesktopSettingsPanel != null && DesktopSettingsPanel.Child is StackPanel desktopPanel)
 			{
-				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ShowUserFiles"), "Показывать файлы пользователя", "Показывать папку пользователя на рабочем столе"));
-				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ShowNetworkIcon"), "Показывать сеть", "Показывать значок «Сеть» на рабочем столе"));
-				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ShowControlPanel"), "Показывать панель управления", "Показывать классический значок панели управления"));
+				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("HideUserFiles"), "Скрыть файлы пользователя", "Скрыть папку пользователя на рабочем столе"));
+				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("HideNetworkIcon"), "Скрыть сеть", "Скрыть значок «Сеть» на рабочем столе"));
+				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("HideControlPanel"), "Скрыть панель управления", "Скрыть классический значок панели управления на рабочем столе"));
 				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ShortcutArrow"), "Скрывать стрелки ярлыков", "Убирать стрелку с ярлыков рабочего стола"));
 				desktopPanel.Children.Add(CreateAdditionalValueRow("Цвет выделения", "Цвет выделения текста и элементов интерфейса Windows", CreateHighlightColorControls()));
 				desktopPanel.Children.Add(CreateAdditionalToggleRow(_contextMenuDelayToggle, "Убрать задержку контекстного меню", "Установить минимальную задержку открытия меню"));
@@ -762,8 +762,8 @@ namespace WpfApp1.Pages
 				SetToggle(ShowFileExtensionsToggle, ReadDword(ExplorerAdvancedPath, "HideFileExt", 1) == 0);
 				SetToggle(OpenThisPcToggle, _explorerSettings.IsLaunchToThisPc());
 				SetToggle(ExplorerHomeToggle, !_explorerSettings.IsHomeVisible());
-				SetToggle(ShowRecentFilesToggle, IsRecentFilesEnabled());
-				SetToggle(ShowFrequentFoldersToggle, IsFrequentFoldersEnabled());
+				SetToggle(ShowRecentFilesToggle, !IsRecentFilesEnabled());
+				SetToggle(ShowFrequentFoldersToggle, !IsFrequentFoldersEnabled());
 				SetToggle(ShowGalleryToggle, !IsGalleryVisible());
 				SetToggle(RemoveShortcutSuffixToggle, ReadString(NamingTemplatesPath, "ShortcutNameTemplate", null) == "%s");
 				SetToggle(ShowThisPcToggle, ReadDword(HideDesktopIconsPath, ThisPcId, 1) == 0);
@@ -802,9 +802,9 @@ namespace WpfApp1.Pages
 				SetStatusLabel(DisableUacLabel, uacNeverNotify ? "Включено" : "Отключено", uacNeverNotify);
 				SetToggle(DisablePageFileToggle, IsPageFileDisabled());
 				SetToggle(DisableBitLockerAutoEncryptionToggle, ReadMachineDword(BitLockerPath, "PreventDeviceEncryption", 0) == 1);
-				SetManagedToggleState("ShowUserFiles");
-				SetManagedToggleState("ShowNetworkIcon");
-				SetManagedToggleState("ShowControlPanel");
+				SetManagedToggleState("HideUserFiles");
+				SetManagedToggleState("HideNetworkIcon");
+				SetManagedToggleState("HideControlPanel");
 				SetManagedToggleState("ShortcutArrow");
 				SetManagedToggleState("ClassicContextMenu");
 				SetManagedToggleState("ExplorerItemCheckboxes");
