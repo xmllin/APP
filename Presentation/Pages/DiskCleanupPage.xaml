@@ -4,6 +4,62 @@
     xmlns:local="clr-namespace:Nexora.Services"
     Background="Transparent">
     <UserControl.Resources>
+        <Style x:Key="CleanupContextMenu" TargetType="ContextMenu">
+            <Setter Property="Background" Value="#10233A"/>
+            <Setter Property="BorderBrush" Value="#31516E"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="TextElement.Foreground" Value="#F1F6FF"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border Background="#10233A" BorderBrush="#31516E" BorderThickness="1" CornerRadius="6" Padding="4">
+                            <ItemsPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CleanupMenuItem" TargetType="MenuItem">
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border x:Name="MenuBorder" Background="Transparent" CornerRadius="6" Padding="4">
+                            <ContentPresenter ContentSource="Header" Margin="6,2"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="MenuBorder" Property="Background" Value="#1B4D7A"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="MenuBorder" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CleanupMoreButton" TargetType="Button">
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent" BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="CleanupItemCard" TargetType="Border" BasedOn="{StaticResource Card}">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Padding" Value="16"/>
@@ -30,8 +86,8 @@
                             <Border x:Name="CheckBoxBorder"
                                     Width="22" Height="22"
                                     CornerRadius="6"
-                                    Background="#0F2237"
-                                    BorderBrush="#36516E"
+                                    Background="Transparent"
+                                    BorderBrush="#1D3855"
                                     BorderThickness="1"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"/>
@@ -45,12 +101,12 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="CheckBoxBorder" Property="Background" Value="#1F9E64"/>
+                                <Setter TargetName="CheckBoxBorder" Property="Background" Value="Transparent"/>
                                 <Setter TargetName="CheckBoxBorder" Property="BorderBrush" Value="#2ED573"/>
                                 <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="CheckBoxBorder" Property="BorderBrush" Value="#64B5FF"/>
+                                <Setter TargetName="CheckBoxBorder" Property="BorderBrush" Value="#367FCE"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="CheckBoxBorder" Property="Opacity" Value="0.45"/>
@@ -121,20 +177,26 @@
                                     </Grid.ColumnDefinitions>
 
                                     <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Grid VerticalAlignment="Center">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
                                             <Border Width="38" Height="38" CornerRadius="9"
                                                     Background="#10233A" Margin="0,0,12,0">
                                                 <Image Width="20" Height="20"
-                                                       Source="{local:SvgImage Source=interface/white/package.svg}"/>
+                                                       Source="{local:SvgImage Source=interface/white/folder.svg}"/>
                                             </Border>
-                                            <CheckBox VerticalAlignment="Center"
-                                                      Margin="0,0,9,0"
-                                                      IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                                      IsEnabled="{Binding HasData}"
-                                                      Style="{StaticResource CleanupCheckBox}"/>
-                                            <TextBlock Text="{Binding Name}" FontSize="17" FontWeight="SemiBold"
-                                                       TextWrapping="Wrap" VerticalAlignment="Center"/>
-                                        </StackPanel>
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Name}" FontSize="17" FontWeight="SemiBold"
+                                                           TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                                <CheckBox VerticalAlignment="Center"
+                                                          Margin="9,0,0,0"
+                                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                          IsEnabled="{Binding HasData}"
+                                                          Style="{StaticResource CleanupCheckBox}"/>
+                                            </StackPanel>
+                                        </Grid>
                                         <TextBlock Text="{Binding Description}" Foreground="#9DB6D4" FontSize="13"
                                                    TextWrapping="Wrap" Margin="50,5,12,0"/>
                                         <TextBlock Text="{Binding Path}" Foreground="#6888AB" FontSize="12"
@@ -147,14 +209,27 @@
                                                HorizontalAlignment="Right" VerticalAlignment="Center"
                                                FontSize="16" FontWeight="SemiBold" Margin="12,0"/>
 
-                                    <Button Grid.Column="2" Content="⋯"
-                                            Click="CleanupMoreButton_Click"
-                                            Tag="{Binding}"
-                                            Style="{StaticResource GhostButton}"
-                                            Cursor="Hand"
-                                            FontSize="20" FontWeight="Bold"
-                                            Width="38" Height="38" Padding="0"
-                                            VerticalAlignment="Center"/>
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right">
+                                        <Button Tag="{Binding}" Click="CleanupMoreButton_Click" Style="{StaticResource CleanupMoreButton}">
+                                            <Image Source="{local:SvgImage Source=interface/white/dots.svg}" Width="18" Height="18"/>
+                                            <Button.ContextMenu>
+                                                <ContextMenu Style="{StaticResource CleanupContextMenu}"
+                                                             DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                                                    <MenuItem Style="{StaticResource CleanupMenuItem}" Header="Открыть папку" Click="OpenCleanupFolder_Click" Tag="{Binding}"/>
+                                                </ContextMenu>
+                                            </Button.ContextMenu>
+                                        </Button>
+                                        <Button Content="Очистить"
+                                                Click="CleanItem_Click"
+                                                Tag="{Binding}"
+                                                Style="{StaticResource GhostButton}"
+                                                Cursor="Hand"
+                                                Margin="0,8,0,0"
+                                                Padding="8,5"
+                                                Height="28"
+                                                MinWidth="92"
+                                                IsEnabled="{Binding ActionVisible}"/>
+                                    </StackPanel>
                                 </Grid>
                             </Border>
                         </DataTemplate>
