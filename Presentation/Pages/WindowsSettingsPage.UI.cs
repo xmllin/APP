@@ -35,6 +35,7 @@ namespace Nexora.Pages
 		}
 
 		private const string SettingsSearchPlaceholder = "Поиск настроек Windows...";
+		private TextBlock _noSettingsResultsText;
 
 		private void SettingsCategoryComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -121,6 +122,40 @@ namespace Nexora.Pages
 					section.Visibility = sectionRows.Any(row => row.Visibility == Visibility.Visible)
 						? Visibility.Visible
 						: Visibility.Collapsed;
+			}
+
+			if (!string.IsNullOrWhiteSpace(query))
+			{
+				bool hasVisibleResult = rows.Any(row => row.Visibility == Visibility.Visible);
+				if (!hasVisibleResult)
+				{
+					foreach (var child in SettingsStack.Children.OfType<UIElement>())
+						child.Visibility = Visibility.Collapsed;
+
+					if (_noSettingsResultsText == null)
+					{
+						_noSettingsResultsText = new TextBlock
+						{
+							Text = "Ничего не найдено",
+							FontSize = 18,
+							FontWeight = FontWeights.SemiBold,
+							Foreground = new SolidColorBrush(Colors.White),
+							TextAlignment = TextAlignment.Center,
+							HorizontalAlignment = HorizontalAlignment.Stretch,
+							Margin = new Thickness(0, 36, 0, 36)
+						};
+						SettingsStack.Children.Add(_noSettingsResultsText);
+					}
+					_noSettingsResultsText.Visibility = Visibility.Visible;
+				}
+				else if (_noSettingsResultsText != null)
+				{
+					_noSettingsResultsText.Visibility = Visibility.Collapsed;
+				}
+			}
+			else if (_noSettingsResultsText != null)
+			{
+				_noSettingsResultsText.Visibility = Visibility.Collapsed;
 			}
 		}
 
