@@ -318,7 +318,7 @@
                     </Grid>
                 </Border>
 
-                <Border x:Name="WindowsSettingsBanner" Height="170" MinHeight="170" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="28">
+                <Border x:Name="WindowsSettingsBanner" Height="170" MinHeight="170" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="20">
                     <Border.Background>
                         <ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/>
                     </Border.Background>
@@ -329,8 +329,8 @@
                         </Grid.ColumnDefinitions>
                         <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="72" Height="72" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,16,0"/>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                            <TextBlock Text="Настройки Windows под вашим контролем" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Justify"/>
-                            <TextBlock Text="Настройте Windows под себя" Foreground="#B9CAE2" FontSize="16" TextWrapping="Wrap" TextAlignment="Justify"/>
+                            <TextBlock Text="Настройки Windows под вашим контролем" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Left"/>
+                            <TextBlock Text="Настройте Windows под себя" Foreground="#B9CAE2" FontSize="16" TextWrapping="Wrap" TextAlignment="Left"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -401,7 +401,6 @@
                     </Border>
                 </Grid>
                 <StackPanel>
-                    <TextBlock Text="Настройки применяются для текущего пользователя Windows." Foreground="#87A7D0" FontSize="12" Margin="0,0,0,10"/>
                     <Border x:Name="ExplorerSettingsPanel" Background="#0A1D39" BorderBrush="#173A61" BorderThickness="1,0,1,0" CornerRadius="11" Padding="0,4">
                         <StackPanel>
                             <Border Style="{StaticResource CategoryHeader}">
@@ -861,15 +860,15 @@
         <Grid VerticalAlignment="Bottom" Margin="36,0,53,12">
             <Border Background="#0B2035" BorderBrush="#1D3B5A" BorderThickness="1" CornerRadius="11" Padding="10"/>
             <Grid Margin="14">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" MinWidth="0"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="0" Margin="0,0,10,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,8">
                     <Image Source="{local:SvgImage Source=interface/white/info-circle.svg}" Width="22" Height="22" Margin="0,0,8,0" VerticalAlignment="Center"/>
                     <TextBlock Text="Для применения некоторых настроек требуется перезапуск проводника" Foreground="#85A8D2" FontSize="13" VerticalAlignment="Center" TextWrapping="Wrap"/>
                 </StackPanel>
-                <WrapPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
+                <WrapPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
                     <Button x:Name="RestartAsAdminButton" ToolTip="Перезапустить от администратора" Click="RestartAsAdminButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" MinWidth="132" Height="30" Margin="6,0,0,0" Padding="8,5">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{local:SvgImage Source=interface/white/restart.svg}" Width="14" Height="14"/>
