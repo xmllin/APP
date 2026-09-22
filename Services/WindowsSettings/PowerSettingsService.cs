@@ -186,7 +186,7 @@ namespace Nexora.Services.WindowsSettings
                     var query = await RunPowerShellAsync(
                         "Get-CimInstance -Namespace root\\wmi -ClassName MSPower_DeviceEnable -ErrorAction SilentlyContinue | " +
                         "Where-Object { $_.InstanceName -match 'USB\\\\ROOT' } | " +
-                        "Select-Object InstanceName, Enable | ConvertTo-Json -Compress",
+                        "Select-Object InstanceName, Enable | ConvertTo-Json",
                         token, false);
 
                     if (string.IsNullOrWhiteSpace(query.StandardOutput))
