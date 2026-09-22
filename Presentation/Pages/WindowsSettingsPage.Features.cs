@@ -178,6 +178,9 @@ namespace WpfApp1.Pages
 				Margin = new Thickness(0, 0, 10, 0)
 			};
 			_additionalStatusLabels[toggle.Tag as string] = label;
+			if (string.Equals(toggle.Tag as string, "GameBar", StringComparison.Ordinal) ||
+				string.Equals(toggle.Tag as string, "DisableCortana", StringComparison.Ordinal))
+				label.Width = 270;
 			var currentState = toggle.IsChecked == true;
 			SetStatusLabel(label, currentState ? "Включено" : "Отключено", currentState);
 			var row = new Border { Style = (Style)FindResource("SettingRow") };
