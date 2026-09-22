@@ -60,13 +60,11 @@
                 </Grid.ColumnDefinitions>
 
                 <Border x:Name="SidebarBorder" Grid.Column="0" Background="#091624" BorderBrush="#1B3048" BorderThickness="0,0,1,0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <StackPanel x:Name="NavPanel" Margin="6,14,6,10">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  PanningMode="VerticalOnly">
+                        <StackPanel>
+                            <StackPanel x:Name="NavPanel" Margin="6,14,6,10">
                             <TextBlock x:Name="MainSectionLabel" Text="ОСНОВНОЕ" FontSize="11" Foreground="#58718F" Margin="18,0,0,8" Visibility="Collapsed"/>
                             <Button x:Name="HomeNav" Tag="Selected" Style="{StaticResource NavButton}" Click="Nav_Click">
                                 <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-home.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Главная" VerticalAlignment="Center"/></StackPanel>
@@ -111,8 +109,19 @@
                             <Button x:Name="ProfileNav" Style="{StaticResource NavButton}" Click="Nav_Click">
                                 <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-person.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Профиль" VerticalAlignment="Center"/></StackPanel>
                             </Button>
+                            </StackPanel>
+
+                            <StackPanel x:Name="SystemNavigationPanel" Margin="6,10,6,10">
+                                <TextBlock x:Name="SystemSectionLabel" Text="ДОПОЛНИТЕЛЬНО" FontSize="11" Foreground="#58718F" Margin="18,0,0,8" Visibility="Collapsed"/>
+                                <Button x:Name="SettingsNav" Style="{StaticResource NavButton}" Click="Nav_Click">
+                                    <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Настройки" VerticalAlignment="Center"/></StackPanel>
+                                </Button>
+                                <Button x:Name="ProfileNav" Style="{StaticResource NavButton}" Click="Nav_Click">
+                                    <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-person.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Профиль" VerticalAlignment="Center"/></StackPanel>
+                                </Button>
+                            </StackPanel>
                         </StackPanel>
-                    </Grid>
+                    </ScrollViewer>
                 </Border>
 
                 <ContentControl x:Name="MainContent" Grid.Column="1"/>
