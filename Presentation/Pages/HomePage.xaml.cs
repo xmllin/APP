@@ -18,7 +18,7 @@ namespace WpfApp1.Pages
     {
         private const int MinimumRecentApps = 2;
         private const double RecentAppCardOuterWidth = 190;
-        private const double RecentAppWidthStep = 340;
+        private const int RecentAppsHistoryLimit = 50;
         private MainWindow _main;
         private AppRepository _repository = new AppRepository();
         private static readonly string RecentFile = UserDataPath.File("recent_apps.txt");
@@ -106,8 +106,7 @@ namespace WpfApp1.Pages
 
             int visibleCount = Math.Max(
                 MinimumRecentApps,
-                MinimumRecentApps + Math.Max(0, (int)Math.Floor(
-                    Math.Max(0, availableWidth - (MinimumRecentApps * RecentAppWidthStep)) / RecentAppWidthStep)));
+                (int)Math.Floor(availableWidth / RecentAppCardOuterWidth));
             if (visibleCount == _recentAppCount)
                 return false;
 
@@ -156,7 +155,7 @@ namespace WpfApp1.Pages
                     (!string.IsNullOrWhiteSpace(app.Name) && string.Equals(x, app.Name, StringComparison.OrdinalIgnoreCase)));
                 recent.Insert(0, key);
 
-                File.WriteAllLines(RecentFile, recent.Take(10));
+                File.WriteAllLines(RecentFile, recent.Take(RecentAppsHistoryLimit));
             }
             catch { }
         }
