@@ -271,7 +271,7 @@ namespace Nexora.Pages
             if (string.IsNullOrWhiteSpace(AppsSearchBox.Text))
             {
                 AppsSearchBox.Text = "Поиск программ...";
-                AppsSearchBox.Foreground = new SolidColorBrush(Color.FromRgb(111, 137, 168));
+                AppsSearchBox.Foreground = new SolidColorBrush(Color.FromRgb(241, 246, 255));
             }
             else
             {
@@ -288,18 +288,21 @@ namespace Nexora.Pages
         {
             if (!IsLoaded || AppsScrollViewer == null) return;
 
-            // Высота одной строки карточек берётся из фактической разметки.
-            // При изменении высоты окна автоматически переключаем размер страницы:
-            // 1 ряд = 8, 2 = 12, 3 = 18, 4 = 20, 5+ = 25.
-            const double cardRowHeight = 112.0;
-            const double reservedHeight = 470.0;
+            // Размер страницы зависит от количества столбцов карточек.
+            // 1 столбец = 8, 2 = 12, 3 = 18, 4 = 20, 5+ = 25.
+            // Карточка занимает 300px в WrapPanel (ItemWidth).
+            const double cardWidth = 300.0;
+            var availableWidth = AppsItems?.ActualWidth ?? 0;
+            if (availableWidth <= 0)
+                availableWidth = Math.Max(0, AppsScrollViewer.ViewportWidth - 72.0);
 
-            var available = AppsScrollViewer.ViewportHeight - reservedHeight;
-            var rows = Math.Max(1, (int)Math.Floor(available / cardRowHeight));
-            var pageSize = rows == 1 ? 8
-                : rows == 2 ? 12
-                : rows == 3 ? 18
-                : rows == 4 ? 20
+            var columns = Math.Max(1, (int)Math.Floor(availableWidth / cardWidth));
+            columns = Math.Min(columns, 5);
+
+            var pageSize = columns == 1 ? 8
+                : columns == 2 ? 12
+                : columns == 3 ? 18
+                : columns == 4 ? 20
                 : 25;
 
             if (_adaptivePageSizeInitialized && pageSize == _adaptivePageSize)
