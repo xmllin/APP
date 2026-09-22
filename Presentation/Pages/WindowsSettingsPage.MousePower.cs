@@ -234,7 +234,7 @@ namespace Nexora.Pages
 
 		private void HagsInfoButton_Click(object sender, RoutedEventArgs e)
 		{
-			MessageBox.Show(
+			Nexora.Services.StyledMessageDialog.Show(
 				"Использует аппаратное планирование GPU. Результат зависит от видеокарты, драйвера и приложения. Для изменения требуется поддерживаемый GPU/драйвер и перезагрузка Windows.",
 				"Планирование GPU",
 				MessageBoxButton.OK,
