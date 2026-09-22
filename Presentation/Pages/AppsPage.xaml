@@ -172,17 +172,17 @@
                     </Grid>
                 </Border>
 
-                <ComboBox x:Name="CategoryComboBox"
-                          Width="260"
-                          Height="38"
-                          HorizontalAlignment="Left"
-                          Margin="0"
-                          SelectionChanged="CategoryComboBox_SelectionChanged"
-                          Style="{StaticResource LibraryLikeComboBox}"
-                          ItemContainerStyle="{StaticResource LibraryLikeComboBoxItem}"/>
-                <Border Width="380" MaxWidth="380" Height="38" HorizontalAlignment="Left"
-                        Background="#0F2035" BorderBrush="#24415F" BorderThickness="1" CornerRadius="6"
-                        Margin="0,10,0,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,12">
+                    <ComboBox x:Name="CategoryComboBox"
+                              Width="260"
+                              Height="38"
+                              HorizontalAlignment="Left"
+                              SelectionChanged="CategoryComboBox_SelectionChanged"
+                              Style="{StaticResource LibraryLikeComboBox}"
+                              ItemContainerStyle="{StaticResource LibraryLikeComboBoxItem}"/>
+                    <Border Width="250" MaxWidth="250" Height="38" HorizontalAlignment="Left"
+                            Background="#0F2035" BorderBrush="#24415F" BorderThickness="1" CornerRadius="6"
+                            Margin="12,0,0,0">
                     <Grid>
                         <TextBox x:Name="AppsSearchBox"
                                  Text="Поиск программ..."
@@ -191,7 +191,7 @@
                                  LostFocus="AppsSearchBox_LostFocus"
                                  Background="Transparent"
                                  BorderThickness="0"
-                                 Foreground="#6F89A8"
+                                 Foreground="#F1F6FF"
                                  CaretBrush="White"
                                  Padding="10,5"
                                  VerticalContentAlignment="Center"/>
@@ -201,7 +201,8 @@
                                Margin="0,0,10,0"
                                IsHitTestVisible="False"/>
                     </Grid>
-                </Border>
+                    </Border>
+                </StackPanel>
 
                 <Border x:Name="SystemHardwarePanel" Visibility="Collapsed" Background="#0B2035" BorderBrush="#1D3B5A" BorderThickness="1" CornerRadius="10" Padding="13,10" Margin="4,0,4,14">
                     <Grid>
