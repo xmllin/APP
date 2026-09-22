@@ -289,7 +289,15 @@ namespace WpfApp1.Pages
 		private async void WindowsFeatureToggle_Changed(object sender, RoutedEventArgs e)
 		{
 			if (_loadingExplorerSettings || !(sender is ToggleButton toggle)) return;
+			if (_settingsApplyBusy)
+			{
+				_loadingExplorerSettings = true;
+				try { SetToggle(toggle, !(toggle.IsChecked == true)); } finally { _loadingExplorerSettings = false; }
+				return;
+			}
 			var disabled = toggle.IsChecked == true;
+			_settingsApplyBusy = true;
+			SetWindowsSettingsControlsEnabled(false);
 			var tag = toggle.Tag as string;
 			if (tag == "HardwareGpuScheduling" && !IsHardwareGpuSchedulingSupported())
 			{
@@ -351,6 +359,26 @@ namespace WpfApp1.Pages
 					: "Для изменения системных настроек сначала нажмите «Перезапустить от администратора».";
 				MessageBox.Show(message, "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
 				LoadExplorerSettings();
+			}
+			finally
+			{
+				await Task.Delay(1500);
+				_settingsApplyBusy = false;
+				ApplyAdminToggleLockState();
+			}
+		}
+
+		private void SetWindowsSettingsControlsEnabled(bool enabled)
+		{
+			foreach (var toggle in GetAllToggleButtons())
+			{
+				if (toggle == null) continue;
+				if (!enabled)
+				{
+					toggle.IsEnabled = false;
+					toggle.IsHitTestVisible = false;
+					toggle.Cursor = Cursors.Arrow;
+				}
 			}
 		}
 
