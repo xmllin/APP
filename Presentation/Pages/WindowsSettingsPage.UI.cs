@@ -1123,9 +1123,9 @@ namespace WpfApp1.Pages
 		private static bool IsUserSettingTag(string tag)
 		{
 			return tag == "OpenThisPc"
-				|| tag == "ShowUserFiles"
-				|| tag == "ShowNetworkIcon"
-				|| tag == "ShowControlPanel"
+				 || tag == "HideUserFiles"
+				|| tag == "HideNetworkIcon"
+				|| tag == "HideControlPanel"
 				|| tag == "ShowDesktopIcons"
 				|| tag == "ToastNotifications"
 				|| tag == "ClassicContextMenu"
