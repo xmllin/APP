@@ -446,8 +446,8 @@
                             <Border x:Name="ShowRecentFilesCard" Style="{StaticResource SettingRow}">
                                 <Grid>
                                     <StackPanel>
-                                        <TextBlock Text="Показывать недавно использованные файлы" FontWeight="SemiBold"/>
-                                        <TextBlock Text="Отображать недавние документы на главной странице Проводника" Foreground="#82A5CF" FontSize="11"/>
+                                        <TextBlock Text="Скрыть недавно использованные файлы" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Скрыть недавние документы на главной странице Проводника" Foreground="#82A5CF" FontSize="11"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                         <TextBlock x:Name="ShowRecentFilesLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
@@ -458,8 +458,8 @@
                             <Border x:Name="ShowFrequentFoldersCard" Style="{StaticResource SettingRow}">
                                 <Grid>
                                     <StackPanel>
-                                        <TextBlock Text="Показывать часто используемые папки" FontWeight="SemiBold"/>
-                                        <TextBlock Text="Отображать избранные папки в панели быстрого доступа" Foreground="#82A5CF" FontSize="11"/>
+                                        <TextBlock Text="Скрыть часто используемые папки" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Скрыть часто используемые папки в панели быстрого доступа" Foreground="#82A5CF" FontSize="11"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                         <TextBlock x:Name="ShowFrequentFoldersLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
@@ -584,8 +584,8 @@
                             <Border x:Name="ThisPcIconCard" Style="{StaticResource SettingRow}">
                                 <Grid>
                                     <StackPanel>
-                                        <TextBlock Text="Этот компьютер" FontWeight="SemiBold"/>
-                                        <TextBlock Text="Показывать иконку на рабочем столе" Foreground="#82A5CF" FontSize="11"/>
+                                        <TextBlock Text="Скрыть «Этот компьютер»" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Скрыть значок «Этот компьютер» на рабочем столе" Foreground="#82A5CF" FontSize="11"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                         <TextBlock x:Name="ShowThisPcLabel" Text="Отключено" Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
@@ -596,8 +596,8 @@
                             <Border x:Name="RecycleBinIconCard" Style="{StaticResource SettingRow}">
                                 <Grid>
                                     <StackPanel>
-                                        <TextBlock Text="Корзина" FontWeight="SemiBold"/>
-                                        <TextBlock Text="Показывать иконку на рабочем столе" Foreground="#82A5CF" FontSize="11"/>
+                                        <TextBlock Text="Скрыть «Корзину»" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Скрыть значок «Корзина» на рабочем столе" Foreground="#82A5CF" FontSize="11"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                         <TextBlock x:Name="ShowRecycleBinLabel" Text="Отключено" Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
