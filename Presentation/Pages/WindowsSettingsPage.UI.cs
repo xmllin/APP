@@ -415,15 +415,6 @@ namespace Nexora.Pages
 		{
 			var content = new StackPanel();
 			content.Children.Add(CreateDynamicCategoryHeader(title));
-			var descriptionBlock = new TextBlock
-			{
-				Text = description,
-				Foreground = new SolidColorBrush(Color.FromRgb(130, 165, 207)),
-				FontSize = 12,
-				Margin = new Thickness(16, 2, 16, 7),
-				TextWrapping = TextWrapping.Wrap
-			};
-			content.Children.Add(descriptionBlock);
 			foreach (var row in rows)
 				if (row != null) content.Children.Add(row);
 
