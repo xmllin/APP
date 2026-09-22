@@ -213,7 +213,9 @@
                         </StackPanel>
                         <Button Grid.Row="0" Grid.Column="1" Content="Выбрать всё" Click="SelectAll_Click" Style="{StaticResource GhostButton}" Margin="8,0" Cursor="Hand" Padding="9,4" Height="28" MinWidth="92"/>
                         <Button Grid.Row="0" Grid.Column="2" Content="Очистить выбранное" Click="CleanSelected_Click" Style="{StaticResource PrimaryButton}" Cursor="Hand" Padding="9,4" Height="28" MinWidth="135"/>
-                        <Border Grid.Row="1" Grid.ColumnSpan="3"
+                        <Border x:Name="PageStatusHost"
+                                Grid.Row="1"
+                                Grid.ColumnSpan="3"
                                 Background="#0C1D30"
                                 BorderBrush="#21476E"
                                 BorderThickness="1"
