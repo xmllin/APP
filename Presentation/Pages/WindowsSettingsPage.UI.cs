@@ -857,6 +857,8 @@ namespace WpfApp1.Pages
 				SetManagedToggleState("DisableAdvertisingAndSuggestions");
 				SetManagedToggleState("DisableActivityHistory");
 				SetManagedToggleState("DisableLocationAndSensors");
+				if (!IsAdministrator())
+					SetAdditionalStatusLabel("DisableLocationAndSensors", "Требуются права администратора", false);
 				SetManagedToggleState("DisableCortana");
 				SetManagedToggleState("DisableCopilot");
 				SetManagedToggleState("DisableContentDeliveryManager");
