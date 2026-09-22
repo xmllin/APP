@@ -341,7 +341,16 @@ namespace WpfApp1.Pages
 
 				var operation = await ApplyWindowsFeatureSettingAsync(tag, disabled);
 				if (!operation.Success) throw new InvalidOperationException(operation.Error);
-				UpdateWindowsFeatureLabel(tag, disabled);
+				if (tag == "DisableHibernation")
+				{
+					var actualHibernationState = _powerSettings.IsHibernationDisabled();
+					SetToggle(DisableHibernationToggle, actualHibernationState);
+					SetStatusLabel(DisableHibernationLabel, actualHibernationState ? "Включено" : "Отключено", actualHibernationState);
+				}
+				else
+				{
+					UpdateWindowsFeatureLabel(tag, disabled);
+				}
 				if (IsPrivacySettingTag(tag) && _privacySettings.IsFeatureSupported(tag) && _privacySettings.IsDisabled(tag) != disabled)
 					throw new InvalidOperationException("Windows не подтвердила выбранное состояние настройки.");
 				if (operation.RequiresRestart
