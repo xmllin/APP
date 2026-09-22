@@ -63,7 +63,7 @@
                     <Button x:Name="WallpapersNav" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-media.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Обои" VerticalAlignment="Center"/></StackPanel></Button>
                     <Border Height="1" Background="#1A3048" Margin="14,16"/>
                     <Button x:Name="DownloadsNav" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-arrow-download.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Загрузки" VerticalAlignment="Center"/></StackPanel></Button>
-                    <Button x:Name="DiskCleanupNav" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Очистка диска" VerticalAlignment="Center"/></StackPanel></Button>
+                    <Button x:Name="DiskCleanupNav" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/disk-cleanup.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Очистка диска" VerticalAlignment="Center"/></StackPanel></Button>
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
