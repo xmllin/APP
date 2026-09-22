@@ -28,6 +28,14 @@ namespace WpfApp1.Pages
         private string _category = "Все";
         private bool _isSelectMode = false;
         private readonly PaginationState<AppDefinition> _pagination = new PaginationState<AppDefinition>(25);
+        private const double AppCardOuterHeight = 210;
+        private const int AppsPageSizeOneRow = 8;
+        private const int AppsPageSizeTwoRows = 12;
+        private const int AppsPageSizeThreeRows = 18;
+        private const int AppsPageSizeFourRows = 20;
+        private const int AppsPageSizeFiveRows = 25;
+        private const int AppsVisibleRowsMax = 5;
+
         private Task _loadTask;
         private Task _hardwareTask;
         private readonly HashSet<AppDefinition> _selectedApps = new HashSet<AppDefinition>();
@@ -144,6 +152,7 @@ namespace WpfApp1.Pages
             RecommendedButton.Content = "Рекомендуемые";
             UpdateRecommendedButtonVisibility();
             UpdateSystemHardwarePanel();
+            UpdateAppsPageSize(true);
             ApplyFilter(true);
         }
 
@@ -361,6 +370,48 @@ namespace WpfApp1.Pages
         private static string CleanCpuName(string value)
         {
             return SystemRecommendationService.CleanCpuName(value);
+        }
+
+        private void AppsScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateAppsPageSize(false);
+        }
+
+        private void AppsItems_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateAppsPageSize(false);
+        }
+
+        private void UpdateAppsPageSize(bool resetPage)
+        {
+            if (AppsScrollViewer == null || AppsScrollViewer.ViewportHeight <= 0)
+                return;
+
+            // The user-defined page sizes are based on how many 210px card rows
+            // can fit vertically in the current application viewport. Reserve
+            // the header/filter region above the cards instead of counting the
+            // entire ScrollViewer height as card space.
+            var availableCardHeight = AppsScrollViewer.ViewportHeight - 292;
+            var visibleRows = Math.Max(1, Math.Min(
+                AppsVisibleRowsMax,
+                (int)Math.Floor(Math.Max(1, availableCardHeight) / AppCardOuterHeight)));
+
+            var pageSize = visibleRows switch
+            {
+                1 => AppsPageSizeOneRow,
+                2 => AppsPageSizeTwoRows,
+                3 => AppsPageSizeThreeRows,
+                4 => AppsPageSizeFourRows,
+                _ => AppsPageSizeFiveRows
+            };
+
+            if (_pagination.PageSize == pageSize)
+                return;
+
+            _pagination.SetPageSize(pageSize, resetPage);
+
+            if (_allApps.Count > 0)
+                ApplyFilter(resetPage);
         }
 
         private void ApplyFilter(bool resetPage = true) => ApplySearch(_main.GetSearchText(), resetPage);
