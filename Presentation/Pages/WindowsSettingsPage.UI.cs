@@ -166,7 +166,6 @@ namespace Nexora.Pages
 		{
 			yield return ExplorerSettingsPanel;
 			yield return DesktopSettingsPanel;
-			yield return TaskbarSettingsPanel;
 			yield return PowerSettingsPanel;
 			yield return MouseSettingsPanel;
 			yield return WindowsUpdateSettingsPanel;
@@ -182,7 +181,6 @@ namespace Nexora.Pages
 			bool showAll = string.Equals(category, "Все", StringComparison.OrdinalIgnoreCase);
 			SetPanelVisibility(ExplorerSettingsPanel, showAll || category == "Проводник");
 			SetPanelVisibility(DesktopSettingsPanel, showAll || category == "Рабочий стол");
-			SetPanelVisibility(TaskbarSettingsPanel, showAll || category == "Панель задач");
 			SetPanelVisibility(PowerSettingsPanel, showAll || category == "Питание");
 			SetPanelVisibility(MouseSettingsPanel, showAll || category == "Мышь");
 			SetPanelVisibility(WindowsUpdateSettingsPanel, showAll || category == "Windows Update");
@@ -443,67 +441,6 @@ namespace Nexora.Pages
 			};
 		}
 
-
-		private void MoveTaskbarSettings()
-		{
-			var taskbarPanel = TaskbarSettingsPanel?.Child as StackPanel;
-			if (taskbarPanel == null) return;
-
-			var taskbarWidgets = CreateManagedToggle("TaskbarWidgets");
-			var taskbarTaskView = CreateManagedToggle("TaskbarTaskViewButton");
-			var taskbarLastActive = CreateManagedToggle("TaskbarLastActiveClick");
-			var searchBoxMode = CreateManagedCombo(
-				"SearchBoxTaskbarMode",
-				Environment.OSVersion.Version.Build >= 22000
-					? new[] { "Скрыто", "Только значок", "Значок и подпись", "Поле поиска" }
-					: new[] { "Скрыто", "Только значок", "Поле поиска" },
-				250);
-
-			var secondsRow = GetSettingRow(ShowSecondsInSystemClockToggle);
-			if (secondsRow != null && secondsRow.Parent is Panel desktopPanel)
-				desktopPanel.Children.Remove(secondsRow);
-
-			var mainRows = new List<UIElement>
-			{
-				CreateAdditionalValueRow("Выравнивание панели задач", "Расположение значков панели задач: слева или по центру", _taskbarAlignmentCombo),
-				CreateAdditionalValueRow("Поиск на панели задач", "Выбрать способ отображения поиска на панели задач", searchBoxMode),
-				CreateAdditionalToggleRow(taskbarWidgets, "Показывать виджеты", "Показывать кнопку и панель виджетов Windows"),
-				CreateAdditionalToggleRow(taskbarTaskView, "Показывать представление задач", "Показывать кнопку Task View на панели задач"),
-				CreateAdditionalToggleRow(_taskbarAutoHideToggle, "Автоматически скрывать панель задач", "Скрывать панель задач до наведения курсора к краю экрана"),
-				CreateAdditionalToggleRow(_taskbarShowDesktopToggle, "Показывать рабочий стол в дальнем углу", "Щёлкните в дальнем углу панели задач, чтобы показать рабочий стол")
-			};
-			if (secondsRow != null)
-				mainRows.Add(secondsRow);
-
-			var behaviorRows = new List<UIElement>
-			{
-				CreateAdditionalValueRow("Объединение кнопок панели задач", "Всегда, при заполнении панели задач или никогда", _taskbarGlomCombo),
-				CreateAdditionalToggleRow(_taskbarBadgesToggle, "Показывать значки на кнопках приложений", "Отображать счётчики и другие индикаторы на значках приложений"),
-				CreateAdditionalToggleRow(_taskbarFlashingToggle, "Разрешить мигание значков", "Разрешать значку приложения мигать при требовании внимания"),
-				CreateAdditionalToggleRow(taskbarLastActive, "Переключаться на последнее окно", "Щелчок по сгруппированной кнопке открывает последнее активное окно"),
-				CreateAdditionalToggleRow(_taskbarShareWindowToggle, "Предоставление доступа к окну", "Показывать команду предоставления доступа к окну в меню панели задач"),
-				CreateAdditionalToggleRow(_taskbarEndTaskToggle, "Завершать задачи с панели задач", "Добавить команду завершения приложения в меню панели задач")
-			};
-
-			var multiMonitorRows = new List<UIElement>
-			{
-				CreateAdditionalToggleRow(_taskbarMultiMonitorToggle, "Показывать панель задач на всех дисплеях", "Отображать панели задач на дополнительных мониторах"),
-				CreateAdditionalValueRow("Приложения на дополнительных панелях задач", "Выбрать, на каких панелях задач отображать кнопки открытых приложений", _taskbarMultiMonitorModeCombo),
-				CreateAdditionalValueRow("Объединение кнопок на других панелях задач", "Правило группировки кнопок на дополнительных мониторах", _taskbarMultiMonitorGlomCombo)
-			};
-
-			taskbarPanel.Children.Add(CreateTaskbarSubsectionHeader("Основные"));
-			foreach (var row in mainRows)
-				taskbarPanel.Children.Add(row);
-
-			taskbarPanel.Children.Add(CreateTaskbarSubsectionHeader("Поведение"));
-			foreach (var row in behaviorRows)
-				taskbarPanel.Children.Add(row);
-
-			taskbarPanel.Children.Add(CreateTaskbarSubsectionHeader("Несколько дисплеев"));
-			foreach (var row in multiMonitorRows)
-				taskbarPanel.Children.Add(row);
-		}
 
 		private Border CreateTaskbarSubsectionHeader(string text)
 		{
