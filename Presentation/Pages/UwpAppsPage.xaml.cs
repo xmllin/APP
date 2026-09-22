@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
 using Nexora.Models;
 using Nexora.Services;
@@ -62,7 +61,6 @@ namespace Nexora.Pages
             DataContext = this;
             Loaded += UwpAppsPage_Loaded;
             Unloaded += UwpAppsPage_Unloaded;
-            SizeChanged += UwpAppsPage_SizeChanged;
         }
 
         private async void UwpAppsPage_Loaded(object sender, RoutedEventArgs e)
@@ -76,13 +74,21 @@ namespace Nexora.Pages
             _loadCancellation?.Cancel();
         }
 
-        private void UwpAppsPage_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void UwpAppCard_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            // Keep the application grid inside the visible page area. UniformGrid
-            // then gives every row the same height, so resizing the window never
-            // causes cards to overlap and the available vertical space is used.
-            var availableHeight = ActualHeight - 305;
-            PackagesList.Height = Math.Max(220, availableHeight);
+            if (!(sender is Border card) || !(card.DataContext is UwpPackageInfo item) || !item.IsInstalled)
+                return;
+
+            var source = e.OriginalSource as DependencyObject;
+            while (source != null)
+            {
+                if (source is CheckBox || source is Button)
+                    return;
+                source = System.Windows.Media.VisualTreeHelper.GetParent(source);
+            }
+
+            item.IsSelected = !item.IsSelected;
+            e.Handled = true;
         }
 
         private async void RemoveButton_Click(object sender, RoutedEventArgs e)
