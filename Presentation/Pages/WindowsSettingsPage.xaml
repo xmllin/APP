@@ -377,7 +377,7 @@
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Мышь"/></StackPanel>
                     </ComboBoxItem>
                     <ComboBoxItem Tag="Windows Update" ToolTip="Для некоторых настроек требуются права админа">
-                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/Restore_down.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Windows Update"/></StackPanel>
+                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/restart.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Windows Update"/></StackPanel>
                     </ComboBoxItem>
                     <ComboBoxItem Tag="Безопасность и конфиденциальность" ToolTip="Для некоторых настроек требуются права админа">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-shield.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Безопасность и конфиденциальность"/></StackPanel>
@@ -870,14 +870,14 @@
                     <TextBlock Text="Для применения некоторых настроек требуется перезапуск проводника" Foreground="#85A8D2" FontSize="13" VerticalAlignment="Center" TextWrapping="Wrap"/>
                 </StackPanel>
                 <WrapPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
-                    <Button x:Name="RestartSystemButton" ToolTip="Перезапустить Windows" Click="RestartSystemButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" Width="34" Height="30" Margin="6,0,0,0" Padding="7,5">
-                        <Image Source="{local:SvgImage Source=interface/white/Restore_down.svg}" Width="16" Height="16"/>
-                    </Button>
-                    <Button x:Name="RestartExplorerButton" ToolTip="Перезапустить проводник" Click="RestartExplorerButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" Width="34" Height="30" Margin="6,0,0,0" Padding="7,5">
-                        <Image Source="{local:SvgImage Source=interface/white/Restore_down.svg}" Width="16" Height="16"/>
-                    </Button>
                     <Button x:Name="RestartAsAdminButton" ToolTip="Перезапустить от администратора" Click="RestartAsAdminButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" Width="34" Height="30" Margin="6,0,0,0" Padding="7,5">
                         <Image Source="{local:SvgImage Source=interface/white/category-shield.svg}" Width="16" Height="16"/>
+                    </Button>
+                    <Button x:Name="RestartExplorerButton" ToolTip="Перезапустить проводник" Click="RestartExplorerButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" Width="34" Height="30" Margin="6,0,0,0" Padding="7,5">
+                        <Image Source="{local:SvgImage Source=interface/white/fluent-folder-open.svg}" Width="16" Height="16"/>
+                    </Button>
+                    <Button x:Name="RestartSystemButton" ToolTip="Перезапустить Windows" Click="RestartSystemButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" Width="34" Height="30" Margin="6,0,0,0" Padding="7,5">
+                        <Image Source="{local:SvgImage Source=interface/white/restart.svg}" Width="16" Height="16"/>
                     </Button>
                 </WrapPanel>
             </Grid>
