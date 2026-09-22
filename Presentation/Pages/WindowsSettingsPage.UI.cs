@@ -34,13 +34,99 @@ namespace WpfApp1.Pages
 			return combo;
 		}
 
+		private const string SettingsSearchPlaceholder = "Поиск настроек Windows...";
+
 		private void SettingsCategoryComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (SettingsCategoryComboBox == null || !(SettingsCategoryComboBox.SelectedItem is ComboBoxItem item))
+			RefreshSettingsSearch();
+		}
+
+		private void SettingsSearchBox_GotFocus(object sender, RoutedEventArgs e)
+		{
+			if (string.Equals(SettingsSearchBox.Text, SettingsSearchPlaceholder, StringComparison.Ordinal))
+			{
+				SettingsSearchBox.Text = string.Empty;
+				SettingsSearchBox.Foreground = new SolidColorBrush(Color.FromRgb(241, 246, 255));
+			}
+		}
+
+		private void SettingsSearchBox_LostFocus(object sender, RoutedEventArgs e)
+		{
+			if (string.IsNullOrWhiteSpace(SettingsSearchBox.Text))
+			{
+				SettingsSearchBox.Text = SettingsSearchPlaceholder;
+				SettingsSearchBox.Foreground = new SolidColorBrush(Color.FromRgb(111, 137, 168));
+			}
+		}
+
+		private void SettingsSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			if (SettingsSearchBox == null || SettingsStack == null)
 				return;
 
-			string category = item.Tag as string;
+			RefreshSettingsSearch();
+		}
+
+		private void RefreshSettingsSearch()
+		{
+			string category = SettingsCategoryComboBox?.SelectedItem is ComboBoxItem item
+				? item.Tag as string
+				: "Все";
+
 			SetSettingsCategoryVisibility(category);
+
+			string query = SettingsSearchBox?.Text?.Trim() ?? string.Empty;
+			if (string.Equals(query, SettingsSearchPlaceholder, StringComparison.OrdinalIgnoreCase))
+				query = string.Empty;
+
+			var rows = FindVisualElements<Border>(SettingsStack)
+				.Where(IsWindowsSettingsRow)
+				.Distinct()
+				.ToList();
+
+			foreach (var row in rows)
+				row.Visibility = Visibility.Visible;
+
+			if (!string.IsNullOrWhiteSpace(query))
+			{
+				var normalizedQuery = query.ToLowerInvariant();
+				foreach (var row in rows)
+				{
+					var text = string.Join(" ",
+						FindTextBlocks(row)
+							.Select(block => block.Text)
+							.Where(value => !string.IsNullOrWhiteSpace(value)))
+						.ToLowerInvariant();
+
+					row.Visibility = text.Contains(normalizedQuery, StringComparison.Ordinal)
+						? Visibility.Visible
+						: Visibility.Collapsed;
+				}
+			}
+
+			foreach (var section in SettingsStack.Children.OfType<Border>())
+			{
+				if (ReferenceEquals(section, WindowsSettingsBanner) || IsWindowsSettingsRow(section))
+					continue;
+
+				var sectionRows = FindVisualElements<Border>(section)
+					.Where(IsWindowsSettingsRow)
+					.Distinct()
+					.ToList();
+
+				if (sectionRows.Count == 0 || section.Visibility != Visibility.Visible)
+					continue;
+
+				if (!string.IsNullOrWhiteSpace(query))
+					section.Visibility = sectionRows.Any(row => row.Visibility == Visibility.Visible)
+						? Visibility.Visible
+						: Visibility.Collapsed;
+			}
+		}
+
+		private bool IsWindowsSettingsRow(Border border)
+		{
+			return border != null && ReferenceEquals(border.Style, FindResource("SettingRow"));
 		}
 
 		private void SetSettingsCategoryVisibility(string category)
@@ -71,8 +157,7 @@ namespace WpfApp1.Pages
 		{
 			_hostWindow = Window.GetWindow(this);
 			if (_hostWindow != null) _hostWindow.Activated += HostWindow_Activated;
-			if (SettingsCategoryComboBox != null && SettingsCategoryComboBox.SelectedItem is ComboBoxItem categoryItem)
-				SetSettingsCategoryVisibility(categoryItem.Tag as string);
+			RefreshSettingsSearch();
 			EnsureRestartHints();
 			LoadExplorerSettings();
 			RefreshMouseSettings();
