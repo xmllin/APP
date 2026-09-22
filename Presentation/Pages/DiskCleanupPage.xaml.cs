@@ -1,10 +1,14 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using Nexora.Domain.WindowsSettings;
 using Nexora.Services;
 
@@ -153,6 +157,58 @@ namespace Nexora.Pages
             foreach (var item in _items)
                 item.IsSelected = shouldSelect && item.SizeBytes > 0 && !item.IsDangerous;
             UpdateSummary();
+        }
+
+
+        private void CleanupItemCard_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (_busy || !(sender is Border card) || !(card.DataContext is DiskCleanupItem item) || !item.HasData)
+                return;
+
+            var source = e.OriginalSource as DependencyObject;
+            while (source != null)
+            {
+                if (source is Button || source is CheckBox)
+                    return;
+                source = VisualTreeHelper.GetParent(source);
+            }
+
+            item.IsSelected = !item.IsSelected;
+            UpdateSummary();
+            e.Handled = true;
+        }
+
+        private void OpenCleanupFolder_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is Button button) || !(button.Tag is DiskCleanupItem item))
+                return;
+
+            try
+            {
+                if (item.IsCommand && string.Equals(item.Id, "RecycleBin", StringComparison.OrdinalIgnoreCase))
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "explorer.exe",
+                        Arguments = "shell:RecycleBinFolder",
+                        UseShellExecute = true
+                    });
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(item.Path) || !Directory.Exists(item.Path))
+                    throw new DirectoryNotFoundException("Папка для этого пункта не найдена.");
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = item.Path,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Не удалось открыть папку: " + ex.Message, "Очистка диска", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void SetBusy(bool busy, string status)
