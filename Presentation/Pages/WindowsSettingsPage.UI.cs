@@ -56,7 +56,7 @@ namespace Nexora.Pages
 			if (string.IsNullOrWhiteSpace(SettingsSearchBox.Text))
 			{
 				SettingsSearchBox.Text = SettingsSearchPlaceholder;
-				SettingsSearchBox.Foreground = new SolidColorBrush(Color.FromRgb(111, 137, 168));
+				SettingsSearchBox.Foreground = new SolidColorBrush(Color.FromRgb(241, 246, 255));
 			}
 		}
 
@@ -784,15 +784,9 @@ namespace Nexora.Pages
 			// Use the controls declared in XAML. The previous implementation created
 			// detached mouse controls here, so dragging the visible sliders could
 			// write the values from the hidden controls instead of the UI values.
-			_mouseSpeedSlider = MouseSpeedSlider;
-			_mouseScrollSlider = MouseScrollSlider;
+			_mouseSpeedSlider = null;
+			_mouseScrollSlider = null;
 			_mouseAccelerationToggle = MouseAccelerationToggle;
-			_mouseSpeedSlider.IsSnapToTickEnabled = false;
-			_mouseScrollSlider.IsSnapToTickEnabled = false;
-			_mouseSpeedSlider.SmallChange = 1;
-			_mouseSpeedSlider.LargeChange = 1;
-			_mouseScrollSlider.SmallChange = 1;
-			_mouseScrollSlider.LargeChange = 1;
 			_mouseAccelerationToggle.Checked += MouseAccelerationToggle_Changed;
 			_mouseAccelerationToggle.Unchecked += MouseAccelerationToggle_Changed;
 
