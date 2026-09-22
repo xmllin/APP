@@ -247,8 +247,7 @@ namespace WpfApp1.Pages
 			try
 			{
 				var policy = await _libraryInstallation.SetPowerShellScriptsEnabledAsync(enabled, CancellationToken.None);
-				if (string.IsNullOrWhiteSpace(policy))
-					policy = await _libraryInstallation.GetPowerShellScriptsPolicyAsync(CancellationToken.None);
+				policy = ReadPowerShellScriptsPolicyFromRegistry();
 				if (IsPowerShellScriptsEnabled(policy) != enabled)
 					throw new InvalidOperationException("Windows не подтвердила изменение политики PowerShell.");
 				SetStatusLabel(_powerShellScriptsLabel, enabled ? "Включено" : "Отключено", enabled);
