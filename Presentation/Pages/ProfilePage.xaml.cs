@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -88,26 +89,72 @@ namespace Nexora.Pages
 
             GpuText.Text = info.GpuNames.Count == 0 ? "Не удалось определить видеокарту." : string.Join("\n", info.GpuNames);
             MotherboardText.Text = FormatMotherboard(info);
-            StorageText.Text = FormatStorage();
+            DrivesControl.ItemsSource = GetDriveTiles();
         }
 
-        private static string FormatStorage()
+        private static DriveTileInfo[] GetDriveTiles()
         {
             try
             {
-                return string.Join("\n", DriveInfo.GetDrives()
+                return DriveInfo.GetDrives()
                     .Where(d => d.IsReady && d.TotalSize > 0)
                     .OrderBy(d => d.Name, StringComparer.OrdinalIgnoreCase)
                     .Select(d =>
                     {
                         var used = d.TotalSize - d.AvailableFreeSpace;
                         var percent = d.TotalSize == 0 ? 0 : (int)Math.Round(used * 100d / d.TotalSize);
-                        return $"{d.Name.TrimEnd('\\')}  {used / 1024d / 1024d / 1024d:0.0} / {d.TotalSize / 1024d / 1024d / 1024d:0.0} ГБ  ·  {percent}% занято";
-                    }));
+                        var label = string.IsNullOrWhiteSpace(d.VolumeLabel)
+                            ? d.Name.TrimEnd('\\')
+                            : d.VolumeLabel.Trim();
+
+                        return new DriveTileInfo
+                        {
+                            Path = d.RootDirectory.FullName,
+                            DisplayName = label,
+                            UsageText = $"{FormatBytes(used)} занято из {FormatBytes(d.TotalSize)} · {percent}%"
+                        };
+                    })
+                    .ToArray();
             }
             catch
             {
-                return "Не удалось определить накопители.";
+                return Array.Empty<DriveTileInfo>();
+            }
+        }
+
+        private static string FormatBytes(long bytes)
+        {
+            if (bytes >= 1024L * 1024L * 1024L)
+                return $"{bytes / 1024d / 1024d / 1024d:0.0} ГБ";
+            if (bytes >= 1024L * 1024L)
+                return $"{bytes / 1024d / 1024d:0.0} МБ";
+            return $"{Math.Max(0, bytes) / 1024d:0.0} КБ";
+        }
+
+
+        private sealed class DriveTileInfo
+        {
+            public string Path { get; set; } = string.Empty;
+            public string DisplayName { get; set; } = string.Empty;
+            public string UsageText { get; set; } = string.Empty;
+        }
+
+        private void DriveTile_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is System.Windows.Controls.Button button) || !(button.Tag is DriveTileInfo drive))
+                return;
+
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = drive.Path,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Не удалось открыть диск: " + ex.Message, "Профиль", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
