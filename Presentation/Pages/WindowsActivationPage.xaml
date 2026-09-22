@@ -111,8 +111,7 @@
                         <Button Content="Windows Lite"
                                 IsEnabled="False"
                             Style="{StaticResource DisabledDarkButton}"
-                                Padding="12,7" Margin="0,0,10,10"
-                                ToolTip="Официального ISO Windows Lite не существует"/>
+                                Padding="12,7" Margin="0,0,10,10"/>
                     </WrapPanel>
                 </StackPanel>
             </Border>
