@@ -178,6 +178,49 @@ namespace Nexora.Pages
             e.Handled = true;
         }
 
+
+        private void CleanupMoreButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is Button button) || !(button.Tag is DiskCleanupItem item))
+                return;
+
+            var menu = new ContextMenu
+            {
+                Background = new SolidColorBrush(Color.FromRgb(11, 32, 53)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(29, 59, 90)),
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(4)
+            };
+
+            var openItem = new MenuItem
+            {
+                Header = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    Children =
+                    {
+                        new Image
+                        {
+                            Source = new System.Windows.Media.Imaging.BitmapImage(
+                                new Uri("pack://application:,,,/interface/white/fluent-folder-open.svg")),
+                            Width = 16,
+                            Height = 16,
+                            Margin = new Thickness(0, 0, 7, 0)
+                        },
+                        new TextBlock { Text = "Открыть папку", VerticalAlignment = VerticalAlignment.Center }
+                    }
+                },
+                Cursor = Cursors.Hand
+            };
+            openItem.Click += OpenCleanupFolder_Click;
+            openItem.Tag = item;
+            menu.Items.Add(openItem);
+
+            button.ContextMenu = menu;
+            menu.IsOpen = true;
+            e.Handled = true;
+        }
+
         private void OpenCleanupFolder_Click(object sender, RoutedEventArgs e)
         {
             if (!(sender is Button button) || !(button.Tag is DiskCleanupItem item))
