@@ -152,7 +152,7 @@
     <Grid>
         <ScrollViewer x:Name="AppsScrollViewer" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Margin="36,28,36,42">
-                <Border Height="150" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="28" Margin="0,0,0,12">
+                <Border Height="170" MinHeight="170" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="28" Margin="0,0,0,12">
                     <Border.Background>
                         <ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/>
                     </Border.Background>
@@ -177,6 +177,38 @@
                           SelectionChanged="CategoryComboBox_SelectionChanged"
                           Style="{StaticResource LibraryLikeComboBox}"
                           ItemContainerStyle="{StaticResource LibraryLikeComboBoxItem}"/>
+                <Grid Margin="0,10,0,0" Height="38">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" MaxWidth="420" Height="38" HorizontalAlignment="Left"
+                            Background="#0D1D31" BorderBrush="#284664" BorderThickness="1" CornerRadius="19">
+                        <Grid Margin="12,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <TextBox x:Name="AppsSearchBox" Grid.Column="0" Margin="4,0,8,0"
+                                     Background="Transparent" BorderThickness="0" Foreground="#EAF2FF"
+                                     FontSize="14" VerticalContentAlignment="Center" CaretBrush="White"
+                                     Text="Поиск программ..." TextChanged="AppsSearchBox_TextChanged"
+                                     GotFocus="AppsSearchBox_GotFocus" LostFocus="AppsSearchBox_LostFocus"/>
+                            <Image Grid.Column="1" Source="{local:SvgImage Source=interface/white/fluent-search.svg}"
+                                   Width="18" Height="18" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                        </Grid>
+                    </Border>
+                    <TextBlock Grid.Column="1" Text="Видимых рядов:" Foreground="{StaticResource MutedBrush}"
+                               VerticalAlignment="Center" Margin="18,0,8,0"/>
+                    <ComboBox x:Name="RowsPerPageComboBox" Grid.Column="2" Width="150" Height="38"
+                              Style="{StaticResource LibraryLikeComboBox}"
+                              ItemContainerStyle="{StaticResource LibraryLikeComboBoxItem}"
+                              SelectionChanged="RowsPerPageComboBox_SelectionChanged">
+                        <ComboBoxItem Tag="1">1 ряд · 8</ComboBoxItem>
+                        <ComboBoxItem Tag="2">2 ряда · 12</ComboBoxItem>
+                        <ComboBoxItem Tag="3">3 ряда · 18</ComboBoxItem>
+                        <ComboBoxItem Tag="4">4 ряда · 20</ComboBoxItem>
+                        <ComboBoxItem Tag="5">5+ рядов · 25</ComboBoxItem>
+                    </ComboBox>
+                </Grid>
 
                 <Border x:Name="SystemHardwarePanel" Visibility="Collapsed" Background="#0B2035" BorderBrush="#1D3B5A" BorderThickness="1" CornerRadius="10" Padding="13,10" Margin="4,0,4,14">
                     <Grid>
