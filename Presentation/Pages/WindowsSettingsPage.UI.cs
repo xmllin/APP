@@ -107,11 +107,12 @@ namespace Nexora.Pages
 				}
 
 				// Скрываем целиком категории, в которых после фильтрации
-				// не осталось ни одной подходящей настройки.
-				// Сам SettingsStack, строка поиска и баннер не скрываем.
-				foreach (var section in SettingsStack.Children.OfType<Border>())
+				// не осталось ни одной подходящей настройки. Используем
+				// сами панели категорий, а не SettingsStack.Children: часть
+				// категорий создаётся динамически после InitializeComponent.
+				foreach (var section in GetSettingsCategoryPanels())
 				{
-					if (ReferenceEquals(section, WindowsSettingsBanner) || IsWindowsSettingsRow(section))
+					if (section == null)
 						continue;
 
 					var sectionRows = FindVisualElements<Border>(section)
@@ -119,14 +120,9 @@ namespace Nexora.Pages
 						.Distinct()
 						.ToList();
 
-					// Если это полноценная категория с настройками — её видимость
-					// определяется исключительно наличием найденных настроек.
-					if (sectionRows.Count > 0)
-					{
-						section.Visibility = sectionRows.Any(row => row.Visibility == Visibility.Visible)
-							? Visibility.Visible
-							: Visibility.Collapsed;
-					}
+					section.Visibility = sectionRows.Any(row => row.Visibility == Visibility.Visible)
+						? Visibility.Visible
+						: Visibility.Collapsed;
 				}
 			}
 			else if (_noSettingsResultsText != null)
@@ -166,6 +162,20 @@ namespace Nexora.Pages
 		{
 			return border != null && ReferenceEquals(border.Style, FindResource("SettingRow"));
 		}
+		private IEnumerable<Border> GetSettingsCategoryPanels()
+		{
+			yield return ExplorerSettingsPanel;
+			yield return DesktopSettingsPanel;
+			yield return TaskbarSettingsPanel;
+			yield return PowerSettingsPanel;
+			yield return MouseSettingsPanel;
+			yield return WindowsUpdateSettingsPanel;
+			yield return _startSearchSettingsPanel;
+			yield return _gamingSettingsPanel;
+			yield return _systemSettingsPanel;
+			yield return _securityBehaviorPanel;
+		}
+
 
 		private void SetSettingsCategoryVisibility(string category)
 		{
