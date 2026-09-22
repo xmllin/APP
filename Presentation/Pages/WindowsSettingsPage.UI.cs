@@ -771,13 +771,6 @@ namespace Nexora.Pages
 				case "DisableAutoLogger":
 				case "DisableFindMyDevice":
 				case "DisableDeliveryOptimization":
-				case "BackgroundRecording":
-					return "Для применения требуется перезапуск Windows.";
-
-				case "PowerScheme":
-				case "MouseAcceleration":
-				case "DisableDriverUpdates":
-				case "DisableReservedStorage":
 				case "DisableAppDiagnostics":
 				case "DisableActivity":
 				case "DisablePerformance":
@@ -785,17 +778,24 @@ namespace Nexora.Pages
 				case "DisableVoiceData":
 				case "DisableStickyKeys":
 				case "DisableBingSearch":
+					return "Для применения перезапуск не требуется — настройка применяется сразу.";
+
+				case "PowerScheme":
+				case "MouseAcceleration":
+				case "DisableDriverUpdates":
+				case "DisableReservedStorage":
 				case "GameBar":
 				case "FullscreenOptimizations":
 				case "AutoGameModeEnabled":
 				case "DeveloperMode":
 				case "NumLockOnBoot":
 				case "SystemSuggestions":
-				case "DisablePreinstalledApps":
 				case "DisableHibernation":
 				case "DisableUSBPowerSaving":
 				case "DisableSystemThrottling":
 				case "UacNeverNotify":
+					return "Для применения требуется перезапуск Windows.";
+
 				case "DisableLockScreenBlur":
 				case "EnableDarkTheme":
 				case "EnableClipboard":
