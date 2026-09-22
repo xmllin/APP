@@ -296,8 +296,6 @@ namespace WpfApp1.Pages
 				return;
 			}
 			var disabled = toggle.IsChecked == true;
-			_settingsApplyBusy = true;
-			SetWindowsSettingsControlsEnabled(false);
 			var tag = toggle.Tag as string;
 			if (tag == "HardwareGpuScheduling" && !IsHardwareGpuSchedulingSupported())
 			{
@@ -326,6 +324,9 @@ namespace WpfApp1.Pages
 				}
 				return;
 			}
+
+			_settingsApplyBusy = true;
+			SetWindowsSettingsControlsEnabled(false);
 			try
 			{
 				if (tag == "DisableTelemetry")
