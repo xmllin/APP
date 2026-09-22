@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Nexora.Domain.WindowsSettings;
 using Nexora.Services;
 
@@ -122,6 +123,7 @@ namespace Nexora.Pages
 
         private async Task CleanItemsAsync(System.Collections.Generic.IEnumerable<DiskCleanupItem> selected)
         {
+            var scrollOffset = CleanupScrollViewer?.VerticalOffset ?? 0;
             _busy = true;
             SetBusy(true, "Очистка…");
             long freed = 0;
@@ -137,6 +139,7 @@ namespace Nexora.Pages
                     NotificationKind.Success);
 
                 await _service.ScanAllAsync(_items, _cts?.Token ?? CancellationToken.None);
+                RestoreCleanupScrollPosition(scrollOffset);
             }
             catch (OperationCanceledException)
             {
@@ -151,7 +154,20 @@ namespace Nexora.Pages
                 _busy = false;
                 SetBusy(false, PageStatusText.Text);
                 UpdateSummary();
+                RestoreCleanupScrollPosition(scrollOffset);
             }
+        }
+
+        private void RestoreCleanupScrollPosition(double offset)
+        {
+            if (CleanupScrollViewer == null)
+                return;
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                var maxOffset = Math.Max(0, CleanupScrollViewer.ExtentHeight - CleanupScrollViewer.ViewportHeight);
+                CleanupScrollViewer.ScrollToVerticalOffset(Math.Min(offset, maxOffset));
+            }), DispatcherPriority.Background);
         }
 
         private void SelectAll_Click(object sender, RoutedEventArgs e)
