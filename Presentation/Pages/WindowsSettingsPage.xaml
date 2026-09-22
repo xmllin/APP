@@ -352,34 +352,34 @@
                     <ComboBoxItem Tag="Все">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/list-tree.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Все"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Проводник" ToolTip="Для некоторых настроек требуются права админа">
+                    <ComboBoxItem Tag="Проводник">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-folder-open.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Проводник"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Рабочий стол" ToolTip="Для некоторых настроек требуются права админа">
+                    <ComboBoxItem Tag="Рабочий стол">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-app-folder.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Рабочий стол"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Панель задач" ToolTip="Для некоторых настроек требуются права админа">
+                    <ComboBoxItem Tag="Панель задач">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-apps-list.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Панель задач"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Пуск и поиск" ToolTip="Для некоторых настроек требуются права админа">
+                    <ComboBoxItem Tag="Пуск и поиск">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-search.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Пуск и поиск"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Игры и производительность" ToolTip="Для некоторых настроек требуются права админа">
+                    <ComboBoxItem Tag="Игры и производительность">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-media.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Игры и производительность"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Система" ToolTip="Для некоторых настроек требуются права админа">
+                    <ComboBoxItem Tag="Система">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Система"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Питание" ToolTip="Для некоторых настроек требуются права админа">
+                    <ComboBoxItem Tag="Питание">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/cpu.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Питание"/></StackPanel>
                     </ComboBoxItem>
                     <ComboBoxItem Tag="Мышь">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Мышь"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Windows Update" ToolTip="Для некоторых настроек требуются права админа">
+                    <ComboBoxItem Tag="Windows Update">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/restart.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Windows Update"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Безопасность и конфиденциальность" ToolTip="Для некоторых настроек требуются права админа">
+                    <ComboBoxItem Tag="Безопасность и конфиденциальность">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-shield.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Безопасность и конфиденциальность"/></StackPanel>
                     </ComboBoxItem>
                 </ComboBox>
@@ -392,7 +392,7 @@
                                      GotFocus="SettingsSearchBox_GotFocus"
                                      LostFocus="SettingsSearchBox_LostFocus"
                                      Background="Transparent" BorderThickness="0"
-                                     Foreground="#6F89A8" CaretBrush="White"
+                                     Foreground="#F1F6FF" CaretBrush="White"
                                      Padding="10,5" VerticalContentAlignment="Center"/>
                             <Image Source="{local:SvgImage Source=interface/white/fluent-search.svg}"
                                    Width="17" Height="17" HorizontalAlignment="Right" Margin="0,0,10,0"
@@ -618,7 +618,7 @@
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                         <TextBlock x:Name="ShowThisPcLabel" Text="Отключено" Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                        <ToggleButton x:Name="ShowThisPcToggle" Tag="ThisPcIcon" ToolTip="Переключатель скрытия «Этот компьютер»" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                        <ToggleButton x:Name="ShowThisPcToggle" Tag="ThisPcIcon" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -630,7 +630,7 @@
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                         <TextBlock x:Name="ShowRecycleBinLabel" Text="Отключено" Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                        <ToggleButton x:Name="ShowRecycleBinToggle" Tag="RecycleBinIcon" ToolTip="Переключатель скрытия «Корзина»" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                        <ToggleButton x:Name="ShowRecycleBinToggle" Tag="RecycleBinIcon" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -678,32 +678,6 @@
                         <StackPanel>
                             <Border Style="{StaticResource CategoryHeader}">
                                 <TextBlock Text="Мышь" FontSize="24" FontWeight="SemiBold"/>
-                            </Border>
-                            <Border Style="{StaticResource SettingRow}">
-                                <Grid>
-                                    <StackPanel>
-                                        <TextBlock Text="Скорость указателя" FontWeight="SemiBold"/>
-                                        <TextBlock Text="Значение от 1 до 20" Foreground="#82A5CF" FontSize="11"/>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <TextBlock Text="{Binding ElementName=MouseSpeedSlider, Path=Value, StringFormat={}{0:0}}" Foreground="#F1F6FF" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0" Width="22" TextAlignment="Center"/>
-                                        <Slider x:Name="MouseSpeedSlider" Width="170" Minimum="1" Maximum="20" Value="10" SmallChange="1" LargeChange="1" IsMoveToPointEnabled="True" IsSnapToTickEnabled="False" TickPlacement="None" Foreground="#58AEFF" Style="{StaticResource AppSliderStyle}" Margin="0,0,8,0" ValueChanged="MouseSlider_ValueChanged"/>
-                                        <Button x:Name="MouseSpeedDefaultButton" Content="По умолчанию" Click="MouseSpeedDefault_Click" Style="{StaticResource GhostButton}" Padding="10,5" Margin="0,0,0,0" Height="30"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                            <Border Style="{StaticResource SettingRow}">
-                                <Grid>
-                                    <StackPanel>
-                                        <TextBlock Text="Строки прокрутки за раз" FontWeight="SemiBold"/>
-                                        <TextBlock Text="Количество строк при одном шаге колеса; от 1 до 100" Foreground="#82A5CF" FontSize="11"/>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <TextBlock Text="{Binding ElementName=MouseScrollSlider, Path=Value, StringFormat={}{0:0}}" Foreground="#F1F6FF" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0" Width="22" TextAlignment="Center"/>
-                                        <Slider x:Name="MouseScrollSlider" Width="170" Minimum="1" Maximum="100" Value="5" SmallChange="1" LargeChange="1" IsMoveToPointEnabled="True" IsSnapToTickEnabled="False" TickPlacement="None" Foreground="#58AEFF" Style="{StaticResource AppSliderStyle}" Margin="0,0,8,0" ValueChanged="MouseSlider_ValueChanged"/>
-                                        <Button x:Name="MouseScrollDefaultButton" Content="По умолчанию" Click="MouseScrollDefault_Click" Style="{StaticResource GhostButton}" Padding="10,5" Margin="0,0,0,0" Height="30"/>
-                                    </StackPanel>
-                                </Grid>
                             </Border>
                             <Border Style="{StaticResource SettingRow}">
                                 <Grid>
@@ -869,19 +843,19 @@
                     <TextBlock Text="Для применения некоторых настроек требуется перезапуск проводника" Foreground="#85A8D2" FontSize="13" VerticalAlignment="Center" TextWrapping="Wrap"/>
                 </StackPanel>
                 <WrapPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
-                    <Button x:Name="RestartAsAdminButton" ToolTip="Перезапустить от администратора" Click="RestartAsAdminButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" MinWidth="132" Height="30" Margin="6,0,0,0" Padding="8,5">
+                    <Button x:Name="RestartAsAdminButton" Click="RestartAsAdminButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" MinWidth="132" Height="30" Margin="6,0,0,0" Padding="8,5">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{local:SvgImage Source=interface/white/restart.svg}" Width="14" Height="14"/>
                             <TextBlock Text="Права админа" VerticalAlignment="Center" Margin="6,0,0,0"/>
                         </StackPanel>
                     </Button>
-                    <Button x:Name="RestartExplorerButton" ToolTip="Перезапустить проводник" Click="RestartExplorerButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" MinWidth="112" Height="30" Margin="6,0,0,0" Padding="8,5">
+                    <Button x:Name="RestartExplorerButton" Click="RestartExplorerButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" MinWidth="112" Height="30" Margin="6,0,0,0" Padding="8,5">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{local:SvgImage Source=interface/white/restart.svg}" Width="14" Height="14"/>
                             <TextBlock Text="Проводник" VerticalAlignment="Center" Margin="6,0,0,0"/>
                         </StackPanel>
                     </Button>
-                    <Button x:Name="RestartSystemButton" ToolTip="Перезапустить Windows" Click="RestartSystemButton_Click" Style="{StaticResource GhostButton}" MinWidth="100" Height="30" Margin="6,0,0,0" Padding="8,5">
+                    <Button x:Name="RestartSystemButton" Click="RestartSystemButton_Click" Style="{StaticResource GhostButton}" MinWidth="100" Height="30" Margin="6,0,0,0" Padding="8,5">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{local:SvgImage Source=interface/white/restart.svg}" Width="14" Height="14"/>
                             <TextBlock Text="Систему" VerticalAlignment="Center" Margin="6,0,0,0"/>
