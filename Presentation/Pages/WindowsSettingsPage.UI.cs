@@ -886,5 +886,405 @@ namespace Nexora.Pages
 			if (!result.Success) throw new InvalidOperationException(result.Error);
 		}
 
+
+		private void AttachMovedSettingsRows()
+		{
+			if (ExplorerSettingsPanel != null && ExplorerSettingsPanel.Child is StackPanel explorerPanel)
+			{
+				explorerPanel.Children.Add(CreateAdditionalValueRow("Названия новых файлов и папок", "Шаблон Windows для новых объектов Проводника", CreateNameTemplateControls()));
+				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ExplorerItemCheckboxes"), "Флажки элементов в Проводнике", "Показывать флажки выбора у файлов и папок"));
+				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ExplorerSyncNotifications"), "Уведомления поставщиков синхронизации", "Показывать уведомления OneDrive и других поставщиков файлов"));
+				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ExplorerCompactMode"), "Компактный режим Проводника", "Уменьшить интервалы между элементами Проводника"));
+				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("SnapAssistFlyout"), "Подсказки Snap", "Показывать раскладку Snap при наведении на кнопку разворачивания"));
+				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ClassicContextMenu"), "Классическое контекстное меню", "Использовать классическое меню Windows 10 вместо компактного меню Windows 11"));
+				explorerPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("SpeedUpExplorerAndMenus"), "Ускорить Проводник и меню", "Уменьшить задержку запуска Проводника и отображения меню Windows"));
+			}
+			if (DesktopSettingsPanel != null && DesktopSettingsPanel.Child is StackPanel desktopPanel)
+			{
+				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("HideUserFiles"), "Скрыть файлы пользователя", "Скрыть папку пользователя на рабочем столе"));
+				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("HideNetworkIcon"), "Скрыть сеть", "Скрыть значок «Сеть» на рабочем столе"));
+				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("HideControlPanel"), "Скрыть панель управления", "Скрыть классический значок панели управления на рабочем столе"));
+				desktopPanel.Children.Add(CreateAdditionalToggleRow(CreateManagedToggle("ShortcutArrow"), "Скрывать стрелки ярлыков", "Убирать стрелку с ярлыков рабочего стола"));
+				desktopPanel.Children.Add(CreateAdditionalValueRow("Цвет выделения", "Цвет выделения текста и элементов интерфейса Windows", CreateHighlightColorControls()));
+				desktopPanel.Children.Add(CreateAdditionalToggleRow(_contextMenuDelayToggle, "Убрать задержку контекстного меню", "Установить минимальную задержку открытия меню"));
+			}
+		}
+
+		private void CreateInterfaceSettings()
+		{
+			_taskbarEndTaskToggle = CreateAdditionalToggle("EnableTaskbarEndTask");
+			_taskbarAutoHideToggle = CreateAdditionalToggle("TaskbarAutoHide");
+			_taskbarBadgesToggle = CreateAdditionalToggle("TaskbarBadges");
+			_taskbarFlashingToggle = CreateAdditionalToggle("TaskbarFlashing");
+			_taskbarMultiMonitorToggle = CreateAdditionalToggle("TaskbarMultiMonitor");
+			_taskbarShareWindowToggle = CreateAdditionalToggle("TaskbarShareWindow");
+			_taskbarShowDesktopToggle = CreateAdditionalToggle("TaskbarShowDesktop");
+
+			_taskbarAlignmentCombo = CreateTaskbarCombo("TaskbarAlignment", new[] { "Слева", "По центру" }, 230);
+			_taskbarMultiMonitorModeCombo = CreateTaskbarCombo("TaskbarMultiMonitorMode", new[] { "Все панели задач", "Основная и панель с открытым окном", "Только панель с открытым окном" }, 285);
+			_taskbarGlomCombo = CreateTaskbarCombo("TaskbarGlomLevel", new[] { "Всегда", "Когда панель задач заполнена", "Никогда" }, 260);
+			_taskbarMultiMonitorGlomCombo = CreateTaskbarCombo("TaskbarMultiMonitorGlomLevel", new[] { "Всегда", "Когда панель задач заполнена", "Никогда" }, 260);
+			_disableLockScreenBlurToggle = CreateAdditionalToggle("DisableLockScreenBlur");
+			_darkThemeToggle = CreateAdditionalToggle("EnableDarkTheme");
+			_contextMenuDelayToggle = CreateAdditionalToggle("ReduceContextMenuDelay");
+			_clipboardToggle = CreateAdditionalToggle("EnableClipboard");
+			_windowsAdsToggle = CreateAdditionalToggle("DisableWindowsAds");
+
+			// Use the controls declared in XAML. The previous implementation created
+			// detached mouse controls here, so dragging the visible sliders could
+			// write the values from the hidden controls instead of the UI values.
+			_mouseSpeedSlider = null;
+			_mouseScrollSlider = null;
+			_mouseAccelerationToggle = MouseAccelerationToggle;
+			_mouseAccelerationToggle.Checked += MouseAccelerationToggle_Changed;
+			_mouseAccelerationToggle.Unchecked += MouseAccelerationToggle_Changed;
+
+			_highlightColorCombo = new ComboBox
+			{
+				Width = 0,
+				MinWidth = 0,
+				Style = (Style)FindResource("DarkComboBoxStyle"),
+				ItemContainerStyle = (Style)FindResource("DarkComboBoxItemStyle")
+			};
+			_highlightColorCombo.Items.Add("Синий");
+			_highlightColorCombo.Items.Add("Бирюзовый");
+			_highlightColorCombo.Items.Add("Фиолетовый");
+			_highlightColorCombo.Items.Add("Зелёный");
+			_highlightColorCombo.Items.Add("Оранжевый");
+			_highlightColorCombo.Items.Add("Красный");
+			_highlightColorCombo.Items.Add("Тёмно-синий");
+			_highlightColorCombo.Items.Add("Черный");
+			_highlightColorCombo.Items.Add("Серый");
+			_highlightColorCombo.Width = CalculateTightComboBoxWidth(_highlightColorCombo.Items.Cast<object>().Select(x => x?.ToString() ?? string.Empty));
+
+			_highlightColorApplyButton = new Button
+			{
+				Content = "Применить",
+				Style = (Style)FindResource("GhostButton"),
+				Padding = new Thickness(10, 5, 10, 5),
+				Margin = new Thickness(8, 0, 0, 0)
+			};
+			_highlightColorApplyButton.Click += (sender, args) =>
+			{
+				try { ApplyHighlightColor(); }
+				catch (Exception exception) { ShowToast("Не удалось применить цвет выделения: " + exception.Message, true); }
+			};
+
+			_defaultNameTemplateBox = new TextBox
+			{
+				Width = 180,
+				Padding = new Thickness(8, 5, 8, 5),
+				Text = ReadUserString(NamingTemplatesPath, "RenameNameTemplate", string.Empty),
+				Background = new SolidColorBrush(Color.FromRgb(16, 38, 63)),
+				Foreground = new SolidColorBrush(Color.FromRgb(241, 246, 255)),
+				BorderBrush = new SolidColorBrush(Color.FromRgb(47, 92, 140)),
+				BorderThickness = new Thickness(1)
+			};
+
+			if (PowerSchemeComboBox != null)
+			{
+				PowerSchemeComboBox.Items.Add("Сбалансированная");
+				PowerSchemeComboBox.Items.Add("Высокая производительность");
+				PowerSchemeComboBox.Items.Add("Экономия энергии");
+				PowerSchemeComboBox.Width = CalculateTightComboBoxWidth(PowerSchemeComboBox.Items.Cast<object>().Select(x => x?.ToString() ?? string.Empty)) + 18;
+				PowerSchemeComboBox.SelectedIndex = 0;
+			}
+		}
+
+		private Border CreatePowerShellScriptsRow()
+		{
+			_powerShellScriptsToggle = CreateAdditionalToggle("PowerShellScripts");
+			_powerShellScriptsToggle.Checked -= WindowsFeatureToggle_Changed;
+			_powerShellScriptsToggle.Unchecked -= WindowsFeatureToggle_Changed;
+			_powerShellScriptsToggle.Checked += PowerShellScriptsToggle_Changed;
+			_powerShellScriptsToggle.Unchecked += PowerShellScriptsToggle_Changed;
+			var row = CreateAdditionalToggleRow(_powerShellScriptsToggle, "Разрешить сторонние скрипты PowerShell", "Изменяет ExecutionPolicy для текущего пользователя Windows; требуются права администратора");
+			_powerShellScriptsLabel = _additionalStatusLabels["PowerShellScripts"];
+			return row;
+		}
+
+		private Border CreateAdditionalValueRow(string title, string description, UIElement valueControl)
+		{
+			var row = new Border { Style = (Style)FindResource("SettingRow") };
+			var grid = new Grid();
+			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+			var text = new StackPanel { Margin = new Thickness(0, 0, 16, 0) };
+			text.Children.Add(new TextBlock { Text = title, FontWeight = FontWeights.SemiBold });
+			text.Children.Add(new TextBlock { Text = description, Foreground = new SolidColorBrush(Color.FromRgb(130, 165, 207)), FontSize = 11 });
+			if (ReferenceEquals(valueControl, _highlightColorCombo) && _highlightColorApplyButton != null)
+			{
+				var controls = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
+				controls.Children.Add(_highlightColorCombo);
+				controls.Children.Add(_highlightColorApplyButton);
+				valueControl = controls;
+			}
+			Grid.SetColumn(text, 0);
+			Grid.SetColumn(valueControl, 1);
+			grid.Children.Add(text);
+			grid.Children.Add(valueControl);
+			row.Child = grid;
+			return row;
+		}
+
+		private static int? ReadUserDwordOptional(string path, string name)
+		{
+			using (var key = Registry.CurrentUser.OpenSubKey(path))
+			{
+				var value = key?.GetValue(name);
+				return value == null ? null : Convert.ToInt32(value);
+			}
+		}
+
+		private static bool AreTelemetrySettingsDisabled()
+		{
+			return ReadMachineDword(DataCollectionPolicyPath, "AllowTelemetry", 1) == 0
+				&& ReadMachineDword(DataCollectionPolicyPath, "MaxTelemetryAllowed", 1) == 0
+				&& ReadMachineDword(DataCollectionPolicyPath, "AllowDeviceNameInDiagnosticData", 1) == 0
+				&& ReadMachineDword(DataCollectionPolicyPath, "AllowWAPPReports", 1) == 0
+				&& ReadMachineDword(DataCollectionPolicyPath, "DoNotShowFeedbackNotifications", 0) == 1
+				&& ReadMachineDword(DataCollectionPolicyPath, "DisableDiagnosticDataViewer", 0) == 1
+				&& ReadMachineDword(AppCompatPolicyPath, "AITEnable", 1) == 0
+				&& ReadMachineDword(AppCompatPolicyPath, "AllowTelemetry", 1) == 0
+				&& ReadMachineDword(AppCompatPolicyPath, "DisableEngine", 0) == 1
+				&& ReadMachineDword(AppCompatPolicyPath, "DisableInventory", 0) == 1
+				&& ReadMachineDword(AppCompatPolicyPath, "DisablePCA", 0) == 1
+				&& ReadMachineDword(AppCompatPolicyPath, "DisableUAR", 0) == 1;
+		}
+
+		private async void LoadExplorerSettings()
+		{
+			_loadingExplorerSettings = true;
+			try
+			{
+				SetToggle(ShowHiddenFilesToggle, ReadDword(ExplorerAdvancedPath, "Hidden", 2) == 1);
+				SetToggle(ShowFileExtensionsToggle, ReadDword(ExplorerAdvancedPath, "HideFileExt", 1) == 0);
+				SetToggle(OpenThisPcToggle, _explorerSettings.IsLaunchToThisPc());
+				SetToggle(ExplorerHomeToggle, !_explorerSettings.IsHomeVisible());
+				SetToggle(ShowRecentFilesToggle, !IsRecentFilesEnabled());
+				SetToggle(ShowFrequentFoldersToggle, !IsFrequentFoldersEnabled());
+				SetToggle(ShowGalleryToggle, !IsGalleryVisible());
+				SetToggle(RemoveShortcutSuffixToggle, ReadString(NamingTemplatesPath, "ShortcutNameTemplate", null) == "%s");
+				SetToggle(ShowThisPcToggle, ReadDword(HideDesktopIconsPath, ThisPcId, 1) != 0);
+				SetToggle(ShowRecycleBinToggle, ReadDword(HideDesktopIconsPath, RecycleBinId, 1) != 0);
+				SetToggle(ShowSecondsInSystemClockToggle, ReadDword(ExplorerAdvancedPath, "ShowSecondsInSystemClock", 0) == 1);
+				SetToggle(HideNetworkToggle, ReadDword(NetworkPath, "System.IsPinnedToNameSpaceTree", 1) == 0);
+				SetToggle(HideDownloadsToggle, !IsNamespaceItemVisible(DownloadsId));
+				SetToggle(HideDocumentsToggle, !IsNamespaceItemVisible(DocumentsId));
+				SetToggle(HideVideosToggle, !IsNamespaceItemVisible(VideosId));
+				SetToggle(HidePicturesToggle, !IsNamespaceItemVisible(PicturesId));
+				SetToggle(HideMusicToggle, !IsNamespaceItemVisible(MusicId));
+				SetToggle(HideDesktopToggle, !IsNamespaceItemVisible(DesktopId));
+				SetToggle(DisableWindowsUpdateToggle, ReadMachineDword(WindowsUpdatePolicyPath, "NoAutoUpdate", 0) == 1);
+				SetToggle(DisableDriverUpdatesToggle, ReadMachineDword(WindowsUpdateDriverPath, "ExcludeWUDriversInQualityUpdate", 0) == 1);
+				SetToggle(DisableReservedStorageToggle, ReadMachineDword(ReserveManagerPath, "ShippedWithReserves", 1) == 0);
+				DisableReservedStorageToggle.IsEnabled = IsReservedStorageSupported();
+				if (!DisableReservedStorageToggle.IsEnabled) DisableReservedStorageLabel.Text = "Не поддерживается";
+				UpdatePauseStatus();
+				SetToggle(DisableTelemetryToggle, _privacySettings.IsDisabled("DisableTelemetry"));
+				SetToggle(DisableAppDiagnosticsToggle, _privacySettings.IsDisabled("DisableAppDiagnostics"));
+				SetToggle(DisableActivityToggle, _privacySettings.IsDisabled("DisableActivity"));
+				SetToggle(DisablePerformanceToggle, _privacySettings.IsDisabled("DisablePerformance"));
+				SetToggle(DisableKeystrokesToggle, _privacySettings.IsDisabled("DisableKeystrokes"));
+				SetToggle(DisableVoiceDataToggle, _privacySettings.IsDisabled("DisableVoiceData"));
+				SetToggle(DisableStickyKeysToggle, AreStickyKeysDisabled());
+				SetToggle(DisableBingSearchToggle, IsBingSearchDisabled());
+				SetToggle(DisableHibernationToggle, _powerSettings.IsHibernationDisabled());
+				SetToggle(DisableSmartScreenToggle,
+					ReadMachineDword(SystemPolicyPath, "EnableSmartScreen", 1) == 0 ||
+					ReadString(ExplorerPolicyPath, "SmartScreenEnabled", "Warn").Equals("Off", StringComparison.OrdinalIgnoreCase));
+				SetToggle(DisableMemoryIntegrityToggle,
+					ReadMachineDword(HvcISettingsPath, "Enabled", 1) == 0);
+				SetToggle(_disableVbsToggle, ReadMachineDword(DeviceGuardPath, "EnableVirtualizationBasedSecurity", 1) == 0);
+				var uacNeverNotify = IsUacNeverNotifyEnabled();
+				SetToggle(DisableUacToggle, uacNeverNotify);
+				SetStatusLabel(DisableUacLabel, uacNeverNotify ? "Включено" : "Отключено", uacNeverNotify);
+				SetToggle(DisablePageFileToggle, IsPageFileDisabled());
+				SetToggle(DisableBitLockerAutoEncryptionToggle, ReadMachineDword(BitLockerPath, "PreventDeviceEncryption", 0) == 1);
+				SetManagedToggleState("HideUserFiles");
+				SetManagedToggleState("HideNetworkIcon");
+				SetManagedToggleState("HideControlPanel");
+				SetManagedToggleState("ShortcutArrow");
+				SetManagedToggleState("ClassicContextMenu");
+				SetManagedToggleState("ExplorerItemCheckboxes");
+				SetManagedToggleState("ExplorerSyncNotifications");
+				SetManagedToggleState("SystemSuggestions");
+				SetManagedToggleState("ExplorerCompactMode");
+				SetManagedToggleState("SnapAssistFlyout");
+				SetManagedToggleState("GameBar");
+				SetManagedToggleState("FullscreenOptimizations");
+				SetManagedToggleState("DeveloperMode");
+				SetManagedToggleState("LongPathsEnabled");
+				SetManagedToggleState("NumLockOnBoot");
+				SetManagedToggleState("SpeedUpExplorerAndMenus");
+				SetManagedToggleState("DisableStartMenuWebSearch");
+				SetManagedToggleState("DisableStartRecommended");
+				SetManagedToggleState("DisableSettings365Ads");
+				SetManagedToggleState("DisablePreinstalledApps");
+				SetManagedToggleState("DisableErrorReporting");
+				SetManagedToggleState("DisableAdvertisingAndSuggestions");
+				SetManagedToggleState("DisableActivityHistory");
+				SetManagedToggleState("DisableLocationAndSensors");
+				if (!IsAdministrator())
+					SetAdditionalStatusLabel("DisableLocationAndSensors", "Требуются права администратора", false);
+				SetManagedToggleState("DisableCortana");
+				SetManagedToggleState("DisableCopilot");
+				SetManagedToggleState("DisableContentDeliveryManager");
+				SetManagedToggleState("DisableFindMyDevice");
+				SetManagedToggleState("DisableDeliveryOptimization");
+				SetManagedToggle("DisableSystemThrottling", _powerSettings.IsSystemPowerThrottlingDisabled());
+				SetManagedToggle("DisableUSBPowerSaving", await _powerSettings.IsUsbPowerSavingDisabledAsync(CancellationToken.None));
+				var taskbar = _taskbarSettings.ReadState();
+				SetToggle(_taskbarEndTaskToggle, taskbar.EndTask);
+				SetToggle(_taskbarAutoHideToggle, taskbar.AutoHide);
+				SetToggle(_taskbarBadgesToggle, taskbar.Badges);
+				SetToggle(_taskbarFlashingToggle, taskbar.Flashing);
+				SetToggle(_taskbarMultiMonitorToggle, taskbar.MultiMonitor);
+				SetToggle(_taskbarShareWindowToggle, taskbar.ShareWindow);
+				SetToggle(_taskbarShowDesktopToggle, taskbar.ShowDesktop);
+				SetManagedToggle("TaskbarWidgets", taskbar.Widgets);
+				SetManagedToggle("TaskbarTaskViewButton", taskbar.TaskViewButton);
+				SetManagedToggle("TaskbarLastActiveClick", taskbar.LastActiveClick);
+				SetManagedComboIndex("SearchBoxTaskbarMode", taskbar.SearchBoxTaskbarMode, 3);
+
+				SetTaskbarComboSelection(_taskbarAlignmentCombo, taskbar.Alignment.ToString(CultureInfo.InvariantCulture), 2);
+				SetTaskbarComboSelection(_taskbarMultiMonitorModeCombo, taskbar.MultiMonitorMode.ToString(CultureInfo.InvariantCulture), 3);
+				SetTaskbarComboSelection(_taskbarGlomCombo, taskbar.GroupingMode.ToString(CultureInfo.InvariantCulture), 3);
+				SetTaskbarComboSelection(_taskbarMultiMonitorGlomCombo, taskbar.MultiMonitorGroupingMode.ToString(CultureInfo.InvariantCulture), 3);
+				SetToggle(_disableLockScreenBlurToggle, ReadMachineDword(LockScreenPolicyPath, "DisableAcrylicBackgroundOnLogon", 0) == 1);
+				SetToggle(_darkThemeToggle,
+					ReadDword(ThemePersonalizePath, "AppsUseLightTheme", 1) == 0 &&
+					ReadDword(ThemePersonalizePath, "SystemUsesLightTheme", 1) == 0);
+				SetToggle(_contextMenuDelayToggle, ReadUserString(DesktopSettingsPath, "MenuShowDelay", "400") == "50");
+				SetToggle(_clipboardToggle, ReadDword(ClipboardPath, "EnableClipboardHistory", 0) == 1);
+				SetToggle(_windowsAdsToggle, IsWindowsAdsDisabled());
+				if (_gameModeToggle != null) SetToggle(_gameModeToggle, IsGameModeEnabled());
+				if (_hagsToggle != null)
+				{
+					var hagsSupported = _securitySettings.IsHardwareGpuSchedulingSupported();
+					_hagsToggle.IsEnabled = hagsSupported && IsAdministrator();
+					SetToggle(_hagsToggle, hagsSupported && _securitySettings.IsHardwareGpuSchedulingEnabled());
+				}
+				if (PowerSchemeComboBox != null && !PowerSchemeComboBox.IsDropDownOpen && !PowerSchemeComboBox.IsKeyboardFocusWithin)
+				{
+					var guid = await _powerSettings.GetActiveSchemeGuidAsync(CancellationToken.None);
+					PowerSchemeComboBox.SelectedIndex = PowerSettingsService.GetSchemeIndex(guid);
+				}
+				if (!_highlightColorCombo.IsKeyboardFocusWithin) _highlightColorCombo.SelectedIndex = ReadHighlightColorIndex();
+				if (!_defaultNameTemplateBox.IsKeyboardFocusWithin) _defaultNameTemplateBox.Text = ReadUserString(NamingTemplatesPath, "RenameNameTemplate", string.Empty);
+			}
+			finally
+			{
+				_loadingExplorerSettings = false;
+			}
+			ApplyAdminToggleLockState();
+			EnsureAdminWarnings();
+		}
+
+		private static IEnumerable<TextBlock> FindTextBlocks(DependencyObject root)
+		{
+			if (root == null) yield break;
+			if (root is TextBlock textBlock) yield return textBlock;
+
+			for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+			{
+				foreach (var nested in FindTextBlocks(VisualTreeHelper.GetChild(root, i)))
+					yield return nested;
+			}
+		}
+
+		private static IEnumerable<T> FindVisualElements<T>(DependencyObject root) where T : DependencyObject
+		{
+			if (root == null) yield break;
+			for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+			{
+				var child = VisualTreeHelper.GetChild(root, i);
+				if (child is T match) yield return match;
+				foreach (var nested in FindVisualElements<T>(child)) yield return nested;
+			}
+		}
+
+				private void ApplyAdminToggleLockState()
+		{
+			var isAdmin = IsAdministrator();
+			foreach (var toggle in GetAllToggleButtons())
+			{
+				var tag = toggle.Tag as string;
+
+				if (tag == "GameBar" && !_gameBarAvailable)
+				{
+					toggle.IsEnabled = false;
+					toggle.IsHitTestVisible = false;
+					toggle.Opacity = 0.5;
+					toggle.Cursor = Cursors.Arrow;
+					SetAdditionalStatusLabel("GameBar", "Недоступно: Xbox Game Bar не установлен", false);
+					continue;
+				}
+
+				if ((tag == "DisableCortana" || tag == "DisableCopilot") && !_privacySettings.IsFeatureSupported(tag))
+				{
+					toggle.IsEnabled = false;
+					toggle.IsHitTestVisible = false;
+					toggle.Opacity = 0.5;
+					toggle.Cursor = Cursors.Arrow;
+					SetAdditionalStatusLabel(
+						tag,
+						tag == "DisableCortana" ? "Недоступно: только Windows 10" : "Недоступно: только Windows 11",
+						false);
+					continue;
+				}
+
+				if (!RequiresAdministratorAccess(tag)) continue;
+				var allowed = isAdmin && !(tag == "PowerShellScripts" && _powerShellScriptsBusy);
+				toggle.IsEnabled = allowed;
+				toggle.IsHitTestVisible = allowed;
+				toggle.Opacity = isAdmin ? 1.0 : 0.55;
+				toggle.Cursor = isAdmin ? Cursors.Hand : Cursors.Arrow;
+			}
+			ApplyPowerShellScriptsAdminState();
+		}
+
+		private void SetManagedToggle(string tag, bool value)
+		{
+			if (_managedToggles.TryGetValue(tag, out var toggle))
+				SetToggle(toggle, value);
+		}
+
+		private void SetManagedToggleState(string tag)
+		{
+			if (_managedToggles.TryGetValue(tag, out var toggle))
+			{
+				bool value;
+				if (tag == "DisableSystemThrottling")
+					value = _powerSettings.IsSystemPowerThrottlingDisabled();
+				else if (tag == "DisableUSBPowerSaving")
+					value = false;
+				else if (tag == "DisableErrorReporting"
+					|| tag == "DisableAdvertisingAndSuggestions"
+					|| tag == "DisableNewsAndInterests"
+					|| tag == "DisableActivityHistory"
+					|| tag == "HideMeetNowButton"
+					|| tag == "DisableLocationAndSensors"
+					|| tag == "DisableAutoLogger"
+					|| tag == "DisableCortana"
+					|| tag == "DisableCopilot"
+					|| tag == "DisableContentDeliveryManager"
+					|| tag == "DisableFindMyDevice"
+					|| tag == "DisableDeliveryOptimization")
+					value = _privacySettings.IsDisabled(tag);
+				else
+					value = _interfaceSettings.IsEnabled(tag);
+				SetToggle(toggle, value);
+			}
+		}
+
+		private void SetManagedComboIndex(string tag, int value, int fallback)
+		{
+			if (!_managedCombos.TryGetValue(tag, out var combo) || combo.IsKeyboardFocusWithin)
+				return;
+			if (value >= 0 && value < combo.Items.Count) combo.SelectedIndex = value;
+			else if (fallback >= 0 && fallback < combo.Items.Count) combo.SelectedIndex = fallback;
+		}
+
     }
 }
