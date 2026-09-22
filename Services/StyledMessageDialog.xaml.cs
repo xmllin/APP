@@ -27,7 +27,7 @@ namespace Nexora.Services
             MessageBoxImage image = MessageBoxImage.Information)
         {
             var dialog = new StyledMessageDialog(message, caption, buttons, image);
-            var owner = Application.Current?.Windows
+            var owner = System.Windows.Application.Current?.Windows
                 .OfType<Window>()
                 .FirstOrDefault(window => window.IsActive);
 
@@ -49,29 +49,29 @@ namespace Nexora.Services
             string border;
             string glyph;
 
-            switch (image)
+            if ((image & MessageBoxImage.Error) == MessageBoxImage.Error)
             {
-                case MessageBoxImage.Error:
-                case MessageBoxImage.Stop:
-                    background = "#9E2738";
-                    border = "#D34F5F";
-                    glyph = "!";
-                    break;
-                case MessageBoxImage.Warning:
-                    background = "#9A6A22";
-                    border = "#D99B35";
-                    glyph = "!";
-                    break;
-                case MessageBoxImage.Question:
-                    background = "#176BE0";
-                    border = "#3D8FE8";
-                    glyph = "?";
-                    break;
-                default:
-                    background = "#176BE0";
-                    border = "#3D8FE8";
-                    glyph = "i";
-                    break;
+                background = "#9E2738";
+                border = "#D34F5F";
+                glyph = "!";
+            }
+            else if ((image & MessageBoxImage.Warning) == MessageBoxImage.Warning)
+            {
+                background = "#9A6A22";
+                border = "#D99B35";
+                glyph = "!";
+            }
+            else if ((image & MessageBoxImage.Question) == MessageBoxImage.Question)
+            {
+                background = "#176BE0";
+                border = "#3D8FE8";
+                glyph = "?";
+            }
+            else
+            {
+                background = "#176BE0";
+                border = "#3D8FE8";
+                glyph = "i";
             }
 
             IconHost.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(background));
