@@ -352,34 +352,34 @@
                     <ComboBoxItem Tag="Все">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/list-tree.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Все"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Проводник">
+                    <ComboBoxItem Tag="Проводник" ToolTip="Для некоторых настроек требуются права админа">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-folder-open.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Проводник"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Рабочий стол">
+                    <ComboBoxItem Tag="Рабочий стол" ToolTip="Для некоторых настроек требуются права админа">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-app-folder.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Рабочий стол"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Панель задач">
+                    <ComboBoxItem Tag="Панель задач" ToolTip="Для некоторых настроек требуются права админа">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-apps-list.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Панель задач"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Пуск и поиск">
+                    <ComboBoxItem Tag="Пуск и поиск" ToolTip="Для некоторых настроек требуются права админа">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-search.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Пуск и поиск"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Игры и производительность">
+                    <ComboBoxItem Tag="Игры и производительность" ToolTip="Для некоторых настроек требуются права админа">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-media.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Игры и производительность"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Система">
+                    <ComboBoxItem Tag="Система" ToolTip="Для некоторых настроек требуются права админа">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Система"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Питание">
+                    <ComboBoxItem Tag="Питание" ToolTip="Для некоторых настроек требуются права админа">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/cpu.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Питание"/></StackPanel>
                     </ComboBoxItem>
                     <ComboBoxItem Tag="Мышь">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Мышь"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Windows Update">
+                    <ComboBoxItem Tag="Windows Update" ToolTip="Для некоторых настроек требуются права админа">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/Restore_down.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Windows Update"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Безопасность и конфиденциальность">
+                    <ComboBoxItem Tag="Безопасность и конфиденциальность" ToolTip="Для некоторых настроек требуются права админа">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-shield.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Безопасность и конфиденциальность"/></StackPanel>
                     </ComboBoxItem>
                 </ComboBox>
@@ -738,7 +738,10 @@
                                 <StackPanel>
                                     <TextBlock Text="Приостановить службу Windows Update" FontWeight="SemiBold"/>
                                     <TextBlock x:Name="PauseWindowsUpdateStatus" Text="Дата окончания не установлена" Foreground="#82A5CF" FontSize="11" Margin="0,3,0,0"/>
-                                    <Button x:Name="PauseWindowsUpdateButton" Content="Приостановить" Click="PauseWindowsUpdateButton_Click" HorizontalAlignment="Left" Style="{StaticResource GhostButton}" Padding="12,6" Margin="0,8,0,0" Height="30" Width="190"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+    <Button x:Name="PauseWindowsUpdateButton" Content="Приостановить" Click="PauseWindowsUpdateButton_Click" Style="{StaticResource GhostButton}" Padding="12,6" Height="30" Width="190"/>
+    <Button x:Name="StartWindowsUpdateButton" Content="Включить обновления" Click="StartWindowsUpdateButton_Click" Style="{StaticResource PrimaryButton}" Padding="12,6" Margin="8,0,0,0" Height="30" Width="190"/>
+</StackPanel>
                                 </StackPanel>
                             </Border>
                             <Border Style="{StaticResource SettingRow}">
@@ -856,18 +859,28 @@
             <TextBlock x:Name="ToastText" Foreground="#F1F6FF" FontSize="13" FontWeight="SemiBold" Text="" TextWrapping="Wrap" TextAlignment="Center"/>
         </Border>
         <Grid VerticalAlignment="Bottom" Margin="36,0,53,12">
-            <Border Background="#0B2035" BorderBrush="#1D3B5A" BorderThickness="1"
-                    CornerRadius="11" Padding="14" IsHitTestVisible="False">
-            </Border>
-            <DockPanel LastChildFill="False" Margin="14">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" DockPanel.Dock="Left">
-                    <Image Source="{local:SvgImage Source=interface/white/info-circle.svg}" Width="27" Height="23" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                    <TextBlock Text="Для применения некоторых настроек требуется перезапуск проводника" Foreground="#85A8D2" FontSize="13" VerticalAlignment="Center"/>
+            <Border Background="#0B2035" BorderBrush="#1D3B5A" BorderThickness="1" CornerRadius="11" Padding="10"/>
+            <Grid Margin="14">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MinWidth="0"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="0" Margin="0,0,10,0">
+                    <Image Source="{local:SvgImage Source=interface/white/info-circle.svg}" Width="22" Height="22" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Для применения некоторых настроек требуется перезапуск проводника" Foreground="#85A8D2" FontSize="13" VerticalAlignment="Center" TextWrapping="Wrap"/>
                 </StackPanel>
-                <Button x:Name="RestartSystemButton" Content="Перезапустить Windows" Click="RestartSystemButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" DockPanel.Dock="Right" Padding="10,5" FontSize="12" Margin="18,0,0,0" Width="160"/>
-                <Button x:Name="RestartExplorerButton" Content="Перезапустить проводник" Click="RestartExplorerButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" DockPanel.Dock="Right" Padding="10,5" FontSize="12" Margin="18,0,0,0" Width="170"/>
-                <Button x:Name="RestartAsAdminButton" Content="Перезапустить от администратора" Click="RestartAsAdminButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" DockPanel.Dock="Right" Padding="10,5" FontSize="12" Margin="18,0,0,0" Height="30" Width="220"/>
-            </DockPanel>
+                <WrapPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
+                    <Button x:Name="RestartSystemButton" ToolTip="Перезапустить Windows" Click="RestartSystemButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" Width="34" Height="30" Margin="6,0,0,0" Padding="7,5">
+                        <Image Source="{local:SvgImage Source=interface/white/Restore_down.svg}" Width="16" Height="16"/>
+                    </Button>
+                    <Button x:Name="RestartExplorerButton" ToolTip="Перезапустить проводник" Click="RestartExplorerButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" Width="34" Height="30" Margin="6,0,0,0" Padding="7,5">
+                        <Image Source="{local:SvgImage Source=interface/white/Restore_down.svg}" Width="16" Height="16"/>
+                    </Button>
+                    <Button x:Name="RestartAsAdminButton" ToolTip="Перезапустить от администратора" Click="RestartAsAdminButton_Click" Style="{StaticResource GhostButton}" Background="#102A45" BorderBrush="#3D8FE8" Width="34" Height="30" Margin="6,0,0,0" Padding="7,5">
+                        <Image Source="{local:SvgImage Source=interface/white/category-shield.svg}" Width="16" Height="16"/>
+                    </Button>
+                </WrapPanel>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>
