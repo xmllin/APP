@@ -251,6 +251,31 @@ namespace WpfApp1.Pages
             ApplyFilter(true);
         }
 
+        private void AppsSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (AppsSearchBox.Text == "Поиск программ...") return;
+            ApplySearch(AppsSearchBox.Text, true);
+        }
+
+        private void AppsSearchBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (AppsSearchBox.Text == "Поиск программ...") AppsSearchBox.Clear();
+        }
+
+        private void AppsSearchBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(AppsSearchBox.Text)) AppsSearchBox.Text = "Поиск программ...";
+        }
+
+        private void RowsPerPageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!(RowsPerPageComboBox.SelectedItem is ComboBoxItem item)) return;
+            if (!int.TryParse(item.Tag?.ToString(), out var rows)) return;
+            int pageSize = rows == 1 ? 8 : rows == 2 ? 12 : rows == 3 ? 18 : rows == 4 ? 20 : 25;
+            _pagination.SetPageSize(pageSize);
+            ApplySearch(AppsSearchBox.Text, true);
+        }
+
         public void ApplySearch(string text, bool resetPage = true)
         {
             var query = (text ?? "").Trim();
