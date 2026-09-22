@@ -20,12 +20,14 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="MaxWidth" Value="215"/>
+            <Setter Property="MaxHeight" Value="38"/>
         </Style>
         <Style x:Key="HomeTileDescription" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#91A8C5"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="MaxWidth" Value="215"/>
+            <Setter Property="MaxHeight" Value="32"/>
             <Setter Property="Margin" Value="0,4,0,0"/>
         </Style>
         <Style x:Key="HomeTileButton" TargetType="Button" BasedOn="{StaticResource CardButton}">
