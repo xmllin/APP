@@ -565,7 +565,7 @@ namespace Nexora.Pages
             }
             catch (Exception exception)
             {
-                MessageBox.Show(
+                Nexora.Services.StyledMessageDialog.Show(
                     $"Не удалось открыть страницу Microsoft:\n\n{exception.Message}",
                     "Ошибка",
                     MessageBoxButton.OK,
