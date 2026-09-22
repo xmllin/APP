@@ -208,7 +208,13 @@ namespace Nexora.Pages
 
         private void OpenCleanupFolder_Click(object sender, RoutedEventArgs e)
         {
-            if (!(sender is Button button) || !(button.Tag is DiskCleanupItem item))
+            DiskCleanupItem item = null;
+            if (sender is Button button)
+                item = button.Tag as DiskCleanupItem;
+            else if (sender is MenuItem menuItem)
+                item = menuItem.Tag as DiskCleanupItem;
+
+            if (item == null)
                 return;
 
             try
