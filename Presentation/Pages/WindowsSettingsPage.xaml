@@ -318,7 +318,7 @@
                     </Grid>
                 </Border>
 
-                <Border x:Name="WindowsSettingsBanner" Height="150" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="28">
+                <Border x:Name="WindowsSettingsBanner" Height="170" MinHeight="170" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="28">
                     <Border.Background>
                         <ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/>
                     </Border.Background>
@@ -329,7 +329,7 @@
                         </Grid.ColumnDefinitions>
                         <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="72" Height="72" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,16,0"/>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="Настройки Windows под вашим контролем" FontSize="30" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                            <TextBlock Text="Настройки Windows под вашим контролем" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap"/>
                             <TextBlock Text="Настройте Windows под себя" Foreground="#B9CAE2" FontSize="16" TextWrapping="Wrap"/>
                         </StackPanel>
                     </Grid>
