@@ -207,7 +207,7 @@ namespace WpfApp1.Pages
 			{
 				CreateAdditionalToggleRow(CreateGameModeToggle(), "Игровой режим", "Автоматическое включение режима Windows Game Mode для игр"),
 				CreateHagsRow(),
-				CreateAdditionalToggleRow(CreateManagedToggle("GameBar"), "Xbox Game Bar", "Управлять игровым оверлеем Xbox Game Bar"),
+				CreateAdditionalToggleRow(CreateManagedToggle("GameBar"), "Отключить Xbox Game Bar", "Отключить игровой оверлей Xbox Game Bar"),
 				CreateAdditionalToggleRow(CreateManagedToggle("FullscreenOptimizations"), "Оптимизация для игр в оконном режиме", "Управлять настройкой Windows для оптимизации игр в оконном режиме")
 			};
 
@@ -261,7 +261,7 @@ namespace WpfApp1.Pages
 					"DisableActivityHistory" => "Отключить историю активности",
 					"DisableLocationAndSensors" => "Отключить геолокацию и датчики",
 					"DisableAutoLogger" => "Отключить WMI AutoLogger",
-					"DisableCortana" => "Отключить Cortana и облачный поиск (Windows 10)",
+					"DisableCortana" => "Отключить Cortana и облачный поиск",
 					"DisableCopilot" => "Отключить Windows Copilot",
 					"DisableContentDeliveryManager" => "Отключить доставку контента Windows",
 					"DisableFindMyDevice" => "Отключить «Найти устройство»",
