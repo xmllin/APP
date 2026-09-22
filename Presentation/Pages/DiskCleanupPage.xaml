@@ -44,18 +44,65 @@
             </Setter>
         </Style>
         <Style x:Key="CleanupMoreButton" TargetType="Button">
-            <Setter Property="Width" Value="30"/>
-            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="32"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="Transparent" BorderThickness="0">
+                        <Border x:Name="MoreBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="MoreBorder" Property="Background" Value="#173250"/>
+                                <Setter TargetName="MoreBorder" Property="BorderBrush" Value="#367FCE"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="MoreBorder" Property="Background" Value="#21496F"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CleanupCleanButton" TargetType="Button" BasedOn="{StaticResource GhostButton}">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="MinWidth" Value="92"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="CleanBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="7"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="CleanBorder" Property="Background" Value="#173250"/>
+                                <Setter TargetName="CleanBorder" Property="BorderBrush" Value="#367FCE"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="CleanBorder" Property="Background" Value="#21496F"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Cursor" Value="Arrow"/>
+                                <Setter TargetName="CleanBorder" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -87,8 +134,8 @@
                                     Width="22" Height="22"
                                     CornerRadius="6"
                                     Background="Transparent"
-                                    BorderBrush="#1D3855"
-                                    BorderThickness="1"
+                                    BorderBrush="#2B4B6D"
+                                    BorderThickness="1.5"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"/>
                             <Path x:Name="CheckMark"
@@ -101,12 +148,13 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="CheckBoxBorder" Property="Background" Value="Transparent"/>
-                                <Setter TargetName="CheckBoxBorder" Property="BorderBrush" Value="#2ED573"/>
+                                <Setter TargetName="CheckBoxBorder" Property="Background" Value="#2ED573"/>
+                                <Setter TargetName="CheckBoxBorder" Property="BorderBrush" Value="#63FF9A"/>
+                                <Setter TargetName="CheckBoxBorder" Property="BorderThickness" Value="2"/>
                                 <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="CheckBoxBorder" Property="BorderBrush" Value="#367FCE"/>
+                                <Setter TargetName="CheckBoxBorder" Property="BorderBrush" Value="#75B9FF"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="CheckBoxBorder" Property="Opacity" Value="0.45"/>
@@ -137,7 +185,6 @@
                         <TextBlock Text="Очистка диска" FontSize="30" FontWeight="Bold"/>
                         <TextBlock Text="Сканирует несколько источников мусора и показывает, сколько места можно освободить."
                                    FontSize="14" Foreground="{StaticResource MutedBrush}" Margin="0,5,0,0"/>
-                        <TextBlock x:Name="PageStatusText" Text="Подготовка…" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,6,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                     <Button Grid.Column="1"
                             x:Name="ScanButton"
@@ -150,18 +197,35 @@
 
                 <Border Style="{StaticResource Card}" Padding="18" Margin="0,0,0,16">
                     <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="0">
                             <TextBlock Text="Выбрано" Foreground="{StaticResource MutedBrush}" FontSize="12"/>
                             <TextBlock x:Name="SummaryText" Text="0 Б" FontSize="22" FontWeight="SemiBold" Margin="0,2,0,0"/>
                             <TextBlock x:Name="SummaryDetailsText" Text="0 элементов · 0 файлов" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,3,0,0"/>
                         </StackPanel>
-                        <Button Grid.Column="1" Content="Выбрать всё" Click="SelectAll_Click" Style="{StaticResource GhostButton}" Margin="8,0" Cursor="Hand" Padding="9,4" Height="28" MinWidth="92"/>
-                        <Button Grid.Column="2" Content="Очистить выбранное" Click="CleanSelected_Click" Style="{StaticResource PrimaryButton}" Cursor="Hand" Padding="9,4" Height="28" MinWidth="135"/>
+                        <Button Grid.Row="0" Grid.Column="1" Content="Выбрать всё" Click="SelectAll_Click" Style="{StaticResource GhostButton}" Margin="8,0" Cursor="Hand" Padding="9,4" Height="28" MinWidth="92"/>
+                        <Button Grid.Row="0" Grid.Column="2" Content="Очистить выбранное" Click="CleanSelected_Click" Style="{StaticResource PrimaryButton}" Cursor="Hand" Padding="9,4" Height="28" MinWidth="135"/>
+                        <Border Grid.Row="1" Grid.ColumnSpan="3"
+                                Background="#0C1D30"
+                                BorderBrush="#21476E"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="10,7"
+                                Margin="0,14,0,0">
+                            <TextBlock x:Name="PageStatusText"
+                                       Text="Подготовка…"
+                                       Foreground="#B9CAE2"
+                                       FontSize="12"
+                                       TextWrapping="Wrap"/>
+                        </Border>
                     </Grid>
                 </Border>
 
@@ -209,8 +273,12 @@
                                                HorizontalAlignment="Right" VerticalAlignment="Center"
                                                FontSize="16" FontWeight="SemiBold" Margin="12,0"/>
 
-                                    <StackPanel Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right">
-                                        <Button Tag="{Binding}" Click="CleanupMoreButton_Click" Style="{StaticResource CleanupMoreButton}">
+                                    <Grid Grid.Column="2" MinWidth="106" VerticalAlignment="Stretch">
+                                        <Button Tag="{Binding}"
+                                                Click="CleanupMoreButton_Click"
+                                                Style="{StaticResource CleanupMoreButton}"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Top">
                                             <Image Source="{local:SvgImage Source=interface/white/dots.svg}" Width="18" Height="18"/>
                                             <Button.ContextMenu>
                                                 <ContextMenu Style="{StaticResource CleanupContextMenu}"
@@ -222,14 +290,11 @@
                                         <Button Content="Очистить"
                                                 Click="CleanItem_Click"
                                                 Tag="{Binding}"
-                                                Style="{StaticResource GhostButton}"
-                                                Cursor="Hand"
-                                                Margin="0,8,0,0"
-                                                Padding="8,5"
-                                                Height="28"
-                                                MinWidth="92"
+                                                Style="{StaticResource CleanupCleanButton}"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Bottom"
                                                 IsEnabled="{Binding ActionVisible}"/>
-                                    </StackPanel>
+                                    </Grid>
                                 </Grid>
                             </Border>
                         </DataTemplate>
