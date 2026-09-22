@@ -156,6 +156,7 @@ namespace WpfApp1.Pages
 		private readonly Dictionary<string, ToggleButton> _managedToggles = new Dictionary<string, ToggleButton>(StringComparer.Ordinal);
 		private readonly Dictionary<string, ComboBox> _managedCombos = new Dictionary<string, ComboBox>(StringComparer.Ordinal);
 		private bool _powerShellScriptsBusy;
+		private bool _settingsApplyBusy;
 		private ComboBox _highlightColorCombo;
 		private Button _highlightColorApplyButton;
 		private TextBox _defaultNameTemplateBox;
