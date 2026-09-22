@@ -233,7 +233,7 @@
                             </Image>
                         </Border>
                         <StackPanel Grid.Column="1" Margin="6,0,8,0">
-                            <TextBlock Text="{Binding Definition.Name}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Definition.Name}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Center"/>
                             <StackPanel Orientation="Horizontal" Margin="0,3,0,0" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding Definition.ComponentType}" Foreground="{StaticResource MutedBrush}" FontSize="11" VerticalAlignment="Center"/>
                                 <TextBlock Text=" · " Foreground="{StaticResource MutedBrush}" FontSize="11" VerticalAlignment="Center"/>
@@ -426,9 +426,9 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="72" Height="72" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,16,0"/>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="Библиотеки для вашей системы" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap"/>
-                            <TextBlock Text="Подготовьте Windows к работе" Foreground="#B9CAE2" FontSize="16" TextWrapping="Wrap"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="Библиотеки для вашей системы" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Center"/>
+                            <TextBlock Text="Подготовьте Windows к работе" Foreground="#B9CAE2" FontSize="16" TextWrapping="Wrap" TextAlignment="Center"/>
                         </StackPanel>
                     </Grid>
                 </Border>
