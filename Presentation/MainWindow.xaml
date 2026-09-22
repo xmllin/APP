@@ -102,7 +102,7 @@
                     <TextBlock Grid.Column="1" x:Name="DownloadToastText" VerticalAlignment="Center" Foreground="#EEF5FF"
                                FontSize="13" TextWrapping="Wrap" MaxWidth="360"/>
                     <Button Grid.Column="2" Width="26" Height="26" Margin="10,0,0,0" Padding="0" Background="Transparent" BorderBrush="Transparent"
-                            Cursor="Hand" ToolTip="Закрыть" Click="CloseDownloadToast_Click">
+                            Cursor="Hand" Click="CloseDownloadToast_Click">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Background" Value="Transparent"/>
