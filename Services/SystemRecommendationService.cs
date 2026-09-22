@@ -70,7 +70,7 @@ namespace Nexora.Services
             try
             {
                 var temporaryFile = HardwareCacheFile + ".tmp";
-                File.WriteAllText(temporaryFile, JsonSerializer.Serialize(info));
+                File.WriteAllText(temporaryFile, JsonSerializer.Serialize(info, new JsonSerializerOptions { WriteIndented = true }));
                 File.Copy(temporaryFile, HardwareCacheFile, true);
                 File.Delete(temporaryFile);
             }
