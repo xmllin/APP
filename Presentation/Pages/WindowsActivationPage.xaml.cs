@@ -80,6 +80,7 @@ namespace WpfApp1.Pages
         public WindowsActivationPage()
         {
             InitializeComponent();
+            LoadSavedActivationState();
 
             Loaded += WindowsActivationPage_Loaded;
 
@@ -102,8 +103,8 @@ namespace WpfApp1.Pages
                 return;
             }
 
-            LoadSavedActivationState();
-            await RefreshActivationStatusAsync();
+            // Не перечитываем статус при каждом возвращении на вкладку,
+            // чтобы текущий текст и результат операции не сбрасывались.
         }
 
         // ============================================================
@@ -271,7 +272,7 @@ namespace WpfApp1.Pages
                 await _activationService.ActivateAsync(
                     CancellationToken.None);
 
-                await RefreshActivationStatusAsync();
+                SaveActivationState(true);
 
                 AppDialog.ShowInfo(
                     Window.GetWindow(this),
