@@ -92,7 +92,7 @@ namespace Nexora.Pages
                 ? $"«{item.Name}» может содержать данные для восстановления Windows. Продолжить очистку?"
                 : $"Удалить найденные данные из «{item.Name}»?";
 
-            if (MessageBox.Show(message, "Очистка диска", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+            if (Nexora.Services.StyledMessageDialog.Show(message, "Очистка диска", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                 return;
 
             await CleanItemsAsync(new[] { item });
@@ -109,7 +109,7 @@ namespace Nexora.Pages
             }
 
             var total = selected.Sum(i => i.SizeBytes);
-            if (MessageBox.Show(
+            if (Nexora.Services.StyledMessageDialog.Show(
                     $"Будет обработано элементов: {selected.Count}\nМожно освободить примерно {DiskCleanupItem.FormatBytes(total)}.\n\nПродолжить?",
                     "Очистка диска",
                     MessageBoxButton.YesNo,
@@ -224,7 +224,7 @@ namespace Nexora.Pages
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Не удалось открыть папку: " + ex.Message, "Очистка диска", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Nexora.Services.StyledMessageDialog.Show("Не удалось открыть папку: " + ex.Message, "Очистка диска", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
