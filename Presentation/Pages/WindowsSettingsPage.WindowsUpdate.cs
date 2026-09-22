@@ -69,72 +69,10 @@ namespace WpfApp1.Pages
 				PauseWindowsUpdateStatus.Text = "Дата окончания не установлена";
 		}
 
-		private void ClearTempButton_Click(object sender, RoutedEventArgs e)
-		{
-			try
-			{
-				var tempPath = System.IO.Path.GetTempPath();
-				if (!System.IO.Directory.Exists(tempPath))
-				{
-					TempCleanupStatus.Text = "Папка Temp не найдена.";
-					return;
-				}
 
-				long deletedBytes = 0;
-				int deletedFiles = 0, deletedDirectories = 0, skipped = 0;
-				ClearTempDirectoryContents(tempPath, ref deletedFiles, ref deletedDirectories, ref skipped, ref deletedBytes);
-				TempCleanupStatus.Text = $"Освобождено: {FormatSize(deletedBytes)}; удалено: {deletedFiles} файлов, {deletedDirectories} папок; пропущено: {skipped}.";
-				ShowToast($"Папка Temp очищена. Освобождено {FormatSize(deletedBytes)}.");
-			}
-			catch (Exception exception)
-			{
-				TempCleanupStatus.Text = "Очистка не завершена: " + exception.Message;
-				ShowToast("Не удалось очистить папку Temp: " + exception.Message, true);
-			}
-		}
-
-		private static void ClearTempDirectoryContents(string root, ref int deletedFiles, ref int deletedDirectories, ref int skipped, ref long deletedBytes)
-		{
-			IEnumerable<string> entries;
-			try { entries = System.IO.Directory.EnumerateFileSystemEntries(root).ToList(); }
-			catch { skipped++; return; }
-
-			foreach (var entry in entries)
-			{
-				try
-				{
-					var attributes = System.IO.File.GetAttributes(entry);
-					if ((attributes & System.IO.FileAttributes.ReparsePoint) != 0) { skipped++; continue; }
-					if (System.IO.Directory.Exists(entry))
-					{
-						ClearTempDirectoryContents(entry, ref deletedFiles, ref deletedDirectories, ref skipped, ref deletedBytes);
-						System.IO.Directory.Delete(entry, recursive: false);
-						deletedDirectories++;
-					}
-					else if (System.IO.File.Exists(entry))
-					{
-						var fileInfo = new System.IO.FileInfo(entry);
-						if ((attributes & System.IO.FileAttributes.ReadOnly) != 0)
-							System.IO.File.SetAttributes(entry, attributes & ~System.IO.FileAttributes.ReadOnly);
-						deletedBytes += fileInfo.Length;
-						System.IO.File.Delete(entry);
-						deletedFiles++;
-					}
-				}
-				catch { skipped++; }
-			}
-		}
-
-		private static string FormatSize(long byteCount)
-		{
-			const double kb = 1024d;
-			const double mb = kb * 1024d;
-			const double gb = mb * 1024d;
-			if (byteCount >= gb) return $"{byteCount / gb:0.##} ГБ";
-			if (byteCount >= mb) return $"{byteCount / mb:0.##} МБ";
-			if (byteCount >= kb) return $"{byteCount / kb:0.##} КБ";
-			return $"{byteCount} Б";
-		}
-
+        private void OpenDiskCleanup_Click(object sender, RoutedEventArgs e)
+        {
+            _main?.Navigate("diskcleanup");
+        }
     }
 }
