@@ -181,6 +181,7 @@ namespace WpfApp1.Pages
 			if (string.Equals(toggle.Tag as string, "GameBar", StringComparison.Ordinal) ||
 				string.Equals(toggle.Tag as string, "DisableCortana", StringComparison.Ordinal))
 				label.Width = 270;
+			label.TextWrapping = TextWrapping.Wrap;
 			var currentState = toggle.IsChecked == true;
 			SetStatusLabel(label, currentState ? "Включено" : "Отключено", currentState);
 			var row = new Border { Style = (Style)FindResource("SettingRow") };
