@@ -98,11 +98,9 @@
                                                     <Setter Property="Content"><Setter.Value><Image Source="{local:SvgImage Source=interface/white/player-pause.svg}" Width="16" Height="16"/></Setter.Value></Setter>
                                                     <Setter Property="FontSize" Value="13"/>
                                                     <Setter Property="FontWeight" Value="Bold"/>
-                                                    <Setter Property="ToolTip" Value="Пауза"/>
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding IsPaused}" Value="True">
                                                             <Setter Property="Content"><Setter.Value><Image Source="{local:SvgImage Source=interface/white/player-play.svg}" Width="16" Height="16"/></Setter.Value></Setter>
-                                                            <Setter Property="ToolTip" Value="Продолжить"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
