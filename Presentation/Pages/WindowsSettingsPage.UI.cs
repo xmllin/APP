@@ -197,7 +197,7 @@ namespace WpfApp1.Pages
 			var startSearchRows = new List<UIElement>
 			{
 				CreateAdditionalToggleRow(DisableBingSearchToggle, "Отключить веб-поиск Windows", "Отключает Bing, веб-подсказки и веб-результаты поиска Windows"),
-				CreateAdditionalToggleRow(CreateManagedToggle("SystemSuggestions"), "Системные предложения", "Отключить встроенные рекомендации и предложения Windows"),
+				CreateAdditionalToggleRow(CreateManagedToggle("SystemSuggestions"), "Отключить системные предложения", "Отключить встроенные рекомендации и предложения Windows"),
 				CreateAdditionalToggleRow(CreateManagedToggle("DisableStartRecommended"), "Скрыть раздел «Рекомендуемое»", "Убрать блок рекомендуемых элементов из меню «Пуск»"),
 				CreateAdditionalToggleRow(CreateManagedToggle("DisableSettings365Ads"), "Отключить рекламу Microsoft в настройках", "Убрать предложения Microsoft 365 и потребительский контент из «Параметров»"),
 				CreateAdditionalToggleRow(CreateManagedToggle("DisablePreinstalledApps"), "Блокировать автоматическую установку предустановленных приложений", "Запретить Content Delivery Manager автоматически устанавливать рекламные и предустановленные приложения")
