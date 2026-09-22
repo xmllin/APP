@@ -176,6 +176,7 @@ namespace Nexora.Pages
         private void Windows_Click(object s, RoutedEventArgs e) => _main.Navigate("windows");
         private void Wallpaper_Click(object s, RoutedEventArgs e) => _main.Navigate("wallpapers");
         private void Downloads_Click(object s, RoutedEventArgs e) => _main.Navigate("downloads");
+        private void DiskCleanup_Click(object s, RoutedEventArgs e) => _main.Navigate("diskcleanup");
         private void Libraries_Click(object s, RoutedEventArgs e) => _main.Navigate("libraries");
         private void Profile_Click(object s, RoutedEventArgs e) => _main.Navigate("profile");
         private void Settings_Click(object s, RoutedEventArgs e) => _main.Navigate("settings");
