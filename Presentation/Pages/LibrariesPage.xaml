@@ -416,7 +416,7 @@
         </Grid.RowDefinitions>
         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Margin="0">
             <StackPanel Margin="36,28,36,0">
-                <Border x:Name="LibrariesBanner" Height="170" MinHeight="170" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="28" Margin="0,0,0,12">
+                <Border x:Name="LibrariesBanner" Height="170" MinHeight="170" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="20" Margin="0,0,0,12">
                     <Border.Background>
                         <ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/>
                     </Border.Background>
@@ -427,8 +427,8 @@
                         </Grid.ColumnDefinitions>
                         <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="72" Height="72" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,16,0"/>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                            <TextBlock Text="Библиотеки для вашей системы" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Justify"/>
-                            <TextBlock Text="Подготовьте Windows к работе" Foreground="#B9CAE2" FontSize="16" TextWrapping="Wrap" TextAlignment="Justify"/>
+                            <TextBlock Text="Библиотеки для вашей системы" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Left"/>
+                            <TextBlock Text="Подготовьте Windows к работе" Foreground="#B9CAE2" FontSize="16" TextWrapping="Wrap" TextAlignment="Left"/>
                         </StackPanel>
                     </Grid>
                 </Border>
