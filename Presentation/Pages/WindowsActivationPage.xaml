@@ -32,19 +32,17 @@
                 <Border.Background>
                     <ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/>
                 </Border.Background>
-                <StackPanel VerticalAlignment="Center" Margin="24,0">
-                    <Grid VerticalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="72" Height="72" Stretch="Uniform" Margin="0,0,16,0"/>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="Активация Windows" FontSize="30" FontWeight="SemiBold" TextWrapping="Wrap"/>
-                            <TextBlock Text="Активируйте Windows с помощью HWID" Foreground="#B9CAE2" FontSize="15" TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
+                <Grid VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="72" Height="72" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                        <TextBlock Text="Активация Windows" FontSize="30" FontWeight="SemiBold" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="Активируйте Windows с помощью HWID" Foreground="#B9CAE2" FontSize="15" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Grid>
             </Border>
 
             <Border Background="#0A1D39" BorderBrush="#173A61" BorderThickness="1"
