@@ -8,7 +8,7 @@ namespace Nexora.Domain.WindowsSettings
     {
         private long _sizeBytes;
         private long _fileCount;
-        private bool _isSelected = true;
+        private bool _isSelected = false;
         private bool _isScanning;
         private bool _isCleaning;
         private string _status = "Не проверено";
