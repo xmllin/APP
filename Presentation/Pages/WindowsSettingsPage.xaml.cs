@@ -167,9 +167,11 @@ namespace WpfApp1.Pages
 		private readonly Dictionary<string, TextBlock> _additionalStatusLabels = new Dictionary<string, TextBlock>(StringComparer.Ordinal);
 		private readonly DispatcherTimer _toastTimer;
 		private Window _hostWindow;
+		private readonly MainWindow _main;
 
 		public WindowsSettingsPage(MainWindow main)
 		{
+			_main = main;
 			_settingBackup = new SettingBackupService(_registryStore);
 			_taskbarSettings = new TaskbarSettingsService(_registryStore, _settingBackup);
 			_mouseSettings = new MouseSettingsService(_registryStore, _settingBackup);
