@@ -415,16 +415,16 @@ namespace WpfApp1.Pages
             return SystemRecommendationService.CleanCpuName(value);
         }
 
-        private void ApplyFilter(bool resetPage = true) => ApplySearch(_main.GetSearchText(), resetPage);
+        private void ApplyFilter(bool resetPage = true) => ApplySearch(AppsSearchBox?.Text, resetPage);
 
         private void PreviousPage_Click(object sender, RoutedEventArgs e)
         {
-            if (_pagination.MovePrevious()) ApplySearch(_main.GetSearchText(), false);
+            if (_pagination.MovePrevious()) ApplySearch(AppsSearchBox?.Text, false);
         }
 
         private void NextPage_Click(object sender, RoutedEventArgs e)
         {
-            if (_pagination.MoveNext()) ApplySearch(_main.GetSearchText(), false);
+            if (_pagination.MoveNext()) ApplySearch(AppsSearchBox?.Text, false);
         }
 
         private static bool MatchesSearch(AppDefinition app, string query)
