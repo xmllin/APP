@@ -94,7 +94,7 @@ namespace WpfApp1.Pages
         {
             if (_activationInProgress)
             {
-                ActivationStatusText.Text = "Идёт активация Windows...";
+                ActivationStatusText.Text = "Выполняется активация. Это может занять до минуты";
                 ActivationStatusText.Foreground =
                     new SolidColorBrush(Color.FromRgb(255, 211, 78));
                 ActivationProgressBar.Visibility = Visibility.Visible;
@@ -171,7 +171,7 @@ namespace WpfApp1.Pages
                     case ActivationStage.Extracting:
                     case ActivationStage.RunningScript:
 
-                        ActivationStatusText.Text = e.Message;
+                        ActivationStatusText.Text = "Выполняется активация. Это может занять до минуты";
                         ActivationStatusText.Foreground =
                             new SolidColorBrush(
                                 Color.FromRgb(255, 211, 78));
@@ -188,7 +188,7 @@ namespace WpfApp1.Pages
                     case ActivationStage.Completed:
 
                         _activationInProgress = false;
-                        ActivationStatusText.Text = e.Message;
+                        ActivationStatusText.Text = "Выполняется активация. Это может занять до минуты";
                         ActivationStatusText.Foreground =
                             new SolidColorBrush(
                                 Color.FromRgb(50, 205, 50));
@@ -201,7 +201,7 @@ namespace WpfApp1.Pages
 
                         _activationInProgress = false;
                         ActivationStatusText.Text =
-                            "Ошибка активации";
+                            "Windows не активирована";
 
                         ActivationStatusText.Foreground =
                             new SolidColorBrush(
@@ -263,7 +263,7 @@ namespace WpfApp1.Pages
             {
                 _activationInProgress = true;
                 ActivateWindowsButton.IsEnabled = false;
-                ActivationStatusText.Text = "Идёт активация Windows...";
+                ActivationStatusText.Text = "Выполняется активация. Это может занять до минуты";
                 ActivationStatusText.Foreground =
                     new SolidColorBrush(Color.FromRgb(255, 211, 78));
                 ActivationProgressBar.Visibility = Visibility.Visible;
@@ -274,11 +274,7 @@ namespace WpfApp1.Pages
 
                 SaveActivationState(true);
 
-                AppDialog.ShowInfo(
-                    Window.GetWindow(this),
-                    "Активация Windows",
-                    "Операция активации завершена.");
-            }
+                }
             catch (Exception exception)
             {
                 AppDialog.ShowError(
