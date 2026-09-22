@@ -36,7 +36,7 @@ namespace Nexora.Pages
 				_windowsUpdate.PauseUntil(new DateTime(2077, 1, 1, 0, 0, 0, DateTimeKind.Utc));
 				UpdatePauseStatus();
 			}
-			catch (Exception exception) { MessageBox.Show("Не удалось приостановить Windows Update: " + exception.Message, "Windows Update", MessageBoxButton.OK, MessageBoxImage.Warning); }
+			catch (Exception exception) { Nexora.Services.StyledMessageDialog.Show("Не удалось приостановить Windows Update: " + exception.Message, "Windows Update", MessageBoxButton.OK, MessageBoxImage.Warning); }
 		}
 
 		private async void StartWindowsUpdateButton_Click(object sender, RoutedEventArgs e)
@@ -50,9 +50,9 @@ namespace Nexora.Pages
 					DisableWindowsUpdateToggle.IsChecked = false;
 					UpdateWindowsFeatureLabel("DisableWindowsUpdate", false);
 				}
-				MessageBox.Show("Windows Update включён. Политики и службы обновлений восстановлены.", "Windows Update", MessageBoxButton.OK, MessageBoxImage.Information);
+				Nexora.Services.StyledMessageDialog.Show("Windows Update включён. Политики и службы обновлений восстановлены.", "Windows Update", MessageBoxButton.OK, MessageBoxImage.Information);
 			}
-			catch (Exception exception) { MessageBox.Show("Не удалось запустить Windows Update: " + exception.Message, "Windows Update", MessageBoxButton.OK, MessageBoxImage.Warning); }
+			catch (Exception exception) { Nexora.Services.StyledMessageDialog.Show("Не удалось запустить Windows Update: " + exception.Message, "Windows Update", MessageBoxButton.OK, MessageBoxImage.Warning); }
 		}
 
 		private async void ClearWindowsUpdateCacheButton_Click(object sender, RoutedEventArgs e)
@@ -62,7 +62,7 @@ namespace Nexora.Pages
 				await _windowsUpdate.ClearCacheAsync(CancellationToken.None);
 				ShowToast("Кэш Windows Update очищен.");
 			}
-			catch (Exception exception) { MessageBox.Show("Не удалось очистить кэш Windows Update: " + exception.Message, "Windows Update", MessageBoxButton.OK, MessageBoxImage.Warning); }
+			catch (Exception exception) { Nexora.Services.StyledMessageDialog.Show("Не удалось очистить кэш Windows Update: " + exception.Message, "Windows Update", MessageBoxButton.OK, MessageBoxImage.Warning); }
 		}
 
 		private void UpdatePauseStatus()
