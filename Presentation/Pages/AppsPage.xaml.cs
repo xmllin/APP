@@ -28,6 +28,8 @@ namespace WpfApp1.Pages
         private string _category = "Все";
         private bool _isSelectMode = false;
         private readonly PaginationState<AppDefinition> _pagination = new PaginationState<AppDefinition>(8);
+        private int _adaptivePageSize = 8;
+        private bool _adaptivePageSizeInitialized;
 
         private Task _loadTask;
         private Task _hardwareTask;
@@ -80,6 +82,7 @@ namespace WpfApp1.Pages
                 }
                 ApplyFilter();
                 LoadingText.Text = "";
+                Dispatcher.BeginInvoke(new Action(UpdateAdaptivePageSize), System.Windows.Threading.DispatcherPriority.Loaded);
 
                 _hardwareTask = LoadSystemRecommendationTagsAsync();
             }
@@ -267,13 +270,36 @@ namespace WpfApp1.Pages
             if (string.IsNullOrWhiteSpace(AppsSearchBox.Text)) AppsSearchBox.Text = "Поиск программ...";
         }
 
-        private void RowsPerPageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void AppsScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (!(RowsPerPageComboBox.SelectedItem is ComboBoxItem item)) return;
-            if (!int.TryParse(item.Tag?.ToString(), out var rows)) return;
-            int pageSize = rows == 1 ? 8 : rows == 2 ? 12 : rows == 3 ? 18 : rows == 4 ? 20 : 25;
-            _pagination.SetPageSize(pageSize);
-            ApplySearch(AppsSearchBox.Text, true);
+            UpdateAdaptivePageSize();
+        }
+
+        private void UpdateAdaptivePageSize()
+        {
+            if (!IsLoaded || AppsScrollViewer == null) return;
+
+            // Высота одной строки карточек берётся из фактической разметки.
+            // При изменении высоты окна автоматически переключаем размер страницы:
+            // 1 ряд = 8, 2 = 12, 3 = 18, 4 = 20, 5+ = 25.
+            const double cardRowHeight = 112.0;
+            const double reservedHeight = 470.0;
+
+            var available = AppsScrollViewer.ViewportHeight - reservedHeight;
+            var rows = Math.Max(1, (int)Math.Floor(available / cardRowHeight));
+            var pageSize = rows == 1 ? 8
+                : rows == 2 ? 12
+                : rows == 3 ? 18
+                : rows == 4 ? 20
+                : 25;
+
+            if (_adaptivePageSizeInitialized && pageSize == _adaptivePageSize)
+                return;
+
+            _adaptivePageSize = pageSize;
+            _adaptivePageSizeInitialized = true;
+            _pagination.SetPageSize(pageSize, true);
+            ApplySearch(AppsSearchBox?.Text, true);
         }
 
         public void ApplySearch(string text, bool resetPage = true)
