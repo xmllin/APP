@@ -59,7 +59,7 @@ namespace Nexora.Pages
 
 			if (!result.Success)
 			{
-				MessageBox.Show("Не удалось изменить настройку панели задач: " + result.Error, "Панель задач", MessageBoxButton.OK, MessageBoxImage.Warning);
+				Nexora.Services.StyledMessageDialog.Show("Не удалось изменить настройку панели задач: " + result.Error, "Панель задач", MessageBoxButton.OK, MessageBoxImage.Warning);
 				LoadExplorerSettings();
 				return;
 			}
