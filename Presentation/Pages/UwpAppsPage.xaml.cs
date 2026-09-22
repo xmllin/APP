@@ -62,6 +62,7 @@ namespace Nexora.Pages
             DataContext = this;
             Loaded += UwpAppsPage_Loaded;
             Unloaded += UwpAppsPage_Unloaded;
+            SizeChanged += UwpAppsPage_SizeChanged;
         }
 
         private async void UwpAppsPage_Loaded(object sender, RoutedEventArgs e)
@@ -73,6 +74,15 @@ namespace Nexora.Pages
         private void UwpAppsPage_Unloaded(object sender, RoutedEventArgs e)
         {
             _loadCancellation?.Cancel();
+        }
+
+        private void UwpAppsPage_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // Keep the application grid inside the visible page area. UniformGrid
+            // then gives every row the same height, so resizing the window never
+            // causes cards to overlap and the available vertical space is used.
+            var availableHeight = ActualHeight - 305;
+            PackagesList.Height = Math.Max(220, availableHeight);
         }
 
         private async void RemoveButton_Click(object sender, RoutedEventArgs e)
