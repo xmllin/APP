@@ -47,14 +47,17 @@
                 <Border.Background>
                     <ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/>
                 </Border.Background>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="82" Height="82" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,20,0"/>
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Всё необходимое для Windows" FontSize="30" FontWeight="SemiBold" TextWrapping="NoWrap"/>
-                        <TextBlock Text="Программы, инструменты, настройки и обои — в одном месте."
-                       Foreground="#B9CAE2" FontSize="15" TextWrapping="Wrap"/>
-                    </StackPanel>
-                </StackPanel>
+                <Grid VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="72" Height="72" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="Всё необходимое для Windows" FontSize="30" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                            <TextBlock Text="Программы, инструменты, настройки и обои — в одном месте." Foreground="#B9CAE2" FontSize="15" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
             </Border>
             <Border Height="1" Background="#21476E" Margin="0,24,0,12"/>
             <TextBlock Text="Основные разделы" FontSize="22" FontWeight="SemiBold" Margin="0,0,0,14"/>
