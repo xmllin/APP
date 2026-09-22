@@ -185,8 +185,12 @@ namespace WpfApp1.Pages
 			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 			var text = new StackPanel { Margin = new Thickness(0, 0, 16, 0) };
-			text.Children.Add(new TextBlock { Text = title, FontWeight = FontWeights.SemiBold });
-			text.Children.Add(new TextBlock { Text = description, Foreground = new SolidColorBrush(Color.FromRgb(130, 165, 207)), FontSize = 11 });
+			var titleBlock = new TextBlock { Text = title, FontWeight = FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap };
+			if (string.Equals(toggle.Tag as string, "DisableCortana", StringComparison.Ordinal))
+				titleBlock.ToolTip = "Windows 10. В Windows 11 настройка недоступна.";
+			text.Children.Add(titleBlock);
+			text.Children.Add(new TextBlock { Text = description, Foreground = new SolidColorBrush(Color.FromRgb(130, 165, 207)), FontSize = 11, TextWrapping = TextWrapping.Wrap });
+			text.Children.Add(new TextBlock { Text = "Для применения требуется перезапуск Проводника либо перезапуск Windows.", Foreground = new SolidColorBrush(Color.FromRgb(105, 137, 176)), FontSize = 10, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 3, 0, 0) });
 			var controls = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
 			controls.Children.Add(label);
 			controls.Children.Add(toggle);
