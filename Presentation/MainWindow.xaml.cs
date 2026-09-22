@@ -868,6 +868,7 @@ namespace WpfApp1
             _navigation.Register("activation", () => new WindowsActivationPage());
             _navigation.Register("wallpapers", () => new WallpaperPage(this));
             _navigation.Register("downloads", () => new DownloadsPage(this));
+            _navigation.Register("diskcleanup", () => new DiskCleanupPage(this));
             _navigation.Register("settings", () => new SettingsPage(this));
             _navigation.Register("profile", () => new ProfilePage(this));
         }
@@ -908,6 +909,7 @@ namespace WpfApp1
             else if (page == "activation") WindowsActivationNav.Tag = "Selected";
             else if (page == "wallpapers") WallpapersNav.Tag = "Selected";
             else if (page == "downloads") DownloadsNav.Tag = "Selected";
+            else if (page == "diskcleanup") DiskCleanupNav.Tag = "Selected";
             else if (page == "settings") SettingsNav.Tag = "Selected";
             else if (page == "profile") ProfileNav.Tag = "Selected";
 
@@ -1012,6 +1014,7 @@ namespace WpfApp1
                 else if (button == WindowsActivationNav) Navigate("activation");
                 else if (button == WallpapersNav) Navigate("wallpapers");
                 else if (button == DownloadsNav) Navigate("downloads");
+                else if (button == DiskCleanupNav) Navigate("diskcleanup");
                 else if (button == SettingsNav) Navigate("settings");
                 else if (button == ProfileNav) Navigate("profile");
             }
