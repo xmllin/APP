@@ -27,6 +27,7 @@ namespace Nexora.Pages
             _main = main;
             InitializeComponent();
             CleanupItemsControl.ItemsSource = _items;
+            SetPageStatus("Подготовка…", NotificationKind.Info);
             Loaded += DiskCleanupPage_Loaded;
         }
 
@@ -65,15 +66,15 @@ namespace Nexora.Pages
                 }
 
                 await _service.ScanAllAsync(_items, _cts.Token);
-                PageStatusText.Text = "Сканирование завершено.";
+                SetPageStatus("Сканирование завершено.", NotificationKind.Success);
             }
             catch (OperationCanceledException)
             {
-                PageStatusText.Text = "Сканирование отменено.";
+                SetPageStatus("Сканирование отменено.", NotificationKind.Warning);
             }
             catch (Exception ex)
             {
-                PageStatusText.Text = "Ошибка сканирования: " + ex.Message;
+                SetPageStatus("Ошибка сканирования: " + ex.Message, NotificationKind.Error);
             }
             finally
             {
@@ -104,7 +105,7 @@ namespace Nexora.Pages
             var selected = _items.Where(i => i.IsSelected && i.SizeBytes > 0).ToList();
             if (selected.Count == 0)
             {
-                PageStatusText.Text = "Нет выбранных данных для очистки.";
+                SetPageStatus("Нет выбранных данных для очистки.", NotificationKind.Warning);
                 return;
             }
 
@@ -129,19 +130,21 @@ namespace Nexora.Pages
                 foreach (var item in selected)
                     freed += await _service.CleanAsync(item, _cts?.Token ?? CancellationToken.None);
 
-                PageStatusText.Text = freed > 0
-                    ? $"Освобождено {DiskCleanupItem.FormatBytes(freed)}."
-                    : "Очистка завершена. Заблокированные файлы пропущены.";
+                SetPageStatus(
+                    freed > 0
+                        ? $"Освобождено {DiskCleanupItem.FormatBytes(freed)}. Очистка завершена."
+                        : "Очистка завершена. Заблокированные файлы пропущены.",
+                    NotificationKind.Success);
 
                 await _service.ScanAllAsync(_items, _cts?.Token ?? CancellationToken.None);
             }
             catch (OperationCanceledException)
             {
-                PageStatusText.Text = "Очистка отменена.";
+                SetPageStatus("Очистка отменена.", NotificationKind.Warning);
             }
             catch (Exception ex)
             {
-                PageStatusText.Text = "Ошибка очистки: " + ex.Message;
+                SetPageStatus("Ошибка очистки: " + ex.Message, NotificationKind.Error);
             }
             finally
             {
@@ -231,7 +234,40 @@ namespace Nexora.Pages
         private void SetBusy(bool busy, string status)
         {
             ScanButton.IsEnabled = !busy;
+            SetPageStatus(status, NotificationKind.Info);
+        }
+
+        private void SetPageStatus(string status, NotificationKind kind)
+        {
             PageStatusText.Text = status;
+
+            var background = kind == NotificationKind.Error
+                ? "#32141A"
+                : kind == NotificationKind.Warning
+                    ? "#3A2D15"
+                    : kind == NotificationKind.Success
+                        ? "#10321F"
+                        : "#0C1D30";
+
+            var border = kind == NotificationKind.Error
+                ? "#D34F5F"
+                : kind == NotificationKind.Warning
+                    ? "#D99B35"
+                    : kind == NotificationKind.Success
+                        ? "#4DBE78"
+                        : "#21476E";
+
+            var foreground = kind == NotificationKind.Error
+                ? "#FFD6DB"
+                : kind == NotificationKind.Warning
+                    ? "#FFE0A3"
+                    : kind == NotificationKind.Success
+                        ? "#CFFFE0"
+                        : "#B9CAE2";
+
+            PageStatusHost.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(background));
+            PageStatusHost.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(border));
+            PageStatusText.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(foreground));
         }
 
         private void UpdateSummary()
