@@ -334,7 +334,11 @@ namespace WpfApp1.Pages
 					var telemetryOperation = await ApplyWindowsFeatureSettingAsync(tag, disabled);
 					if (!telemetryOperation.Success)
 						throw new InvalidOperationException(telemetryOperation.Error);
-					SetTelemetryGroupVisualState(disabled);
+					var telemetryDisabled = _privacySettings.IsDisabled("DisableTelemetry");
+					if (telemetryDisabled != disabled)
+						throw new InvalidOperationException("Windows не подтвердила состояние телеметрии.");
+					SetTelemetryGroupVisualState(telemetryDisabled);
+					SetStatusLabel(DisableTelemetryLabel, telemetryDisabled ? "Включено" : "Отключено", telemetryDisabled);
 					RefreshExplorer();
 					return;
 				}
