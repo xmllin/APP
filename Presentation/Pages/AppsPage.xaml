@@ -277,7 +277,7 @@
                                                         <TextBlock.RenderTransform><TranslateTransform/></TextBlock.RenderTransform>
                                                     </TextBlock>
                                                 </Grid>
-                                                <Image Grid.Column="1" Width="22" Height="22" Margin="6,0,0,0" Stretch="Uniform" Visibility="{Binding IsBlockedInRussia, Converter={StaticResource BooleanToVisibilityConverter}}" Source="{local:SvgImage Source=interface/white/exclamation-circle_red.svg}" local:DelayedToolTipBehavior.IsEnabled="True">
+                                                <Image Grid.Column="1" Width="22" Height="22" Margin="6,0,0,0" Stretch="Uniform" Visibility="{Binding IsBlockedInRussia, Converter={StaticResource BooleanToVisibilityConverter}}" Source="{local:SvgImage Source=interface/white/exclamation-circle_red.svg}">
                                                     <Image.ToolTip>
                                                         <ToolTip Content="Для скачивания может потребоваться VPN" Background="#0D1B2E" Foreground="#F1F6FF" BorderBrush="#24415F" BorderThickness="1" Padding="10,6" FontFamily="Segoe UI" FontSize="12"/>
                                                     </Image.ToolTip>
