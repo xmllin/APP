@@ -15,6 +15,19 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="HomeTileTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="MaxWidth" Value="215"/>
+        </Style>
+        <Style x:Key="HomeTileDescription" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#91A8C5"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="MaxWidth" Value="215"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
         <Style x:Key="HomeTileButton" TargetType="Button" BasedOn="{StaticResource CardButton}">
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="Template">
@@ -65,63 +78,63 @@
                 <Button Style="{StaticResource HomeTileButton}" Click="Apps_Click" Margin="10,0,10,10" Height="99" Width="340">
                     <StackPanel Orientation="Horizontal" Margin="18">
                         <Image Source="{local:SvgImage Source=interface/white/world-download.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
-                        <StackPanel>
-                            <TextBlock Text="Программы" FontSize="17" FontWeight="SemiBold"/>
-                            <TextBlock Text="Популярные программы и утилиты" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        <StackPanel Width="215">
+                            <TextBlock Text="Программы" Style="{StaticResource HomeTileTitle}"/>
+                            <TextBlock Text="Популярные программы и утилиты" Style="{StaticResource HomeTileDescription}"/>
                         </StackPanel>
                     </StackPanel>
                 </Button>
                 <Button Style="{StaticResource HomeTileButton}" Click="UwpApps_Click" Height="99" Width="340" Margin="10,0,10,10">
                     <StackPanel Orientation="Horizontal" Margin="18">
                         <Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
-                        <StackPanel>
-                            <TextBlock Text="UWP-приложения" FontSize="17" FontWeight="SemiBold"/>
-                            <TextBlock Text="Управление приложениями Windows" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        <StackPanel Width="215">
+                            <TextBlock Text="UWP-приложения" Style="{StaticResource HomeTileTitle}"/>
+                            <TextBlock Text="Управление приложениями Windows" Style="{StaticResource HomeTileDescription}"/>
                         </StackPanel>
                     </StackPanel>
                 </Button>
                 <Button Style="{StaticResource HomeTileButton}" Click="Libraries_Click" Margin="10,0,10,10" Height="99" Width="340">
                     <StackPanel Orientation="Horizontal" Margin="18">
                         <Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
-                        <StackPanel>
-                            <TextBlock Text="Библиотеки и компоненты" FontSize="17" FontWeight="SemiBold"/>
-                            <TextBlock Text="Системные компоненты и среды выполнения" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        <StackPanel Width="215">
+                            <TextBlock Text="Библиотеки и компоненты" Style="{StaticResource HomeTileTitle}"/>
+                            <TextBlock Text="Системные компоненты и среды выполнения" Style="{StaticResource HomeTileDescription}"/>
                         </StackPanel>
                     </StackPanel>
                 </Button>
                 <Button Style="{StaticResource HomeTileButton}" Click="Windows_Click" Margin="10,0,10,10" Height="99" Width="340">
                     <StackPanel Orientation="Horizontal" Margin="18">
                         <Image Source="{local:SvgImage Source=interface/white/brand-windows.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
-                        <StackPanel>
-                            <TextBlock Text="Настройки Windows" FontSize="17" FontWeight="SemiBold"/>
-                            <TextBlock Text="Параметры, обновления и инструменты" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        <StackPanel Width="215">
+                            <TextBlock Text="Настройки Windows" Style="{StaticResource HomeTileTitle}"/>
+                            <TextBlock Text="Параметры, обновления и инструменты" Style="{StaticResource HomeTileDescription}"/>
                         </StackPanel>
                     </StackPanel>
                 </Button>
                 <Button Style="{StaticResource HomeTileButton}" Click="Activation_Click" Margin="10,0,10,10" Height="99" Width="340">
                     <StackPanel Orientation="Horizontal" Margin="18">
                         <Image Source="{local:SvgImage Source=interface/white/brand-windows.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
-                        <StackPanel>
-                            <TextBlock Text="Активация Windows" FontSize="17" FontWeight="SemiBold"/>
-                            <TextBlock Text="Статус лицензии и активация" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        <StackPanel Width="215">
+                            <TextBlock Text="Активация Windows" Style="{StaticResource HomeTileTitle}"/>
+                            <TextBlock Text="Статус лицензии и активация" Style="{StaticResource HomeTileDescription}"/>
                         </StackPanel>
                     </StackPanel>
                 </Button>
                 <Button Style="{StaticResource HomeTileButton}" Click="Wallpaper_Click" Margin="10,0,10,10" Height="99" Width="340">
                     <StackPanel Orientation="Horizontal" Margin="18">
                         <Image Source="{local:SvgImage Source=interface/white/category-media.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
-                        <StackPanel>
-                            <TextBlock Text="Обои" FontSize="17" FontWeight="SemiBold"/>
-                            <TextBlock Text="Красивые обои для рабочего стола" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        <StackPanel Width="215">
+                            <TextBlock Text="Обои" Style="{StaticResource HomeTileTitle}"/>
+                            <TextBlock Text="Красивые обои для рабочего стола" Style="{StaticResource HomeTileDescription}"/>
                         </StackPanel>
                     </StackPanel>
                 </Button>
                 <Button Style="{StaticResource HomeTileButton}" Click="Downloads_Click" Margin="10,0,10,10" Height="99" Width="340">
                     <StackPanel Orientation="Horizontal" Margin="18">
                         <Image Source="{local:SvgImage Source=interface/white/fluent-arrow-download.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
-                        <StackPanel>
-                            <TextBlock Text="Загрузки" FontSize="17" FontWeight="SemiBold"/>
-                            <TextBlock Text="Ваши скачанные файлы и история" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        <StackPanel Width="215">
+                            <TextBlock Text="Загрузки" Style="{StaticResource HomeTileTitle}"/>
+                            <TextBlock Text="Ваши скачанные файлы и история" Style="{StaticResource HomeTileDescription}"/>
                         </StackPanel>
                     </StackPanel>
                 </Button>
@@ -132,18 +145,18 @@
                 <Button Style="{StaticResource HomeTileButton}" Click="Settings_Click" Margin="10,0,10,10" Height="99" Width="320">
                     <StackPanel Orientation="Horizontal" Margin="18">
                         <Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
-                        <StackPanel>
-                            <TextBlock Text="Настройки" FontSize="17" FontWeight="SemiBold"/>
-                            <TextBlock Text="Внешний вид и параметры программы" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        <StackPanel Width="215">
+                            <TextBlock Text="Настройки" Style="{StaticResource HomeTileTitle}"/>
+                            <TextBlock Text="Внешний вид и параметры программы" Style="{StaticResource HomeTileDescription}"/>
                         </StackPanel>
                     </StackPanel>
                 </Button>
                 <Button Style="{StaticResource HomeTileButton}" Click="Profile_Click" Height="99" Width="320" Margin="10,0,10,10">
                     <StackPanel Orientation="Horizontal" Margin="18">
                         <Image Source="{local:SvgImage Source=interface/white/fluent-person.svg}" Width="36" Height="36" Margin="0,0,19,0"/>
-                        <StackPanel>
-                            <TextBlock Text="Профиль" FontSize="17" FontWeight="SemiBold"/>
-                            <TextBlock Text="Информация о вашем компьютере" Foreground="#91A8C5" Margin="0,6,0,0"/>
+                        <StackPanel Width="215">
+                            <TextBlock Text="Профиль" Style="{StaticResource HomeTileTitle}"/>
+                            <TextBlock Text="Информация о вашем компьютере" Style="{StaticResource HomeTileDescription}"/>
                         </StackPanel>
                     </StackPanel>
                 </Button>
