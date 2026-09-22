@@ -73,6 +73,7 @@ namespace WpfApp1.Pages
 			if (_hostWindow != null) _hostWindow.Activated += HostWindow_Activated;
 			if (SettingsCategoryComboBox != null && SettingsCategoryComboBox.SelectedItem is ComboBoxItem categoryItem)
 				SetSettingsCategoryVisibility(categoryItem.Tag as string);
+			EnsureRestartHints();
 			LoadExplorerSettings();
 			RefreshMouseSettings();
 			ApplyAdminToggleLockState();
