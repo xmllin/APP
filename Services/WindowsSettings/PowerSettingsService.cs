@@ -4,11 +4,11 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Domain.WindowsSettings;
-using WpfApp1.Infrastructure.Processes;
-using WpfApp1.Infrastructure.Registry;
+using Nexora.Domain.WindowsSettings;
+using Nexora.Infrastructure.Processes;
+using Nexora.Infrastructure.Registry;
 
-namespace WpfApp1.Services.WindowsSettings
+namespace Nexora.Services.WindowsSettings
 {
     public sealed class PowerSettingsService
     {
@@ -174,7 +174,7 @@ namespace WpfApp1.Services.WindowsSettings
         {
             const string statePath = "usb-power-states.json";
             var basePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var appPath = System.IO.Path.Combine(basePath, "WpfApp1");
+            var appPath = System.IO.Path.Combine(basePath, "Nexora");
             var savePath = System.IO.Path.Combine(appPath, statePath);
 
             try

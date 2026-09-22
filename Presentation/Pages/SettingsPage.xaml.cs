@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using WpfApp1.Services;
+using Nexora.Services;
 
-namespace WpfApp1.Pages
+namespace Nexora.Pages
 {
     public partial class SettingsPage : UserControl
     {

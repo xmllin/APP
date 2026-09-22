@@ -5,10 +5,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Win32;
-using WpfApp1.Infrastructure.PowerShell;
-using WpfApp1.Infrastructure.Processes;
+using Nexora.Infrastructure.PowerShell;
+using Nexora.Infrastructure.Processes;
 
-namespace WpfApp1.Services
+namespace Nexora.Services
 {
     public sealed class AppRemover
     {

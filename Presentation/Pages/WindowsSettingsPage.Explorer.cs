@@ -11,19 +11,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Win32;
-using WpfApp1.Services;
-using WpfApp1.Services.Libraries;
+using Nexora.Services;
+using Nexora.Services.Libraries;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
-using WpfApp1.Infrastructure.Registry;
-using WpfApp1.Infrastructure.Processes;
-using WpfApp1.Services.WindowsSettings;
-using WpfApp1.Domain.WindowsSettings;
+using Nexora.Infrastructure.Registry;
+using Nexora.Infrastructure.Processes;
+using Nexora.Services.WindowsSettings;
+using Nexora.Domain.WindowsSettings;
 
-namespace WpfApp1.Pages
+namespace Nexora.Pages
 {
     public partial class WindowsSettingsPage : UserControl
     {

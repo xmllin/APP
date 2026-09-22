@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 
-namespace WpfApp1.Services
+namespace Nexora.Services
 {
     public static class AppDialog
     {

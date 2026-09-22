@@ -8,10 +8,10 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Models;
-using WpfApp1.Services;
+using Nexora.Models;
+using Nexora.Services;
 
-namespace WpfApp1.Services.Downloads
+namespace Nexora.Services.Downloads
 {
     /// <summary>
     /// Resolves installers from official vendor pages. Special resolvers are
@@ -39,7 +39,7 @@ namespace WpfApp1.Services.Downloads
         {
             var client = new HttpClient { Timeout = TimeSpan.FromSeconds(45) };
             client.DefaultRequestHeaders.UserAgent.ParseAdd(
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0.0.0 Safari/537.36 WpfApp1/1.0");
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0.0.0 Safari/537.36 Nexora/1.0");
             client.DefaultRequestHeaders.Accept.ParseAdd("text/html,application/xhtml+xml,application/octet-stream;q=0.9,*/*;q=0.8");
             return client;
         }

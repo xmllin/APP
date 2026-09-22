@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace WpfApp1.Services.Downloads
+namespace Nexora.Services.Downloads
 {
     public sealed class DetectedPlatform
     {

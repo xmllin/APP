@@ -10,13 +10,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using WpfApp1.Models;
-using WpfApp1.Services;
-using WpfApp1.Services.Apps;
-using WpfApp1.Services.Downloads;
-using WpfApp1.Domain.Apps;
+using Nexora.Models;
+using Nexora.Services;
+using Nexora.Services.Apps;
+using Nexora.Services.Downloads;
+using Nexora.Domain.Apps;
 
-namespace WpfApp1.Pages
+namespace Nexora.Pages
 {
     public partial class AppsPage : UserControl
     {

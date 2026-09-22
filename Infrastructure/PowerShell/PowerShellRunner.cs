@@ -2,9 +2,9 @@ using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Infrastructure.Processes;
+using Nexora.Infrastructure.Processes;
 
-namespace WpfApp1.Infrastructure.PowerShell
+namespace Nexora.Infrastructure.PowerShell
 {
     public sealed class PowerShellRunner
     {

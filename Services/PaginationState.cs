@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WpfApp1.Services
+namespace Nexora.Services
 {
     public sealed class PaginationState<T>
     {

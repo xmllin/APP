@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace WpfApp1.Services
+namespace Nexora.Services
 {
     public static class DelayedToolTipBehavior
     {

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using WpfApp1.Services;
+using Nexora.Services;
 
-namespace WpfApp1.Application.Notifications
+namespace Nexora.Application.Notifications
 {
     public sealed class NotificationService
     {

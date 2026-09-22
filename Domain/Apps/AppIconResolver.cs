@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using WpfApp1.Models;
+using Nexora.Models;
 
-namespace WpfApp1.Domain.Apps
+namespace Nexora.Domain.Apps
 {
     public sealed class AppIconResolver
     {

@@ -8,10 +8,10 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Models;
-using WpfApp1.Services;
+using Nexora.Models;
+using Nexora.Services;
 
-namespace WpfApp1.Services.Downloads
+namespace Nexora.Services.Downloads
 {
     /// <summary>
     /// Resolves installers from official vendor pages. Special resolvers are

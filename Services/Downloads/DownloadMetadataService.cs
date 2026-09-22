@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WpfApp1.Services.Downloads
+namespace Nexora.Services.Downloads
 {
     public sealed class DownloadProbeResult
     {
@@ -27,7 +27,7 @@ namespace WpfApp1.Services.Downloads
         {
             var client = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
             client.DefaultRequestHeaders.UserAgent.ParseAdd(
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0.0.0 Safari/537.36 WpfApp1/1.0");
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0.0.0 Safari/537.36 Nexora/1.0");
             client.DefaultRequestHeaders.Accept.ParseAdd("application/octet-stream,*/*;q=0.8");
             return client;
         }

@@ -5,11 +5,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using WpfApp1.Pages;
-using WpfApp1.Models;
-using WpfApp1.Services;
-using WpfApp1.Application.Navigation;
-using WpfApp1.Services.Downloads;
+using Nexora.Pages;
+using Nexora.Models;
+using Nexora.Services;
+using Nexora.Application.Navigation;
+using Nexora.Services.Downloads;
 using System.Windows.Shell;
 using System.Windows.Threading;
 using System.Collections.ObjectModel;
@@ -19,7 +19,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 
-namespace WpfApp1
+namespace Nexora
 {
     public partial class MainWindow : Window
     {

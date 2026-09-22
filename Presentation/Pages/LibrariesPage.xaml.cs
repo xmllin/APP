@@ -12,12 +12,12 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using WpfApp1.Models;
-using WpfApp1.Services;
-using WpfApp1.Services.Downloads;
-using WpfApp1.Services.Libraries;
+using Nexora.Models;
+using Nexora.Services;
+using Nexora.Services.Downloads;
+using Nexora.Services.Libraries;
 
-namespace WpfApp1.Pages
+namespace Nexora.Pages
 {
     public partial class LibrariesPage : UserControl
     {
@@ -166,7 +166,7 @@ namespace WpfApp1.Pages
             if (item == null) return;
             var folder = item.HasDownloadedFile
                 ? Path.GetDirectoryName(item.DownloadedFilePath)
-                : Path.Combine(Path.GetTempPath(), "WpfApp1", "Libraries");
+                : Path.Combine(Path.GetTempPath(), "Nexora", "Libraries");
             Directory.CreateDirectory(folder);
             OpenFolder(folder);
         }
@@ -635,7 +635,7 @@ namespace WpfApp1.Pages
         private static void DeleteDownloadedInstaller(LibraryDefinition definition)
         {
             if (definition == null) return;
-            var folder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "WpfApp1", "Libraries");
+            var folder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Nexora", "Libraries");
             var candidates = new[]
             {
                 definition.FileName,

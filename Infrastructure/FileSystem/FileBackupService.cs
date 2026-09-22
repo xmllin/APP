@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace WpfApp1.Infrastructure.FileSystem
+namespace Nexora.Infrastructure.FileSystem
 {
     public sealed class FileBackupService
     {
@@ -9,7 +9,7 @@ namespace WpfApp1.Infrastructure.FileSystem
 
         public FileBackupService(string root = null)
         {
-            _root = root ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WpfApp1", "Backups");
+            _root = root ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Nexora", "Backups");
         }
 
         public string BackupOnce(string name, string sourcePath)

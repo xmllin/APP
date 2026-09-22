@@ -7,10 +7,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
-using WpfApp1.Models;
-using WpfApp1.Services;
+using Nexora.Models;
+using Nexora.Services;
 
-namespace WpfApp1.Pages
+namespace Nexora.Pages
 {
     public partial class UwpAppsPage : UserControl
     {

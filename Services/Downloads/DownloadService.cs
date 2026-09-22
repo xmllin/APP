@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Models;
-using WpfApp1.Pages;
-using WpfApp1.Infrastructure.HTTP;
+using Nexora.Models;
+using Nexora.Pages;
+using Nexora.Infrastructure.HTTP;
 
-namespace WpfApp1.Services.Downloads
+namespace Nexora.Services.Downloads
 {
     public class DownloadService
     {

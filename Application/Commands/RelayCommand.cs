@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Input;
 
-namespace WpfApp1.Application.Commands
+namespace Nexora.Application.Commands
 {
     public sealed class RelayCommand : ICommand
     {

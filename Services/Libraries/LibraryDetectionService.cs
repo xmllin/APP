@@ -2,10 +2,10 @@ using System;
 using System.IO;
 using System.Linq;
 using Microsoft.Win32;
-using WpfApp1.Models;
-using WpfApp1.Services.Downloads;
+using Nexora.Models;
+using Nexora.Services.Downloads;
 
-namespace WpfApp1.Services.Libraries
+namespace Nexora.Services.Libraries
 {
     public sealed class LibraryDetectionService
     {

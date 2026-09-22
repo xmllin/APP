@@ -2,9 +2,9 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Infrastructure.Processes;
+using Nexora.Infrastructure.Processes;
 
-namespace WpfApp1.Infrastructure.WindowsApis
+namespace Nexora.Infrastructure.WindowsApis
 {
     public sealed class ExplorerController
     {

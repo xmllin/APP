@@ -24,10 +24,10 @@ jobs:
         run: dotnet --version
 
       - name: Restore
-        run: dotnet restore Tests/WpfApp1.Tests.csproj
+        run: dotnet restore Tests/Nexora.Tests.csproj
 
       - name: Build
-        run: dotnet build Tests/WpfApp1.Tests.csproj --configuration Release --no-restore
+        run: dotnet build Tests/Nexora.Tests.csproj --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test Tests/WpfApp1.Tests.csproj --configuration Release --no-build --verbosity normal
+        run: dotnet test Tests/Nexora.Tests.csproj --configuration Release --no-build --verbosity normal

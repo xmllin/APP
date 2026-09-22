@@ -5,10 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using WpfApp1.Domain.WindowsSettings;
-using WpfApp1.Services;
+using Nexora.Domain.WindowsSettings;
+using Nexora.Services;
 
-namespace WpfApp1.Pages
+namespace Nexora.Pages
 {
     public partial class DiskCleanupPage : UserControl
     {

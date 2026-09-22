@@ -11,20 +11,20 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Win32;
-using WpfApp1.Services;
-using WpfApp1.Services.Libraries;
+using Nexora.Services;
+using Nexora.Services.Libraries;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
-using WpfApp1.Infrastructure.Registry;
-using WpfApp1.Infrastructure.Processes;
-using WpfApp1.Services.WindowsSettings;
-using WpfApp1.Domain.WindowsSettings;
-using WpfApp1.Infrastructure.WindowsApis;
+using Nexora.Infrastructure.Registry;
+using Nexora.Infrastructure.Processes;
+using Nexora.Services.WindowsSettings;
+using Nexora.Domain.WindowsSettings;
+using Nexora.Infrastructure.WindowsApis;
 
-namespace WpfApp1.Pages
+namespace Nexora.Pages
 {
 	public partial class WindowsSettingsPage : UserControl
 	{
@@ -86,7 +86,7 @@ namespace WpfApp1.Pages
 		private const string WindowsUpdateDriverPath = @"Software\Policies\Microsoft\Windows\WindowsUpdate";
 		private const string WindowsUpdateSettingsPath = @"Software\Microsoft\WindowsUpdate\UX\Settings";
 		private const string ReserveManagerPath = @"Software\Microsoft\Windows\CurrentVersion\ReserveManager";
-		private const string WindowsUpdateBackupPath = @"Software\WpfApp1\WindowsUpdateBackup";
+		private const string WindowsUpdateBackupPath = @"Software\Nexora\WindowsUpdateBackup";
 		private const string DataCollectionPolicyPath = @"Software\Policies\Microsoft\Windows\DataCollection";
 		private const string LegacyDataCollectionPolicyPath = @"Software\Microsoft\Windows\CurrentVersion\Policies\DataCollection";
 		private const string LegacyDataCollectionPolicy32Path = @"Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection";
@@ -108,9 +108,9 @@ namespace WpfApp1.Pages
 		private const string AccessibilityStickyKeysPath = @"Control Panel\Accessibility\StickyKeys";
 		private const string AccessibilityKeyboardResponsePath = @"Control Panel\Accessibility\Keyboard Response";
 		private const string AccessibilityToggleKeysPath = @"Control Panel\Accessibility\ToggleKeys";
-		private const string UserSettingsBackupPath = @"Software\WpfApp1\WindowsSettingsBackup";
-		private const string MachineSettingsBackupPath = @"Software\WpfApp1\WindowsSettingsBackup";
-		private static readonly string TelemetryLogPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WpfApp1", "Logs", "WindowsSettings.log");
+		private const string UserSettingsBackupPath = @"Software\Nexora\WindowsSettingsBackup";
+		private const string MachineSettingsBackupPath = @"Software\Nexora\WindowsSettingsBackup";
+		private static readonly string TelemetryLogPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Nexora", "Logs", "WindowsSettings.log");
 		private bool _loadingExplorerSettings;
 		private ToggleButton _disableVbsToggle;
 		private TextBlock _disableVbsLabel;

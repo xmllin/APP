@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace WpfApp1.Domain.WindowsSettings
+namespace Nexora.Domain.WindowsSettings
 {
     public sealed class DiskCleanupItem : INotifyPropertyChanged
     {

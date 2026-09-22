@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 using SharpVectors.Converters;
 using SharpVectors.Renderers.Wpf;
 
-namespace WpfApp1.Services
+namespace Nexora.Services
 {
     public sealed class CategoryColorConverter : IValueConverter
     {

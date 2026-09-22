@@ -4,7 +4,7 @@
 
 Запуск из корня репозитория:
 
-    dotnet test Tests/WpfApp1.Tests.csproj --configuration Release
+    dotnet test Tests/Nexora.Tests.csproj --configuration Release
 
 Что проверяется автоматически:
 - состояния библиотек Missing / Installed / UpdateAvailable / Manual;

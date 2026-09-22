@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WpfApp1.Infrastructure.Processes
+namespace Nexora.Infrastructure.Processes
 {
     public sealed class ProcessResult
     {

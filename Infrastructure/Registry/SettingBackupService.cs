@@ -1,11 +1,11 @@
 using System;
 using Microsoft.Win32;
 
-namespace WpfApp1.Infrastructure.Registry
+namespace Nexora.Infrastructure.Registry
 {
     public sealed class SettingBackupService
     {
-        private const string BackupRoot = @"Software\WpfApp1\SettingsBackup";
+        private const string BackupRoot = @"Software\Nexora\SettingsBackup";
         private readonly RegistrySettingsStore _store;
 
         public SettingBackupService(RegistrySettingsStore store = null)

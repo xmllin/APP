@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 
-namespace WpfApp1.Services
+namespace Nexora.Services
 {
     public enum NotificationKind
     {

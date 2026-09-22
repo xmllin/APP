@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using WpfApp1.Models;
-using WpfApp1.Services;
+using Nexora.Models;
+using Nexora.Services;
 
-namespace WpfApp1.Services.Downloads
+namespace Nexora.Services.Downloads
 {
     public static class DownloadHistoryService
     {

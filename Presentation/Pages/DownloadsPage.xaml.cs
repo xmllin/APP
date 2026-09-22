@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using WpfApp1.Services;
-using WpfApp1.Models;
-using WpfApp1.Services.Downloads;
+using Nexora.Services;
+using Nexora.Models;
+using Nexora.Services.Downloads;
 
-namespace WpfApp1.Pages
+namespace Nexora.Pages
 {
     public partial class DownloadsPage : UserControl
     {
@@ -82,7 +82,7 @@ namespace WpfApp1.Pages
             }
             catch (Exception ex)
             {
-                _main.ShowNotification("Не удалось открыть папку загрузок: " + WpfApp1.Services.NotificationFormatter.FormatGeneralError(ex), WpfApp1.Services.NotificationKind.Error, "downloads-folder:" + folder);
+                _main.ShowNotification("Не удалось открыть папку загрузок: " + Nexora.Services.NotificationFormatter.FormatGeneralError(ex), Nexora.Services.NotificationKind.Error, "downloads-folder:" + folder);
             }
         }
 

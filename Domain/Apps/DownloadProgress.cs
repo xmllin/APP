@@ -1,4 +1,4 @@
-﻿namespace WpfApp1.Models
+namespace Nexora.Models
 {
     public class DownloadProgress
     {

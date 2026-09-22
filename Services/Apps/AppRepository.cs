@@ -4,9 +4,9 @@ using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Models;
+using Nexora.Models;
 
-namespace WpfApp1.Services.Apps
+namespace Nexora.Services.Apps
 {
     public enum AppRepositoryState
     {

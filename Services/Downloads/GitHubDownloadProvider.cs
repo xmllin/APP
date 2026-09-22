@@ -8,10 +8,10 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Models;
-using WpfApp1.Services;
+using Nexora.Models;
+using Nexora.Services;
 
-namespace WpfApp1.Services.Downloads
+namespace Nexora.Services.Downloads
 {
     public class GitHubDownloadProvider : IDownloadProvider, IReleaseDownloadProvider
     {
@@ -34,7 +34,7 @@ namespace WpfApp1.Services.Downloads
         private static HttpClient CreateClient()
         {
             var client = new HttpClient { Timeout = TimeSpan.FromSeconds(25) };
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("WpfApp1/1.0 (GitHub release resolver)");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("Nexora/1.0 (GitHub release resolver)");
             client.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
             return client;
         }

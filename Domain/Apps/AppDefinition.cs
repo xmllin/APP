@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-namespace WpfApp1.Models
+namespace Nexora.Models
 {
     public class AppDefinition
     {

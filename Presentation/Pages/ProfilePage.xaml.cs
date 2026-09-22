@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using WpfApp1.Services;
+using Nexora.Services;
 
-namespace WpfApp1.Pages
+namespace Nexora.Pages
 {
     public partial class ProfilePage : UserControl
     {

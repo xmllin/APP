@@ -5,9 +5,9 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Models;
+using Nexora.Models;
 
-namespace WpfApp1.Services
+namespace Nexora.Services
 {
     public sealed class WallpaperService
     {
@@ -159,7 +159,7 @@ namespace WpfApp1.Services
         private static HttpClient CreateClient()
         {
             var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("WpfApp1/1.0");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("Nexora/1.0");
             return client;
         }
 

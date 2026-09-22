@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 
-namespace WpfApp1.Application.Navigation
+namespace Nexora.Application.Navigation
 {
     public sealed class NavigationService
     {

@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Win32;
 
-namespace WpfApp1.Infrastructure.Registry
+namespace Nexora.Infrastructure.Registry
 {
     public sealed class RegistryValueSnapshot
     {

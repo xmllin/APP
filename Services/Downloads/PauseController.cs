@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WpfApp1.Services.Downloads
+namespace Nexora.Services.Downloads
 {
     /// <summary>
     /// Cooperative pause controller for streaming downloads. Pause keeps the

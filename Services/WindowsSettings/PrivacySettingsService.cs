@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Win32;
-using WpfApp1.Domain.WindowsSettings;
-using WpfApp1.Infrastructure.Registry;
+using Nexora.Domain.WindowsSettings;
+using Nexora.Infrastructure.Registry;
 
-namespace WpfApp1.Services.WindowsSettings
+namespace Nexora.Services.WindowsSettings
 {
     public sealed class PrivacySettingsService
     {

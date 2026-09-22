@@ -6,9 +6,9 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Models;
+using Nexora.Models;
 
-namespace WpfApp1.Services.Downloads
+namespace Nexora.Services.Downloads
 {
     /// <summary>
     /// Chromium continuous snapshot provider. LAST_CHANGE is the authoritative
@@ -23,7 +23,7 @@ namespace WpfApp1.Services.Downloads
         private static HttpClient CreateClient()
         {
             var client = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("WpfApp1/1.0 (Chromium snapshot resolver)");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("Nexora/1.0 (Chromium snapshot resolver)");
             return client;
         }
 

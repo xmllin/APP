@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Management;
 using Hardware.Info;
 using HardwareInfoApi = Hardware.Info.HardwareInfo;
 
-namespace WpfApp1.Services
+namespace Nexora.Services
 {
     public sealed class SystemHardwareInfo
     {
@@ -164,7 +164,7 @@ namespace WpfApp1.Services
         public static IReadOnlyList<string> GetTags(SystemHardwareInfo info)
         {
             info = info ?? new SystemHardwareInfo();
-            var architecture = WpfApp1.Services.Downloads.PlatformDetectionService.Current.Architecture;
+            var architecture = Nexora.Services.Downloads.PlatformDetectionService.Current.Architecture;
             var tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "recommendation:official",
@@ -279,14 +279,14 @@ namespace WpfApp1.Services
                     // WMI's OSArchitecture is presentation data ("64-bit", "32-bit").
                     // Use the canonical architecture detector for download selection so ARM64
                     // can never collapse into x64.
-                    info.Architecture = WpfApp1.Services.Downloads.PlatformDetectionService.Current.DisplayArchitecture;
+                    info.Architecture = Nexora.Services.Downloads.PlatformDetectionService.Current.DisplayArchitecture;
                 }
             }
             catch
             {
                 info.OperatingSystem = string.Empty;
                 info.WindowsVersion = string.Empty;
-                info.Architecture = WpfApp1.Services.Downloads.PlatformDetectionService.Current.DisplayArchitecture;
+                info.Architecture = Nexora.Services.Downloads.PlatformDetectionService.Current.DisplayArchitecture;
             }
         }
     }

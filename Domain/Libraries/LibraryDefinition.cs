@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 
-namespace WpfApp1.Models
+namespace Nexora.Models
 {
     public class LibraryDefinition
     {

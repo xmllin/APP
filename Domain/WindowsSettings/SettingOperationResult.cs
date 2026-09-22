@@ -1,4 +1,4 @@
-namespace WpfApp1.Domain.WindowsSettings
+namespace Nexora.Domain.WindowsSettings
 {
     public sealed class SettingOperationResult
     {

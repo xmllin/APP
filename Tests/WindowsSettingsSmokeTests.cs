@@ -1,16 +1,16 @@
 using System;
 using Microsoft.Win32;
-using WpfApp1.Infrastructure.Registry;
+using Nexora.Infrastructure.Registry;
 using Xunit;
 
-namespace WpfApp1.Tests
+namespace Nexora.Tests
 {
     public sealed class WindowsSettingsSmokeTests
     {
         [Fact]
         public void RegistrySettingsStore_CanRoundTripTemporaryCurrentUserValue()
         {
-            var path = @"Software\WpfApp1\Tests\" + Guid.NewGuid().ToString("N");
+            var path = @"Software\Nexora\Tests\" + Guid.NewGuid().ToString("N");
             const string name = "RoundTrip";
             var store = new RegistrySettingsStore();
 

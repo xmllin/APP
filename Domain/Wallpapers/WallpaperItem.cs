@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Runtime.CompilerServices;
 using System.Windows.Media.Imaging;
-using WpfApp1.Services;
+using Nexora.Services;
 
-namespace WpfApp1.Models
+namespace Nexora.Models
 {
     public class WallpaperItem : INotifyPropertyChanged
     {

@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Infrastructure.PowerShell;
-using WpfApp1.Infrastructure.Processes;
-using WpfApp1.Models;
+using Nexora.Infrastructure.PowerShell;
+using Nexora.Infrastructure.Processes;
+using Nexora.Models;
 
-namespace WpfApp1.Services
+namespace Nexora.Services
 {
     public sealed class UwpPackageService
     {

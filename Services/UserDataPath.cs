@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace WpfApp1.Services
+namespace Nexora.Services
 {
     public static class UserDataPath
     {
@@ -9,7 +9,7 @@ namespace WpfApp1.Services
 
         public static string Root { get; } = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "WpfApp1");
+            "Nexora");
 
         public static string FileInFolder(string folderName, string fileName)
         {

@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,12 +11,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
-using WpfApp1.Models;
-using WpfApp1.Services;
+using Nexora.Models;
+using Nexora.Services;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
-namespace WpfApp1.Pages
+namespace Nexora.Pages
 {
     public partial class WallpaperPreviewPage : UserControl
     {

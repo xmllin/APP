@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace WpfApp1.Services
+namespace Nexora.Services
 {
     public sealed class InverseBooleanConverter : IValueConverter
     {

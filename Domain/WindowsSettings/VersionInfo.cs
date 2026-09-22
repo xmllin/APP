@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace WpfApp1.Models
+namespace Nexora.Models
 {
     /// <summary>
     /// Structured numeric application version. Supports 1, 1.2, 1.2.3 and

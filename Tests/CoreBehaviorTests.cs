@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Domain.Apps;
-using WpfApp1.Models;
-using WpfApp1.Services;
-using WpfApp1.Services.Downloads;
+using Nexora.Domain.Apps;
+using Nexora.Models;
+using Nexora.Services;
+using Nexora.Services.Downloads;
 using Xunit;
 
-namespace WpfApp1.Tests
+namespace Nexora.Tests
 {
     public sealed class CoreBehaviorTests
     {
@@ -98,7 +98,7 @@ namespace WpfApp1.Tests
         [Fact]
         public void AppIconResolver_ResolvesConfiguredAndMappedFiles()
         {
-            var root = Path.Combine(Path.GetTempPath(), "WpfApp1.Tests", Guid.NewGuid().ToString("N"));
+            var root = Path.Combine(Path.GetTempPath(), "Nexora.Tests", Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(Path.Combine(root, "logos"));
             Directory.CreateDirectory(Path.Combine(root, "interface", "white"));
 

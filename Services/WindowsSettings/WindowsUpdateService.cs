@@ -5,12 +5,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Win32;
-using WpfApp1.Domain.WindowsSettings;
-using WpfApp1.Infrastructure.FileSystem;
-using WpfApp1.Infrastructure.Processes;
-using WpfApp1.Infrastructure.Registry;
+using Nexora.Domain.WindowsSettings;
+using Nexora.Infrastructure.FileSystem;
+using Nexora.Infrastructure.Processes;
+using Nexora.Infrastructure.Registry;
 
-namespace WpfApp1.Services.WindowsSettings
+namespace Nexora.Services.WindowsSettings
 {
     public sealed class WindowsUpdateService
     {
@@ -196,8 +196,8 @@ namespace WpfApp1.Services.WindowsSettings
             var path = GetHostsPath();
             if (!File.Exists(path)) return;
 
-            const string markerStart = "# WpfApp1 Windows Update block START";
-            const string markerEnd = "# WpfApp1 Windows Update block END";
+            const string markerStart = "# Nexora Windows Update block START";
+            const string markerEnd = "# Nexora Windows Update block END";
 
             var lines = File.ReadAllLines(path).ToList();
             var cleaned = new System.Collections.Generic.List<string>(lines.Count);
@@ -234,7 +234,7 @@ namespace WpfApp1.Services.WindowsSettings
                 cleaned.Add(markerEnd);
             }
 
-            var tempPath = path + ".wpfapp1.tmp";
+            var tempPath = path + ".nexora.tmp";
             File.WriteAllLines(tempPath, cleaned);
             File.Move(tempPath, path, true);
         }

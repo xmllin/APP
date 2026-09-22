@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using WpfApp1.Models;
-using WpfApp1.Services;
-using WpfApp1.Services.Downloads;
+using Nexora.Models;
+using Nexora.Services;
+using Nexora.Services.Downloads;
 
-namespace WpfApp1.Pages
+namespace Nexora.Pages
 {
     public partial class WindowsActivationPage : UserControl
     {
@@ -63,7 +63,7 @@ namespace WpfApp1.Pages
 
         private static readonly string ActivationStatePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "WpfApp1",
+            "Nexora",
             "windows-activation-state.txt");
 
         private readonly MasActivationService _activationService =

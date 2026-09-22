@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace WpfApp1.Services
+namespace Nexora.Services
 {
     public static class AssetPath
     {

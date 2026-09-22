@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace WpfApp1.Models
+namespace Nexora.Models
 {
     public sealed class UwpPackageInfo : INotifyPropertyChanged
     {

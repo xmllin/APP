@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using WpfApp1.Services;
+using Nexora.Services;
 
-namespace WpfApp1.Services.Downloads
+namespace Nexora.Services.Downloads
 {
     public static class DownloadLog
     {

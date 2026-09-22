@@ -5,10 +5,10 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Models;
-using WpfApp1.Services.Downloads;
+using Nexora.Models;
+using Nexora.Services.Downloads;
 
-namespace WpfApp1.Infrastructure.HTTP
+namespace Nexora.Infrastructure.HTTP
 {
     public sealed class HttpDownloadClient
     {
@@ -169,7 +169,7 @@ namespace WpfApp1.Infrastructure.HTTP
         private static HttpClient CreateClient()
         {
             var client = new HttpClient { Timeout = TimeSpan.FromMinutes(30) };
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("WpfApp1/1.1");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("Nexora/1.1");
             return client;
         }
 

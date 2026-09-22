@@ -1,7 +1,7 @@
-using WpfApp1.Infrastructure.Registry;
-using WpfApp1.Services.WindowsSettings;
+using Nexora.Infrastructure.Registry;
+using Nexora.Services.WindowsSettings;
 
-namespace WpfApp1.Services
+namespace Nexora.Services
 {
     public static class ExplorerSettings
     {

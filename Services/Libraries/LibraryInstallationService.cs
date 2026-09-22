@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Win32;
-using WpfApp1.Models;
+using Nexora.Models;
 
-namespace WpfApp1.Services.Libraries
+namespace Nexora.Services.Libraries
 {
     public sealed class LibraryInstallationService
     {

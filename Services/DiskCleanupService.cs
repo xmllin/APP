@@ -5,9 +5,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Domain.WindowsSettings;
+using Nexora.Domain.WindowsSettings;
 
-namespace WpfApp1.Services
+namespace Nexora.Services
 {
     public sealed class DiskCleanupService
     {

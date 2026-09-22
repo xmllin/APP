@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WpfApp1.Services;
-using WpfApp1.Services.Apps;
-using WpfApp1.Services.Downloads;
+using Nexora.Services;
+using Nexora.Services.Apps;
+using Nexora.Services.Downloads;
 
-namespace WpfApp1
+namespace Nexora
 {
     public partial class App : System.Windows.Application
     {

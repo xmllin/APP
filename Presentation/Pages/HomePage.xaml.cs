@@ -7,12 +7,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Threading;
 using System.Threading.Tasks;
-using WpfApp1.Models;
-using WpfApp1.Domain.Apps;
-using WpfApp1.Services;
-using WpfApp1.Services.Apps;
+using Nexora.Models;
+using Nexora.Domain.Apps;
+using Nexora.Services;
+using Nexora.Services.Apps;
 
-namespace WpfApp1.Pages
+namespace Nexora.Pages
 {
     public partial class HomePage : UserControl
     {

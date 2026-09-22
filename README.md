@@ -1,4 +1,4 @@
-# WpfApp1
+# Nexora
 
 Приложение на WPF .NET 8 для управления каталогом приложений, библиотек и диагностикой окружения.
 
@@ -17,14 +17,14 @@
 
 ## Запуск
 
-1. Откройте решение `WpfApp1.slnx` в Visual Studio.
+1. Откройте решение `Nexora.slnx` в Visual Studio.
 2. Соберите проект.
 3. Запустите приложение.
 
 ## Сборка
 
 ```bash
-dotnet build WpfApp1.csproj
+dotnet build Nexora.csproj
 ```
 
 ## Примечание

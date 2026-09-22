@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using WpfApp1.Models;
+using Nexora.Models;
 
-namespace WpfApp1.Services.Libraries
+namespace Nexora.Services.Libraries
 {
     public sealed class LibraryCatalogService
     {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace WpfApp1.Presentation.ViewModels
+namespace Nexora.Presentation.ViewModels
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
