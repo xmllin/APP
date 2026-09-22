@@ -239,7 +239,6 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
                                     <StackPanel Grid.Column="0" VerticalAlignment="Center">
@@ -256,11 +255,8 @@
                                             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding Name}" FontSize="17" FontWeight="SemiBold"
                                                            TextWrapping="Wrap" VerticalAlignment="Center"/>
-                                                <CheckBox VerticalAlignment="Center"
-                                                          Margin="9,0,0,0"
-                                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                                          IsEnabled="{Binding HasData}"
-                                                          Style="{StaticResource CleanupCheckBox}"/>
+                                                <TextBlock Text="{Binding SizeText}" Foreground="#8DB6E3" FontSize="14"
+                                                           FontWeight="SemiBold" VerticalAlignment="Center" Margin="10,0,0,0"/>
                                             </StackPanel>
                                         </Grid>
                                         <TextBlock Text="{Binding Description}" Foreground="#9DB6D4" FontSize="13"
@@ -271,11 +267,7 @@
                                                    FontSize="12" Margin="50,5,0,0"/>
                                     </StackPanel>
 
-                                    <TextBlock Grid.Column="1" Text="{Binding SizeText}"
-                                               HorizontalAlignment="Right" VerticalAlignment="Center"
-                                               FontSize="16" FontWeight="SemiBold" Margin="12,0"/>
-
-                                    <Grid Grid.Column="2" MinWidth="106" VerticalAlignment="Stretch">
+                                    <Grid Grid.Column="1" MinWidth="106" VerticalAlignment="Stretch">
                                         <Button Tag="{Binding}"
                                                 Click="CleanupMoreButton_Click"
                                                 Style="{StaticResource CleanupMoreButton}"
