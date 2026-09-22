@@ -145,7 +145,6 @@ namespace WpfApp1.Pages
             RecommendedButton.Content = "Рекомендуемые";
             UpdateRecommendedButtonVisibility();
             UpdateSystemHardwarePanel();
-            UpdateAppsPageSize(true);
             ApplyFilter(true);
         }
 
