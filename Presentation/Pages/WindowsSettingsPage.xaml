@@ -322,13 +322,17 @@
                     <Border.Background>
                         <ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/>
                     </Border.Background>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="82" Height="82" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,20,0"/>
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Настройки Windows под вашим контролем" FontSize="34" FontWeight="SemiBold" TextWrapping="NoWrap"/>
+                    <Grid VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="72" Height="72" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="Настройки Windows под вашим контролем" FontSize="30" FontWeight="SemiBold" TextWrapping="Wrap"/>
                             <TextBlock Text="Настройте Windows под себя" Foreground="#B9CAE2" FontSize="16" TextWrapping="Wrap"/>
                         </StackPanel>
-                    </StackPanel>
+                    </Grid>
                 </Border>
                 <Grid Margin="0,12,0,14">
                     <Grid.ColumnDefinitions>
