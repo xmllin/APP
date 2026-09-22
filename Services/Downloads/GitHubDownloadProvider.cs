@@ -318,7 +318,7 @@ namespace Nexora.Services.Downloads
                         : null;
                     all = all ?? new Dictionary<string, ReleaseCacheEntry>(StringComparer.OrdinalIgnoreCase);
                     all[cacheKey] = cacheEntry;
-                    File.WriteAllText(PersistentCacheFile, JsonSerializer.Serialize(all));
+                    File.WriteAllText(PersistentCacheFile, JsonSerializer.Serialize(all, new JsonSerializerOptions { WriteIndented = true }));
                 }
             }
             catch { }
