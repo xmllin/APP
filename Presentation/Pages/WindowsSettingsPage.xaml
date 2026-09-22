@@ -563,15 +563,18 @@
                                     </StackPanel>
                                 </Grid>
                             </Border>
-                            <Border x:Name="TempCleanupCard" Style="{StaticResource SettingRow}">
+                            <Border x:Name="DiskCleanupCard" Style="{StaticResource SettingRow}">
                                 <Grid>
                                     <StackPanel>
-                                        <TextBlock Text="Очистить папку Temp" FontWeight="SemiBold"/>
-                                        <TextBlock x:Name="TempCleanupStatus" Text="Удаляются только доступные временные файлы текущего пользователя" Foreground="#82A5CF" FontSize="11" TextWrapping="Wrap"/>
+                                        <TextBlock Text="Очистка диска" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Анализировать и очищать временные файлы, кэш Windows Update, Prefetch, эскизы, дампы, корзину и другие данные."
+                                                   Foreground="#82A5CF" FontSize="11" TextWrapping="Wrap" Margin="0,3,18,0"/>
                                     </StackPanel>
-                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <Button x:Name="ClearTempButton" Content="Очистить" Click="ClearTempButton_Click" Style="{StaticResource GhostButton}" Padding="10,5" Height="30" Width="105"/>
-                                    </StackPanel>
+                                    <Button Grid.Column="1"
+                                            Content="Открыть"
+                                            Click="OpenDiskCleanup_Click"
+                                            Style="{StaticResource PrimaryButton}"
+                                            HorizontalAlignment="Right"/>
                                 </Grid>
                             </Border>
                         </StackPanel>
