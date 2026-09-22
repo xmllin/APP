@@ -766,8 +766,8 @@ namespace WpfApp1.Pages
 				SetToggle(ShowFrequentFoldersToggle, !IsFrequentFoldersEnabled());
 				SetToggle(ShowGalleryToggle, !IsGalleryVisible());
 				SetToggle(RemoveShortcutSuffixToggle, ReadString(NamingTemplatesPath, "ShortcutNameTemplate", null) == "%s");
-				SetToggle(ShowThisPcToggle, ReadDword(HideDesktopIconsPath, ThisPcId, 1) == 0);
-				SetToggle(ShowRecycleBinToggle, ReadDword(HideDesktopIconsPath, RecycleBinId, 1) == 0);
+				SetToggle(ShowThisPcToggle, ReadDword(HideDesktopIconsPath, ThisPcId, 1) != 0);
+				SetToggle(ShowRecycleBinToggle, ReadDword(HideDesktopIconsPath, RecycleBinId, 1) != 0);
 				SetToggle(ShowSecondsInSystemClockToggle, ReadDword(ExplorerAdvancedPath, "ShowSecondsInSystemClock", 0) == 1);
 				SetToggle(HideNetworkToggle, ReadDword(NetworkPath, "System.IsPinnedToNameSpaceTree", 1) == 0);
 				SetToggle(HideDownloadsToggle, !IsNamespaceItemVisible(DownloadsId));
