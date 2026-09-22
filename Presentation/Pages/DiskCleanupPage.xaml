@@ -6,13 +6,13 @@
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
             <StackPanel Margin="32,26,32,38">
-            <Border Height="170" MinHeight="170" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="28" Margin="0,0,0,18">
+            <Border Height="170" MinHeight="170" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="20" Margin="0,0,0,18">
                 <Border.Background><ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/></Border.Background>
                 <Grid VerticalAlignment="Center">
                     <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                     <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="72" Height="72" Stretch="Uniform" Margin="0,0,16,0"/>
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                        <TextBlock Text="Очистка диска" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Justify"/>
+                        <TextBlock Text="Очистка диска" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Left"/>
                         <TextBlock Text="Очистите временные файлы и освободите место на диске." Foreground="#B9CAE2" FontSize="15" TextWrapping="Wrap" Margin="0,6,0,0"/>
                     </StackPanel>
                 </Grid>
