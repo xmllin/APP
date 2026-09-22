@@ -207,7 +207,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Style="{StaticResource UwpAppCard}">
+                                <Border Style="{StaticResource UwpAppCard}" MouseLeftButtonUp="UwpAppCard_MouseLeftButtonUp">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
