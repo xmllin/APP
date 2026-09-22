@@ -60,57 +60,39 @@
                 </Grid.ColumnDefinitions>
 
                 <Border x:Name="SidebarBorder" Grid.Column="0" Background="#091624" BorderBrush="#1B3048" BorderThickness="0,0,1,0">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled"
-                                  PanningMode="VerticalOnly">
-                        <StackPanel>
-                            <StackPanel x:Name="NavPanel" Margin="6,14,6,10">
-                                <TextBlock x:Name="MainSectionLabel" Text="ОСНОВНОЕ" FontSize="11" Foreground="#58718F" Margin="18,0,0,8" Visibility="Collapsed"/>
-                                <Button x:Name="HomeNav" Tag="Selected" Style="{StaticResource NavButton}" Click="Nav_Click">
-                                    <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-home.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Главная" VerticalAlignment="Center"/></StackPanel>
-                                </Button>
-                                <Button x:Name="AppsNav" Style="{StaticResource NavButton}" Click="Nav_Click">
-                                    <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/world-download.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Программы" VerticalAlignment="Center"/></StackPanel>
-                                </Button>
-                                <Button x:Name="UwpAppsNav" Style="{StaticResource NavButton}" Click="Nav_Click">
-                                    <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="UWP-приложения" VerticalAlignment="Center"/></StackPanel>
-                                </Button>
-                                <Button x:Name="LibrariesNav" Style="{StaticResource NavButton}" Click="Nav_Click">
-                                    <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Библиотеки и компоненты" VerticalAlignment="Center"/></StackPanel>
-                                </Button>
-                                <Button x:Name="WindowsNav" Style="{StaticResource NavButton}" Click="Nav_Click">
-                                    <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/brand-windows.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Настройки Windows" VerticalAlignment="Center"/></StackPanel>
-                                </Button>
-                                <Button x:Name="WindowsActivationNav" Style="{StaticResource NavButton}" Click="Nav_Click">
-                                    <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/brand-windows.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Активация Windows" VerticalAlignment="Center"/></StackPanel>
-                                </Button>
-                                <Button x:Name="WallpapersNav" Style="{StaticResource NavButton}" Click="Nav_Click">
-                                    <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-media.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Обои" VerticalAlignment="Center"/></StackPanel>
-                                </Button>
-                                <Border Height="1" Background="#1A3048" Margin="14,16"/>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-                                <Button x:Name="DownloadsNav" Style="{StaticResource NavButton}" Click="Nav_Click">
-                                    <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-arrow-download.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Загрузки" VerticalAlignment="Center"/></StackPanel>
-                                </Button>
-                                <Button x:Name="DiskCleanupNav" Style="{StaticResource NavButton}" Click="Nav_Click">
-                                    <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Очистка диска" VerticalAlignment="Center"/></StackPanel>
-                                </Button>
-                            </StackPanel>
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" PanningMode="VerticalOnly">
+            <StackPanel>
+                <StackPanel x:Name="NavPanel" Margin="6,14,6,10">
+                    <TextBlock x:Name="MainSectionLabel" Text="ОСНОВНОЕ" FontSize="11" Foreground="#58718F" Margin="18,0,0,8" Visibility="Collapsed"/>
+                    <Button x:Name="HomeNav" Tag="Selected" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-home.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Главная" VerticalAlignment="Center"/></StackPanel></Button>
+                    <Button x:Name="AppsNav" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/world-download.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Программы" VerticalAlignment="Center"/></StackPanel></Button>
+                    <Button x:Name="UwpAppsNav" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="UWP-приложения" VerticalAlignment="Center"/></StackPanel></Button>
+                    <Button x:Name="LibrariesNav" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Библиотеки и компоненты" VerticalAlignment="Center"/></StackPanel></Button>
+                    <Button x:Name="WindowsNav" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/brand-windows.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Настройки Windows" VerticalAlignment="Center"/></StackPanel></Button>
+                    <Button x:Name="WindowsActivationNav" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/brand-windows.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Активация Windows" VerticalAlignment="Center"/></StackPanel></Button>
+                    <Button x:Name="WallpapersNav" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-media.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Обои" VerticalAlignment="Center"/></StackPanel></Button>
+                    <Border Height="1" Background="#1A3048" Margin="14,16"/>
+                    <Button x:Name="DownloadsNav" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-arrow-download.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Загрузки" VerticalAlignment="Center"/></StackPanel></Button>
+                    <Button x:Name="DiskCleanupNav" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Очистка диска" VerticalAlignment="Center"/></StackPanel></Button>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
 
-                            <StackPanel x:Name="SystemNavigationPanel" Margin="6,10,6,10">
-                                <TextBlock x:Name="SystemSectionLabel" Text="ДОПОЛНИТЕЛЬНО" FontSize="11" Foreground="#58718F" Margin="18,0,0,8" Visibility="Collapsed"/>
-                                <Button x:Name="SettingsNav" Style="{StaticResource NavButton}" Click="Nav_Click">
-                                    <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Настройки" VerticalAlignment="Center"/></StackPanel>
-                                </Button>
-                                <Button x:Name="ProfileNav" Style="{StaticResource NavButton}" Click="Nav_Click">
-                                    <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-person.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Профиль" VerticalAlignment="Center"/></StackPanel>
-                                </Button>
-                            </StackPanel>
-                        </StackPanel>
-                    </ScrollViewer>
-                </Border>
+        <StackPanel Grid.Row="1" x:Name="BottomNavigationPanel" Margin="6,0,6,10">
+            <Border Height="1" Background="#1A3048" Margin="14,0,14,8"/>
+            <Button x:Name="SettingsNav" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-settings.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Настройки" VerticalAlignment="Center"/></StackPanel></Button>
+            <Button x:Name="ProfileNav" Style="{StaticResource NavButton}" Click="Nav_Click"><StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-person.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Профиль" VerticalAlignment="Center"/></StackPanel></Button>
+        </StackPanel>
+    </Grid>
+</Border>
 
-                <ContentControl x:Name="MainContent" Grid.Column="1"/>
+<ContentControl x:Name="MainContent" Grid.Column="1"/>
             </Grid>
 
             <Border x:Name="StatusBar" Grid.Row="2" Background="#091624" BorderBrush="#1B3048" BorderThickness="0,1,0,0" Padding="12,0"
