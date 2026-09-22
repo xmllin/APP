@@ -3,9 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:WpfApp1.Services"
     xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
-    Title="Icon Search" Width="1260" Height="800" MinWidth="1260" MinHeight="800"
+    Title="Icon Search" Width="1260" Height="800" MinWidth="900" MinHeight="500"
     WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanResize"
-    AllowsTransparency="False" Background="#07111F" Foreground="#EEF5FF" UseLayoutRounding="True" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="LowQuality"
+    AllowsTransparency="False" Background="#07111F" Foreground="#EEF5FF" UseLayoutRounding="True" SnapsToDevicePixels="True" TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display"
     shell:WindowChrome.WindowChrome="{StaticResource AppWindowChrome}">
     <Border Background="{StaticResource BgBrush}" BorderBrush="#000000" BorderThickness="2" CornerRadius="12" ClipToBounds="True">
         <Grid>
@@ -97,6 +97,9 @@
 
                             <Button x:Name="DownloadsNav" Style="{StaticResource NavButton}" Click="Nav_Click">
                                 <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-arrow-download.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Загрузки" VerticalAlignment="Center"/></StackPanel>
+                            </Button>
+                            <Button x:Name="DiskCleanupNav" Style="{StaticResource NavButton}" Click="Nav_Click">
+                                <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="20" Height="20" Margin="6,0,12,0"/><TextBlock Text="Очистка диска" VerticalAlignment="Center"/></StackPanel>
                             </Button>
                         </StackPanel>
 
