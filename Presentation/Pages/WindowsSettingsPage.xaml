@@ -325,11 +325,11 @@
                     <Grid VerticalAlignment="Center">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="380"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="72" Height="72" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,16,0"/>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                            <TextBlock Text="Настройки Windows под вашим контролем" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Left"/>
+                            <TextBlock Text="Настройки Windows под вашим контролем" FontSize="28" FontWeight="SemiBold" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" TextAlignment="Left"/>
                             <TextBlock Text="Настройте Windows под себя" Foreground="#B9CAE2" FontSize="16" TextWrapping="Wrap" TextAlignment="Left"/>
                         </StackPanel>
                     </Grid>
