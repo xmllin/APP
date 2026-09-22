@@ -330,15 +330,21 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
-                <ComboBox x:Name="SettingsCategoryComboBox"
-                          Width="210"
-                          Height="38"
-                          SelectedIndex="0"
-                          HorizontalAlignment="Left"
-                          Margin="0,12,0,0"
-                          SelectionChanged="SettingsCategoryComboBox_SelectionChanged"
-                          Style="{StaticResource DarkComboBoxStyle}"
-                          ItemContainerStyle="{StaticResource DarkComboBoxItemStyle}">
+                <Grid Margin="0,12,0,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="SettingsCategoryComboBox"
+                              Width="210"
+                              Height="38"
+                              SelectedIndex="0"
+                              Grid.Column="0"
+                              HorizontalAlignment="Left"
+                              Margin="0"
+                              SelectionChanged="SettingsCategoryComboBox_SelectionChanged"
+                              Style="{StaticResource DarkComboBoxStyle}"
+                              ItemContainerStyle="{StaticResource DarkComboBoxItemStyle}">
                     <ComboBoxItem Tag="Все">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/list-tree.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Все"/></StackPanel>
                     </ComboBoxItem>
@@ -373,6 +379,23 @@
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/category-shield.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Безопасность и конфиденциальность"/></StackPanel>
                     </ComboBoxItem>
                 </ComboBox>
+                    <Border Grid.Column="1" Height="38" Margin="12,0,0,0"
+                            Background="#0F2035" BorderBrush="#24415F" BorderThickness="1" CornerRadius="6">
+                        <Grid>
+                            <TextBox x:Name="SettingsSearchBox"
+                                     Text="Поиск настроек Windows..."
+                                     TextChanged="SettingsSearchBox_TextChanged"
+                                     GotFocus="SettingsSearchBox_GotFocus"
+                                     LostFocus="SettingsSearchBox_LostFocus"
+                                     Background="Transparent" BorderThickness="0"
+                                     Foreground="#6F89A8" CaretBrush="White"
+                                     Padding="10,5" VerticalContentAlignment="Center"/>
+                            <Image Source="{local:SvgImage Source=interface/white/fluent-search.svg}"
+                                   Width="17" Height="17" HorizontalAlignment="Right" Margin="0,0,10,0"
+                                   IsHitTestVisible="False"/>
+                        </Grid>
+                    </Border>
+                </Grid>
                 <StackPanel>
                     <TextBlock Text="Настройки применяются для текущего пользователя Windows." Foreground="#87A7D0" FontSize="12" Margin="0,0,0,10"/>
                     <Border x:Name="ExplorerSettingsPanel" Background="#0A1D39" BorderBrush="#173A61" BorderThickness="1,0,1,0" CornerRadius="11" Padding="0,4">
