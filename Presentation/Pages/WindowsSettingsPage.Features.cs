@@ -497,9 +497,9 @@ namespace WpfApp1.Pages
 				case "TaskbarWidgets": return _taskbarSettings.SetWidgets(disabled);
 				case "TaskbarTaskViewButton": return _taskbarSettings.SetTaskViewButton(disabled);
 				case "TaskbarLastActiveClick": return _taskbarSettings.SetLastActiveClick(disabled);
-				case "ShowUserFiles":
-				case "ShowNetworkIcon":
-				case "ShowControlPanel":
+				case "HideUserFiles":
+				case "HideNetworkIcon":
+				case "HideControlPanel":
 				case "ShowDesktopIcons":
 				case "ShortcutArrow":
 				case "ToastNotifications":
