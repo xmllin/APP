@@ -181,28 +181,11 @@ namespace Nexora.Pages
 
         private void CleanupMoreButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!(sender is Button button) || !(button.Tag is DiskCleanupItem item))
+            if (!(sender is Button button) || button.ContextMenu == null)
                 return;
 
-            var menu = new ContextMenu
-            {
-                Background = new SolidColorBrush(Color.FromRgb(11, 32, 53)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(29, 59, 90)),
-                BorderThickness = new Thickness(1),
-                Padding = new Thickness(4)
-            };
-
-            var openItem = new MenuItem
-            {
-                Header = "Открыть папку",
-                Cursor = Cursors.Hand
-            };
-            openItem.Click += OpenCleanupFolder_Click;
-            openItem.Tag = item;
-            menu.Items.Add(openItem);
-
-            button.ContextMenu = menu;
-            menu.IsOpen = true;
+            button.ContextMenu.DataContext = button.DataContext;
+            button.ContextMenu.IsOpen = true;
             e.Handled = true;
         }
 
