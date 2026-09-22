@@ -1,17 +1,21 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using WpfApp1.Services;
 
 namespace WpfApp1.Pages
 {
     public partial class ProfilePage : UserControl
     {
+        private readonly MainWindow _main;
+        private bool _refreshing;
+
         public ProfilePage(MainWindow main)
         {
+            _main = main;
             InitializeComponent();
             Loaded += ProfilePage_Loaded;
         }
@@ -20,84 +24,91 @@ namespace WpfApp1.Pages
         {
             Loaded -= ProfilePage_Loaded;
             var userName = Environment.UserName;
-            UserNameText.Text = userName;
+            UserNameText.Text = string.IsNullOrWhiteSpace(userName) ? "Пользователь" : userName;
             UserInitialText.Text = string.IsNullOrWhiteSpace(userName) ? "?" : userName.Substring(0, 1).ToUpperInvariant();
-            UserAccountText.Text = "Учетная запись: " + userName;
-            SetIcons();
-            var info = SystemRecommendationService.LoadCachedHardwareInfo();
-            if (info == null)
-            {
-                SystemText.Text = "Определение системы…";
-                CpuText.Text = "Определение процессора…";
-                MemoryText.Text = "Определение памяти…";
-                GpuText.Text = "Определение видеокарты…";
-                MotherboardText.Text = "Определение материнской платы…";
-            }
-            else
-            {
-                ApplyHardwareInfo(info);
-            }
+            UserAccountText.Text = "Учётная запись Windows: " + userName;
+            await RefreshHardwareInfoAsync(SystemRecommendationService.LoadCachedHardwareInfo());
+        }
 
-            await RefreshHardwareInfoAsync(info);
+        private async void RefreshHardware_Click(object sender, RoutedEventArgs e)
+        {
+            await RefreshHardwareInfoAsync(null);
         }
 
         private async Task RefreshHardwareInfoAsync(SystemHardwareInfo cachedInfo)
         {
-            var info = await Task.Run(SystemRecommendationService.GetHardwareInfo);
-            await Task.Run(() => SystemRecommendationService.SaveCachedHardwareInfo(info));
-            if (SystemRecommendationService.AreHardwareInfoEqual(cachedInfo, info)) return;
+            if (_refreshing) return;
+            _refreshing = true;
+            try
+            {
+                if (cachedInfo != null) ApplyHardwareInfo(cachedInfo);
+                else SetLoadingState();
 
-            ApplyHardwareInfo(info);
+                var info = await Task.Run(SystemRecommendationService.GetHardwareInfo);
+                await Task.Run(() => SystemRecommendationService.SaveCachedHardwareInfo(info));
+                ApplyHardwareInfo(info);
+            }
+            catch (Exception ex)
+            {
+                SystemText.Text = "Не удалось получить сведения о системе.";
+                CpuText.Text = ex.Message;
+            }
+            finally
+            {
+                _refreshing = false;
+            }
+        }
+
+        private void SetLoadingState()
+        {
+            SystemText.Text = "Определение системы…";
+            WindowsVersionText.Text = "Определение версии";
+            ArchitectureText.Text = "Определение архитектуры";
+            MemoryText.Text = "Определение памяти…";
+            CpuText.Text = "Определение процессора…";
+            GpuText.Text = "Определение видеокарты…";
+            MotherboardText.Text = "Определение материнской платы…";
+            StorageText.Text = "Определение дисков…";
         }
 
         private void ApplyHardwareInfo(SystemHardwareInfo info)
         {
-            SystemText.Text = FormatSystem(info);
-            CpuText.Text = FormatCpu(info);
+            SystemText.Text = string.IsNullOrWhiteSpace(info.OperatingSystem) ? "Windows" : info.OperatingSystem.Trim();
+            WindowsVersionText.Text = string.IsNullOrWhiteSpace(info.WindowsVersion) ? "Версия не определена" : info.WindowsVersion.Trim();
+            ArchitectureText.Text = string.IsNullOrWhiteSpace(info.Architecture) ? "Архитектура не определена" : info.Architecture.Trim();
+            SystemSummaryText.Text = string.IsNullOrWhiteSpace(info.OperatingSystem) ? "Windows" : info.OperatingSystem.Trim();
+
             MemoryText.Text = info.MemoryBytes > 0
-                ? string.Format("{0:0.0} ГБ RAM", info.MemoryBytes / 1024d / 1024d / 1024d)
+                ? $"{info.MemoryBytes / 1024d / 1024d / 1024d:0.0} ГБ"
                 : "Не удалось определить объём памяти.";
+
+            CpuText.Text = string.IsNullOrWhiteSpace(info.CpuName) ? "Не удалось определить процессор." : info.CpuName.Trim();
+            CpuCoresText.Text = info.CpuCoreCount > 0 ? "Ядра: " + info.CpuCoreCount : "Ядра: —";
+            CpuThreadsText.Text = info.CpuLogicalProcessorCount > 0 ? "Потоки: " + info.CpuLogicalProcessorCount : "Потоки: —";
+
             GpuText.Text = info.GpuNames.Count == 0 ? "Не удалось определить видеокарту." : string.Join("\n", info.GpuNames);
             MotherboardText.Text = FormatMotherboard(info);
+            StorageText.Text = FormatStorage();
         }
 
-        private void PcDetails_Click(object sender, RoutedEventArgs e)
+        private static string FormatStorage()
         {
-            bool show = PcInfoPanel.Visibility != Visibility.Visible;
-            PcInfoPanel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
-            PcDetailsButton.Content = show ? "Скрыть сведения о ПК" : "Показать сведения о ПК";
-        }
-
-        private void SetIcons()
-        {
-            SystemIcon.Source = LoadSvg("interface/white/brand-windows.svg");
-            MemoryIcon.Source = LoadSvg("interface/white/icons8-memory-50.svg");
-            CpuIcon.Source = LoadSvg("interface/white/cpu.svg");
-            GpuIcon.Source = LoadSvg("interface/white/icons8-videocard-50.svg");
-            MotherboardIcon.Source = LoadSvg("interface/white/icons8-motherboard-50.svg");
-        }
-
-        private static ImageSource LoadSvg(string relativePath)
-        {
-            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath.Replace('/', Path.DirectorySeparatorChar));
-            return SvgImageLoader.Load(path);
-        }
-
-        private static string FormatSystem(SystemHardwareInfo info)
-        {
-            var system = string.IsNullOrWhiteSpace(info.OperatingSystem) ? "Windows" : info.OperatingSystem.Trim();
-            var version = string.IsNullOrWhiteSpace(info.WindowsVersion) ? "Не определена" : info.WindowsVersion.Trim();
-            var architecture = string.IsNullOrWhiteSpace(info.Architecture) ? "Не определена" : info.Architecture.Trim();
-            return system + "\nВерсия Windows " + version + "\n" + architecture;
-        }
-
-        private static string FormatCpu(SystemHardwareInfo info)
-        {
-            if (string.IsNullOrWhiteSpace(info.CpuName)) return "Не удалось определить процессор.";
-            var result = info.CpuName;
-            if (info.CpuCoreCount > 0 || info.CpuLogicalProcessorCount > 0)
-                result += string.Format("\nЯдра: {0}, потоков: {1}", info.CpuCoreCount, info.CpuLogicalProcessorCount);
-            return result;
+            try
+            {
+                return string.Join("\n", DriveInfo.GetDrives()
+                    .Where(d => d.IsReady && d.TotalSize > 0)
+                    .OrderBy(d => d.Name, StringComparer.OrdinalIgnoreCase)
+                    .Select(d =>
+                    {
+                        var used = d.TotalSize - d.AvailableFreeSpace;
+                        var percent = d.TotalSize == 0 ? 0 : (int)Math.Round(used * 100d / d.TotalSize);
+                        return $"{d.Name.TrimEnd('\\')}  {used / 1024d / 1024d / 1024d:0.0} / {d.TotalSize / 1024d / 1024d / 1024d:0.0} ГБ  ·  {percent}% занято";
+                    }));
+            }
+            catch
+            {
+                return "Не удалось определить накопители.";
+            }
         }
 
         private static string FormatMotherboard(SystemHardwareInfo info)
@@ -105,5 +116,9 @@ namespace WpfApp1.Pages
             var motherboard = (info.MotherboardManufacturer + " " + info.MotherboardModel).Trim();
             return string.IsNullOrWhiteSpace(motherboard) ? "Не удалось определить материнскую плату." : motherboard;
         }
+
+        private void OpenApps_Click(object sender, RoutedEventArgs e) => _main.Navigate("apps");
+        private void OpenWindows_Click(object sender, RoutedEventArgs e) => _main.Navigate("windows");
+        private void OpenCleanup_Click(object sender, RoutedEventArgs e) => _main.Navigate("diskcleanup");
     }
 }
