@@ -85,12 +85,14 @@ namespace Nexora.Pages
 				.Distinct()
 				.ToList();
 
+			// Сначала возвращаем все строки в пределах выбранной категории.
 			foreach (var row in rows)
 				row.Visibility = Visibility.Visible;
 
 			if (!string.IsNullOrWhiteSpace(query))
 			{
 				var normalizedQuery = query.ToLowerInvariant();
+
 				foreach (var row in rows)
 				{
 					var text = string.Join(" ",
@@ -103,62 +105,61 @@ namespace Nexora.Pages
 						? Visibility.Visible
 						: Visibility.Collapsed;
 				}
-			}
 
-			foreach (var section in SettingsStack.Children.OfType<Border>())
-			{
-				if (ReferenceEquals(section, WindowsSettingsBanner) || IsWindowsSettingsRow(section))
-					continue;
+				// Скрываем только отдельные категории без совпадений.
+				// Сам SettingsStack, строка поиска, баннер и нижняя панель
+				// никогда не скрываются целиком из-за поиска.
+				foreach (var section in SettingsStack.Children.OfType<Border>())
+				{
+					if (ReferenceEquals(section, WindowsSettingsBanner) || IsWindowsSettingsRow(section))
+						continue;
 
-				var sectionRows = FindVisualElements<Border>(section)
-					.Where(IsWindowsSettingsRow)
-					.Distinct()
-					.ToList();
+					var sectionRows = FindVisualElements<Border>(section)
+						.Where(IsWindowsSettingsRow)
+						.Distinct()
+						.ToList();
 
-				if (sectionRows.Count == 0 || section.Visibility != Visibility.Visible)
-					continue;
+					if (sectionRows.Count == 0)
+						continue;
 
-				if (!string.IsNullOrWhiteSpace(query))
 					section.Visibility = sectionRows.Any(row => row.Visibility == Visibility.Visible)
 						? Visibility.Visible
 						: Visibility.Collapsed;
-			}
-
-			if (!string.IsNullOrWhiteSpace(query))
-			{
-				bool hasVisibleResult = rows.Any(row => row.Visibility == Visibility.Visible);
-				if (!hasVisibleResult)
-				{
-					foreach (var child in SettingsStack.Children.OfType<UIElement>())
-						child.Visibility = Visibility.Collapsed;
-
-					if (_noSettingsResultsText == null)
-					{
-						_noSettingsResultsText = new TextBlock
-						{
-							Text = "Ничего не найдено",
-							FontSize = 18,
-							FontWeight = FontWeights.SemiBold,
-							Foreground = new SolidColorBrush(Colors.White),
-							TextAlignment = TextAlignment.Center,
-							HorizontalAlignment = HorizontalAlignment.Stretch,
-							Margin = new Thickness(0, 36, 0, 36)
-						};
-						SettingsStack.Children.Add(_noSettingsResultsText);
-					}
-					_noSettingsResultsText.Visibility = Visibility.Visible;
-				}
-				else if (_noSettingsResultsText != null)
-				{
-					_noSettingsResultsText.Visibility = Visibility.Collapsed;
 				}
 			}
 			else if (_noSettingsResultsText != null)
 			{
 				_noSettingsResultsText.Visibility = Visibility.Collapsed;
 			}
-		}
 
+			bool hasVisibleResult = string.IsNullOrWhiteSpace(query)
+				|| rows.Any(row => row.Visibility == Visibility.Visible);
+
+			if (!hasVisibleResult)
+			{
+				if (_noSettingsResultsText == null)
+				{
+					_noSettingsResultsText = new TextBlock
+					{
+						Text = "Ничего не найдено",
+						FontSize = 18,
+						FontWeight = FontWeights.SemiBold,
+						Foreground = new SolidColorBrush(Colors.White),
+						TextAlignment = TextAlignment.Center,
+						HorizontalAlignment = HorizontalAlignment.Stretch,
+						Margin = new Thickness(0, 36, 0, 36)
+					};
+
+					SettingsStack.Children.Add(_noSettingsResultsText);
+				}
+
+				_noSettingsResultsText.Visibility = Visibility.Visible;
+			}
+			else if (_noSettingsResultsText != null)
+			{
+				_noSettingsResultsText.Visibility = Visibility.Collapsed;
+			}
+		}
 		private bool IsWindowsSettingsRow(Border border)
 		{
 			return border != null && ReferenceEquals(border.Style, FindResource("SettingRow"));
