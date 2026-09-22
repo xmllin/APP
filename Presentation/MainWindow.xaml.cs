@@ -204,7 +204,7 @@ namespace WpfApp1
             return GetOrCreatePage("wallpapers") as WallpaperPage;
         }
 
-        public string GetSearchText() => SearchBox?.Text ?? "";
+        public string GetSearchText() => "";
 
         public sealed class ActiveDownloadEntry : IDisposable, INotifyPropertyChanged
         {
