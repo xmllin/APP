@@ -43,9 +43,14 @@ namespace Nexora.Pages
 		{
 			try
 			{
-				var result = await _windowsUpdate.StartServiceAsync(CancellationToken.None);
+				var result = await _windowsUpdate.SetDisabledAsync(false, CancellationToken.None);
 				if (!result.Success) throw new InvalidOperationException(result.Error);
-				MessageBox.Show(result.Message, "Windows Update", MessageBoxButton.OK, MessageBoxImage.Information);
+				if (DisableWindowsUpdateToggle != null)
+				{
+					DisableWindowsUpdateToggle.IsChecked = false;
+					UpdateWindowsFeatureLabel("DisableWindowsUpdate", false);
+				}
+				MessageBox.Show("Windows Update включён. Политики и службы обновлений восстановлены.", "Windows Update", MessageBoxButton.OK, MessageBoxImage.Information);
 			}
 			catch (Exception exception) { MessageBox.Show("Не удалось запустить Windows Update: " + exception.Message, "Windows Update", MessageBoxButton.OK, MessageBoxImage.Warning); }
 		}
