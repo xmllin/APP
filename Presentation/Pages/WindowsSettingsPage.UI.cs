@@ -106,9 +106,9 @@ namespace Nexora.Pages
 						: Visibility.Collapsed;
 				}
 
-				// Скрываем только отдельные категории без совпадений.
-				// Сам SettingsStack, строка поиска, баннер и нижняя панель
-				// никогда не скрываются целиком из-за поиска.
+				// Скрываем целиком категории, в которых после фильтрации
+				// не осталось ни одной подходящей настройки.
+				// Сам SettingsStack, строка поиска и баннер не скрываем.
 				foreach (var section in SettingsStack.Children.OfType<Border>())
 				{
 					if (ReferenceEquals(section, WindowsSettingsBanner) || IsWindowsSettingsRow(section))
@@ -119,12 +119,14 @@ namespace Nexora.Pages
 						.Distinct()
 						.ToList();
 
-					if (sectionRows.Count == 0)
-						continue;
-
-					section.Visibility = sectionRows.Any(row => row.Visibility == Visibility.Visible)
-						? Visibility.Visible
-						: Visibility.Collapsed;
+					// Если это полноценная категория с настройками — её видимость
+					// определяется исключительно наличием найденных настроек.
+					if (sectionRows.Count > 0)
+					{
+						section.Visibility = sectionRows.Any(row => row.Visibility == Visibility.Visible)
+							? Visibility.Visible
+							: Visibility.Collapsed;
+					}
 				}
 			}
 			else if (_noSettingsResultsText != null)
