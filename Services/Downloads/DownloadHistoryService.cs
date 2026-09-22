@@ -40,7 +40,7 @@ namespace Nexora.Services.Downloads
                 if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
                     Directory.CreateDirectory(directory);
 
-                var json = JsonSerializer.Serialize(items.ToList());
+                var json = JsonSerializer.Serialize(items.ToList(), new JsonSerializerOptions { WriteIndented = true });
                 var temporaryPath = HistoryFile + ".tmp";
                 File.WriteAllText(temporaryPath, json);
                 File.Move(temporaryPath, HistoryFile, true);
