@@ -574,6 +574,37 @@ namespace WpfApp1.Pages
 				return controls;
 			}
 
+		private void EnsureRestartHints()
+		{
+			foreach (var row in FindVisualElements<Border>(SettingsStack))
+			{
+				if (row.Style != (Style)FindResource("SettingRow")) continue;
+				if (!(row.Child is Grid grid)) continue;
+				var textPanel = grid.Children.OfType<StackPanel>().FirstOrDefault();
+				if (textPanel == null) continue;
+				if (textPanel.Children.OfType<TextBlock>().Any(x => x.Text == "Для применения требуется перезапуск Проводника либо перезапуск Windows.")) continue;
+				textPanel.Children.Add(new TextBlock
+				{
+					Text = "Для применения требуется перезапуск Проводника либо перезапуск Windows.",
+					Foreground = new SolidColorBrush(Color.FromRgb(105, 137, 176)),
+					FontSize = 10,
+					TextWrapping = TextWrapping.Wrap,
+					Margin = new Thickness(0, 3, 0, 0)
+				});
+			}
+		}
+
+		private static IEnumerable<T> FindVisualElements<T>(DependencyObject root) where T : DependencyObject
+		{
+			if (root == null) yield break;
+			for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+			{
+				var child = VisualTreeHelper.GetChild(root, i);
+				if (child is T match) yield return match;
+				foreach (var nested in FindVisualElements<T>(child)) yield return nested;
+			}
+		}
+
 		private static Border GetSettingRow(ToggleButton toggle)
 		{
 			return toggle?.Parent is StackPanel controls && controls.Parent is Grid grid && grid.Parent is Border row
