@@ -177,7 +177,7 @@ namespace Nexora
                     Downloads = new Dictionary<string, DownloadInfo>(_downloadInfoCache, StringComparer.OrdinalIgnoreCase),
                     AppDownloads = new Dictionary<string, DownloadInfo>(_appDownloadInfoCache, StringComparer.OrdinalIgnoreCase)
                 };
-                File.WriteAllText(CacheFile, JsonSerializer.Serialize(state));
+                File.WriteAllText(CacheFile, JsonSerializer.Serialize(state, new JsonSerializerOptions { WriteIndented = true }));
             }
             catch { }
         }
