@@ -738,13 +738,6 @@ namespace WpfApp1
         {
             // The search box lives inside the title bar. Never treat a click
             // inside it as a window-drag or as a request to clear the query.
-            var source = e.OriginalSource as DependencyObject;
-            if (source != null && SearchContainer != null &&
-                (ReferenceEquals(source, SearchContainer) || SearchContainer.IsAncestorOf(source)))
-                return;
-
-            ClearSearchFocus();
-
             if (e.ClickCount > 1)
             {
                 e.Handled = true;
@@ -913,7 +906,6 @@ namespace WpfApp1
             else if (page == "settings") SettingsNav.Tag = "Selected";
             else if (page == "profile") ProfileNav.Tag = "Selected";
 
-            SearchContainer.Visibility = page == "apps" ? Visibility.Visible : Visibility.Collapsed;
 
             if (!string.Equals(page, "apps", StringComparison.OrdinalIgnoreCase) &&
                 _pageCache.TryGetValue("apps", out var appsPage) && appsPage is AppsPage cachedAppsPage)
@@ -936,61 +928,6 @@ namespace WpfApp1
             var target = GetOrCreatePage(page);
             if (target != null)
                 ShowPage(target);
-        }
-
-        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (_searchPlaceholderChanging || _currentPage != "apps") return;
-
-            int version = ++_searchChangeVersion;
-            string query = SearchBox.Text;
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                if (version != _searchChangeVersion || _currentPage != "apps") return;
-                if (_pageCache.TryGetValue("apps", out var page) && page is AppsPage appsPage)
-                    appsPage.ApplySearch(query, true);
-            }), DispatcherPriority.Background);
-        }
-
-        private void SearchBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (SearchBox.Text == "Поиск программ...")
-            {
-                _searchPlaceholderChanging = true;
-                SearchBox.Clear();
-                _searchPlaceholderChanging = false;
-            }
-        }
-
-        private void SearchBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            RestoreSearchPlaceholder();
-        }
-
-        private void RestoreSearchPlaceholder()
-        {
-            if (SearchBox == null || !string.IsNullOrWhiteSpace(SearchBox.Text)) return;
-            SetSearchPlaceholder();
-        }
-
-        // Clicking the top or bottom bars only removes focus from the search box.
-        // The current query and results are intentionally preserved.
-        private void ClearSearchFocus()
-        {
-            if (SearchBox == null || !SearchBox.IsKeyboardFocusWithin)
-                return;
-
-            Keyboard.ClearFocus();
-            SearchBox.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-        }
-
-        private void SetSearchPlaceholder()
-        {
-            _searchPlaceholderChanging = true;
-            SearchBox.Text = "Поиск программ...";
-            SearchBox.SelectionStart = 0;
-            SearchBox.SelectionLength = 0;
-            _searchPlaceholderChanging = false;
         }
 
         private void Nav_Click(object sender, RoutedEventArgs e)
