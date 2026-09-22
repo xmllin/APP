@@ -330,7 +330,7 @@
                         <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="72" Height="72" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,16,0"/>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock Text="Настройки Windows под вашим контролем" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Center"/>
-                            <TextBlock Text="Настройте Windows под себя" Foreground="#B9CAE2" FontSize="16" TextWrapping="Wrap"/>
+                            <TextBlock Text="Настройте Windows под себя" Foreground="#B9CAE2" FontSize="16" TextWrapping="Wrap" TextAlignment="Center"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -853,7 +853,7 @@
             </StackPanel>
         </ScrollViewer>
         <Border x:Name="ToastNotification" Background="#173A61" BorderBrush="#2B6ECB" BorderThickness="1" CornerRadius="10" Padding="14,10" VerticalAlignment="Bottom" Margin="36,0,36,96" MaxWidth="430" HorizontalAlignment="Center" Visibility="Collapsed" Panel.ZIndex="100">
-            <TextBlock x:Name="ToastText" Foreground="#F1F6FF" FontSize="13" FontWeight="SemiBold" Text="" TextWrapping="Wrap"/>
+            <TextBlock x:Name="ToastText" Foreground="#F1F6FF" FontSize="13" FontWeight="SemiBold" Text="" TextWrapping="Wrap" TextAlignment="Center"/>
         </Border>
         <Grid VerticalAlignment="Bottom" Margin="36,0,53,12">
             <Border Background="#0B2035" BorderBrush="#1D3B5A" BorderThickness="1"
