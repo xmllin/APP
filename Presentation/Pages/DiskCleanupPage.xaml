@@ -103,8 +103,8 @@
                             <TextBlock x:Name="SummaryText" Text="0 Б" FontSize="22" FontWeight="SemiBold" Margin="0,2,0,0"/>
                             <TextBlock x:Name="SummaryDetailsText" Text="0 элементов · 0 файлов" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,3,0,0"/>
                         </StackPanel>
-                        <Button Grid.Column="1" Content="Выбрать всё" Click="SelectAll_Click" Style="{StaticResource GhostButton}" Margin="8,0"/>
-                        <Button Grid.Column="2" Content="Очистить выбранное" Click="CleanSelected_Click" Style="{StaticResource PrimaryButton}"/>
+                        <Button Grid.Column="1" Content="Выбрать всё" Click="SelectAll_Click" Style="{StaticResource GhostButton}" Margin="8,0" Cursor="Hand"/>
+                        <Button Grid.Column="2" Content="Очистить выбранное" Click="CleanSelected_Click" Style="{StaticResource PrimaryButton}" Cursor="Hand"/>
                     </Grid>
                 </Border>
 
