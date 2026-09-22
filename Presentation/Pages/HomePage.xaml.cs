@@ -16,8 +16,9 @@ namespace WpfApp1.Pages
 {
     public partial class HomePage : UserControl
     {
-        private const int MinimumRecentApps = 4;
+        private const int MinimumRecentApps = 2;
         private const double RecentAppCardOuterWidth = 190;
+        private const double RecentAppWidthStep = 340;
         private MainWindow _main;
         private AppRepository _repository = new AppRepository();
         private static readonly string RecentFile = UserDataPath.File("recent_apps.txt");
@@ -105,7 +106,8 @@ namespace WpfApp1.Pages
 
             int visibleCount = Math.Max(
                 MinimumRecentApps,
-                (int)Math.Floor(availableWidth / RecentAppCardOuterWidth));
+                MinimumRecentApps + Math.Max(0, (int)Math.Floor(
+                    Math.Max(0, availableWidth - (MinimumRecentApps * RecentAppWidthStep)) / RecentAppWidthStep)));
             if (visibleCount == _recentAppCount)
                 return false;
 
