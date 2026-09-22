@@ -358,9 +358,6 @@
                     <ComboBoxItem Tag="Рабочий стол">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-app-folder.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Рабочий стол"/></StackPanel>
                     </ComboBoxItem>
-                    <ComboBoxItem Tag="Панель задач">
-                        <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-apps-list.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Панель задач"/></StackPanel>
-                    </ComboBoxItem>
                     <ComboBoxItem Tag="Пуск и поиск">
                         <StackPanel Orientation="Horizontal"><Image Source="{local:SvgImage Source=interface/white/fluent-search.svg}" Width="16" Height="16" Margin="0,0,8,0"/><TextBlock Text="Пуск и поиск"/></StackPanel>
                     </ComboBoxItem>
@@ -645,13 +642,6 @@
                                         <ToggleButton x:Name="ShowSecondsInSystemClockToggle" Tag="ShowSecondsInSystemClock" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
                                     </StackPanel>
                                 </Grid>
-                            </Border>
-                        </StackPanel>
-                    </Border>
-                    <Border x:Name="TaskbarSettingsPanel" Background="#0A1D39" BorderBrush="#173A61" BorderThickness="1,0,1,0" CornerRadius="11" Padding="0,4" Margin="0,10,0,0">
-                        <StackPanel>
-                            <Border Style="{StaticResource CategoryHeader}">
-                                <TextBlock Text="Панель задач" FontSize="24" FontWeight="SemiBold"/>
                             </Border>
                         </StackPanel>
                     </Border>
