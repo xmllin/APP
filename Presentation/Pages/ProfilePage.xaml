@@ -33,11 +33,65 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="ProfileValueText" TargetType="TextBlock">
+        <Style x:Key="ProfileValueText" TargetType="TextBox">
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Foreground" Value="#DCEBFA"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="IsReadOnly" Value="True"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
-            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="HorizontalScrollBarVisibility" Value="Hidden"/>
+            <Setter Property="VerticalScrollBarVisibility" Value="Hidden"/>
+        </Style>
+        <Style x:Key="ProfileSmallCopyText" TargetType="TextBox">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+        <Style x:Key="ProfileDriveTile" TargetType="Button" BasedOn="{StaticResource CardButton}">
+            <Setter Property="Padding" Value="13"/>
+            <Setter Property="Margin" Value="0,0,8,8"/>
+            <Setter Property="MinWidth" Value="245"/>
+            <Setter Property="Height" Value="108"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="DriveBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                <Path Data="M 0,0 L 5,5 L 0,10"
+                                      Stroke="#78B9F5"
+                                      StrokeThickness="1.8"
+                                      Width="6"
+                                      Height="11"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="DriveBorder" Property="Background" Value="#132B47"/>
+                                <Setter TargetName="DriveBorder" Property="BorderBrush" Value="#367FCE"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="DriveBorder" Property="Background" Value="#183A60"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         <Style x:Key="ProfileCardTitle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="16"/>
@@ -88,46 +142,17 @@
                     </Border>
                     <StackPanel Grid.Column="1" Margin="18,0,18,0" VerticalAlignment="Center">
                         <TextBlock x:Name="UserNameText" FontSize="23" FontWeight="SemiBold"/>
-                        <TextBlock x:Name="UserAccountText" FontSize="13" Foreground="{StaticResource MutedBrush}" Margin="0,4,0,0"/>
+                        <TextBox x:Name="UserAccountText" Style="{StaticResource ProfileSmallCopyText}" Margin="0,4,0,0"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
                         <TextBlock Text="Система" Foreground="{StaticResource MutedBrush}" FontSize="12" HorizontalAlignment="Right"/>
-                        <TextBlock x:Name="SystemSummaryText" FontSize="15" FontWeight="SemiBold"
-                                   HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"/>
+                        <TextBox x:Name="SystemSummaryText" FontSize="15" FontWeight="SemiBold"
+                                 Style="{StaticResource ProfileSmallCopyText}"
+                                 HorizontalAlignment="Right"
+                                 TextAlignment="Right"/>
                     </StackPanel>
                 </Grid>
             </Border>
-
-            <TextBlock Text="Быстрые действия" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
-            <UniformGrid Columns="3" Margin="0,0,0,10">
-                <Button Click="OpenApps_Click" Style="{StaticResource ProfileActionButton}">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{local:SvgImage Source=interface/white/world-download.svg}" Width="30" Height="30" Margin="0,0,13,0"/>
-                        <StackPanel>
-                            <TextBlock Text="Программы" FontSize="15" FontWeight="SemiBold"/>
-                            <TextBlock Text="Каталог и установка" Foreground="#91A8C5" Margin="0,4,0,0"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Button>
-                <Button Click="OpenWindows_Click" Style="{StaticResource ProfileActionButton}">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{local:SvgImage Source=interface/white/brand-windows.svg}" Width="30" Height="30" Margin="0,0,13,0"/>
-                        <StackPanel>
-                            <TextBlock Text="Настройки Windows" FontSize="15" FontWeight="SemiBold"/>
-                            <TextBlock Text="Оптимизация и конфигурация" Foreground="#91A8C5" Margin="0,4,0,0"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Button>
-                <Button Click="OpenCleanup_Click" Style="{StaticResource ProfileActionButton}">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="30" Height="30" Margin="0,0,13,0"/>
-                        <StackPanel>
-                            <TextBlock Text="Очистка диска" FontSize="15" FontWeight="SemiBold"/>
-                            <TextBlock Text="Кэш, временные файлы и корзина" Foreground="#91A8C5" Margin="0,4,0,0"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Button>
-            </UniformGrid>
 
             <TextBlock Text="Сведения о системе" FontSize="20" FontWeight="SemiBold" Margin="0,8,0,12"/>
             <UniformGrid Columns="2">
@@ -137,7 +162,7 @@
                             <Image Source="{local:SvgImage Source=interface/white/brand-windows.svg}" Width="21" Height="21" Margin="0,0,9,0"/>
                             <TextBlock Text="Windows" Style="{StaticResource ProfileCardTitle}"/>
                         </StackPanel>
-                        <TextBlock x:Name="SystemText" Style="{StaticResource ProfileValueText}" Margin="0,10,0,5"/>
+                        <TextBox x:Name="SystemText" Style="{StaticResource ProfileValueText}" Margin="0,10,0,5"/>
                         <WrapPanel>
                             <Border Style="{StaticResource ProfileBadge}"><TextBlock x:Name="WindowsVersionText" FontSize="12" Foreground="#B9CAE2"/></Border>
                             <Border Style="{StaticResource ProfileBadge}"><TextBlock x:Name="ArchitectureText" FontSize="12" Foreground="#B9CAE2"/></Border>
@@ -151,7 +176,7 @@
                             <Image Source="{local:SvgImage Source=interface/white/icons8-memory-50.svg}" Width="21" Height="21" Margin="0,0,9,0"/>
                             <TextBlock Text="Оперативная память" Style="{StaticResource ProfileCardTitle}"/>
                         </StackPanel>
-                        <TextBlock x:Name="MemoryText" Style="{StaticResource ProfileValueText}" Margin="0,10,0,5"/>
+                        <TextBox x:Name="MemoryText" Style="{StaticResource ProfileValueText}" Margin="0,10,0,5"/>
                         <TextBlock Text="Объём установленной памяти" FontSize="12" Foreground="{StaticResource MutedBrush}"/>
                     </StackPanel>
                 </Border>
@@ -162,7 +187,7 @@
                             <Image Source="{local:SvgImage Source=interface/white/cpu.svg}" Width="21" Height="21" Margin="0,0,9,0"/>
                             <TextBlock Text="Процессор" Style="{StaticResource ProfileCardTitle}"/>
                         </StackPanel>
-                        <TextBlock x:Name="CpuText" Style="{StaticResource ProfileValueText}" Margin="0,10,0,5"/>
+                        <TextBox x:Name="CpuText" Style="{StaticResource ProfileValueText}" Margin="0,10,0,5"/>
                         <WrapPanel>
                             <Border Style="{StaticResource ProfileBadge}"><TextBlock x:Name="CpuCoresText" FontSize="12" Foreground="#B9CAE2"/></Border>
                             <Border Style="{StaticResource ProfileBadge}"><TextBlock x:Name="CpuThreadsText" FontSize="12" Foreground="#B9CAE2"/></Border>
@@ -176,7 +201,7 @@
                             <Image Source="{local:SvgImage Source=interface/white/icons8-videocard-50.svg}" Width="21" Height="21" Margin="0,0,9,0"/>
                             <TextBlock Text="Видеокарта" Style="{StaticResource ProfileCardTitle}"/>
                         </StackPanel>
-                        <TextBlock x:Name="GpuText" Style="{StaticResource ProfileValueText}" Margin="0,10,0,0"/>
+                        <TextBox x:Name="GpuText" Style="{StaticResource ProfileValueText}" Margin="0,10,0,0"/>
                     </StackPanel>
                 </Border>
 
@@ -186,7 +211,7 @@
                             <Image Source="{local:SvgImage Source=interface/white/icons8-motherboard-50.svg}" Width="21" Height="21" Margin="0,0,9,0"/>
                             <TextBlock Text="Материнская плата" Style="{StaticResource ProfileCardTitle}"/>
                         </StackPanel>
-                        <TextBlock x:Name="MotherboardText" Style="{StaticResource ProfileValueText}" Margin="0,10,0,0"/>
+                        <TextBox x:Name="MotherboardText" Style="{StaticResource ProfileValueText}" Margin="0,10,0,0"/>
                     </StackPanel>
                 </Border>
 
@@ -196,7 +221,32 @@
                             <Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="21" Height="21" Margin="0,0,9,0"/>
                             <TextBlock Text="Накопители" Style="{StaticResource ProfileCardTitle}"/>
                         </StackPanel>
-                        <TextBlock x:Name="StorageText" Style="{StaticResource ProfileValueText}" Margin="0,10,0,0"/>
+                        <ItemsControl x:Name="DrivesControl" Margin="0,10,0,0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource ProfileDriveTile}" Tag="{Binding}" Click="DriveTile_Click">
+                                        <StackPanel Width="215">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Border Width="30" Height="30" CornerRadius="8" Background="#18385E" Padding="7" Margin="0,0,8,0">
+                                                    <Image Source="{local:SvgImage Source=interface/white/fluent-hard-drive.svg}" Stretch="Uniform"/>
+                                                </Border>
+                                                <StackPanel VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding DisplayName}" FontSize="15" FontWeight="SemiBold"
+                                                               TextWrapping="Wrap" MaxWidth="175"/>
+                                                    <TextBlock Text="{Binding Path}" Foreground="#7290B2" FontSize="11" Margin="0,2,0,0"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding UsageText}" Foreground="#B9CAE2" FontSize="12" Margin="0,8,0,0"/>
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
                 </Border>
             </UniformGrid>
