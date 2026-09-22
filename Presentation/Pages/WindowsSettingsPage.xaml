@@ -248,8 +248,8 @@
                 <Border Style="{StaticResource SettingRow}">
                     <Grid>
                         <StackPanel>
-                            <TextBlock Text="Отключить гибернацию" FontWeight="SemiBold"/>
-                            <TextBlock Text="Отключить hiberfil.sys и гибридный сон" Foreground="#82A5CF" FontSize="11"/>
+                            <TextBlock Text="Отключить гибернацию и быстрый запуск" FontWeight="SemiBold"/>
+                            <TextBlock Text="Отключить hiberfil.sys, гибернацию и быстрый запуск Windows" Foreground="#82A5CF" FontSize="11"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                             <TextBlock x:Name="DisableHibernationLabel" Text="Отключено" Foreground="#FF0000" VerticalAlignment="Center" Margin="0,0,10,0"/>
@@ -588,8 +588,8 @@
                                         <TextBlock Text="Показывать иконку на рабочем столе" Foreground="#82A5CF" FontSize="11"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <TextBlock x:Name="ShowThisPcLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                        <ToggleButton x:Name="ShowThisPcToggle" Tag="ThisPcIcon" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                        <TextBlock x:Name="ShowThisPcLabel" Text="Отключено" Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="ShowThisPcToggle" Tag="ThisPcIcon" ToolTip="Переключатель скрытия «Этот компьютер»" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -600,8 +600,8 @@
                                         <TextBlock Text="Показывать иконку на рабочем столе" Foreground="#82A5CF" FontSize="11"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <TextBlock x:Name="ShowRecycleBinLabel" Text="Выкл." Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                        <ToggleButton x:Name="ShowRecycleBinToggle" Tag="RecycleBinIcon" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
+                                        <TextBlock x:Name="ShowRecycleBinLabel" Text="Отключено" Foreground="#A5BEDB" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        <ToggleButton x:Name="ShowRecycleBinToggle" Tag="RecycleBinIcon" ToolTip="Переключатель скрытия «Корзина»" Checked="ExplorerToggle_Changed" Unchecked="ExplorerToggle_Changed" Style="{StaticResource ExplorerToggleButton}"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
