@@ -34,7 +34,7 @@ namespace Nexora.Pages
 			if (RequiresAdministratorAccess(tag) && !IsAdministrator())
 			{
 				e.Handled = true;
-				MessageBox.Show("Для изменения системных настроек сначала нажмите «Перезапустить от администратора».", "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
+				Nexora.Services.StyledMessageDialog.Show("Для изменения системных настроек сначала нажмите «Перезапустить от администратора».", "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
 		}
 
@@ -299,7 +299,7 @@ namespace Nexora.Pages
 				_loadingExplorerSettings = true;
 				try { SetToggle(toggle, false); }
 				finally { _loadingExplorerSettings = false; }
-				MessageBox.Show("HAGS недоступен на этом оборудовании или драйвере.", "Планирование GPU", MessageBoxButton.OK, MessageBoxImage.Information);
+				Nexora.Services.StyledMessageDialog.Show("HAGS недоступен на этом оборудовании или драйвере.", "Планирование GPU", MessageBoxButton.OK, MessageBoxImage.Information);
 				return;
 			}
 			if ((tag == "DisableCortana" || tag == "DisableCopilot") && !_privacySettings.IsFeatureSupported(tag))
@@ -317,7 +317,7 @@ namespace Nexora.Pages
 				finally { _loadingExplorerSettings = false; }
 				if (tag != "AutoGameModeEnabled")
 				{
-					MessageBox.Show("Для изменения системных настроек сначала нажмите «Перезапустить от администратора».", "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
+					Nexora.Services.StyledMessageDialog.Show("Для изменения системных настроек сначала нажмите «Перезапустить от администратора».", "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
 				}
 				return;
 			}
@@ -368,7 +368,7 @@ namespace Nexora.Pages
 				var message = IsAdministrator()
 					? "Не удалось изменить настройку Windows: " + exception.Message
 					: "Для изменения системных настроек сначала нажмите «Перезапустить от администратора».";
-				MessageBox.Show(message, "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
+				Nexora.Services.StyledMessageDialog.Show(message, "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
 				LoadExplorerSettings();
 			}
 			finally
