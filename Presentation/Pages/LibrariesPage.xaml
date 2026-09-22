@@ -428,7 +428,7 @@
                         <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="72" Height="72" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,16,0"/>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                             <TextBlock Text="Библиотеки для вашей системы" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Justify"/>
-                            <TextBlock Text="Подготовьте Windows к работе" Foreground="#B9CAE2" FontSize="16" TextWrapping="Wrap" TextAlignment="Center"/>
+                            <TextBlock Text="Подготовьте Windows к работе" Foreground="#B9CAE2" FontSize="16" TextWrapping="Wrap" TextAlignment="Justify"/>
                         </StackPanel>
                     </Grid>
                 </Border>
