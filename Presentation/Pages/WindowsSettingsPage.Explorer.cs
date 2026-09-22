@@ -151,7 +151,7 @@ namespace Nexora.Pages
 			{
 				_loadingExplorerSettings = true;
 				try { SetToggle(toggle, !enabled); } finally { _loadingExplorerSettings = false; }
-				MessageBox.Show("Для изменения этой настройки нужны права администратора. Нажмите «Перезапустить от администратора».", "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
+				Nexora.Services.StyledMessageDialog.Show("Для изменения этой настройки нужны права администратора. Нажмите «Перезапустить от администратора».", "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
 				return;
 			}
 			UpdateToggleLabel(tag, enabled);
@@ -185,7 +185,7 @@ namespace Nexora.Pages
 			}
 			catch (Exception exception)
 			{
-				MessageBox.Show("Не удалось изменить настройку проводника: " + exception.Message, "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
+				Nexora.Services.StyledMessageDialog.Show("Не удалось изменить настройку проводника: " + exception.Message, "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
 				LoadExplorerSettings();
 			}
 		}
@@ -364,7 +364,7 @@ namespace Nexora.Pages
 			}
 			catch (Exception exception)
 			{
-				MessageBox.Show("Не удалось перезапустить Проводник: " + exception.Message, "Проводник", MessageBoxButton.OK, MessageBoxImage.Warning);
+				Nexora.Services.StyledMessageDialog.Show("Не удалось перезапустить Проводник: " + exception.Message, "Проводник", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
 			finally
 			{
@@ -378,7 +378,7 @@ namespace Nexora.Pages
 
 		private void RestartSystemButton_Click(object sender, RoutedEventArgs e)
 		{
-			var result = MessageBox.Show(
+			var result = Nexora.Services.StyledMessageDialog.Show(
 				"Перезапустить Windows сейчас?",
 				"Перезапуск системы",
 				MessageBoxButton.YesNo,
@@ -399,7 +399,7 @@ namespace Nexora.Pages
 			}
 			catch (Exception exception)
 			{
-				MessageBox.Show("Не удалось запустить перезапуск Windows: " + exception.Message, "Перезапуск системы", MessageBoxButton.OK, MessageBoxImage.Warning);
+				Nexora.Services.StyledMessageDialog.Show("Не удалось запустить перезапуск Windows: " + exception.Message, "Перезапуск системы", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
 		}
 
@@ -409,7 +409,7 @@ namespace Nexora.Pages
 			{
 				if (IsAdministrator())
 				{
-					MessageBox.Show("Приложение уже запущено с правами администратора.", "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Information);
+					Nexora.Services.StyledMessageDialog.Show("Приложение уже запущено с правами администратора.", "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Information);
 					return;
 				}
 
@@ -425,7 +425,7 @@ namespace Nexora.Pages
 			}
 			catch (Exception exception)
 			{
-				MessageBox.Show("Перезапуск с правами администратора отменён или не выполнен: " + exception.Message, "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
+				Nexora.Services.StyledMessageDialog.Show("Перезапуск с правами администратора отменён или не выполнен: " + exception.Message, "Настройки Windows", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
 		}
 
@@ -453,7 +453,7 @@ namespace Nexora.Pages
 			}
 			catch (Exception exception)
 			{
-				MessageBox.Show(
+				Nexora.Services.StyledMessageDialog.Show(
 					"Не удалось открыть параметры Windows: " + exception.Message,
 					"Настройки Windows",
 					MessageBoxButton.OK,
