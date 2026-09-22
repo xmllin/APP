@@ -297,6 +297,13 @@ namespace Nexora.Pages
 			SettingsStack.Children.Add(memoryRow);
 		}
 
+		private static Border GetSettingRow(ToggleButton toggle)
+		{
+			return toggle?.Parent is StackPanel controls && controls.Parent is Grid grid && grid.Parent is Border row
+				? row
+				: null;
+		}
+
 		private void MoveAdditionalSettingsToBottom()
 		{
 			var toggles = new ToggleButton[]
@@ -1181,6 +1188,78 @@ namespace Nexora.Pages
 			EnsureAdminWarnings();
 		}
 
+		private void EnsureAdminWarnings()
+		{
+			UpdateCategoryAdminHints();
+			var warningBlocks = SettingsStack.Children.OfType<Border>()
+				.SelectMany(border => (border.Child as StackPanel)?.Children.OfType<Border>() ?? Enumerable.Empty<Border>())
+				.Where(border => border.Tag is string tag && tag == "AdminWarning")
+				.ToList();
+			foreach (var warning in warningBlocks)
+			{
+				warning.Visibility = IsAdministrator() ? Visibility.Collapsed : Visibility.Visible;
+			}
+			if (IsAdministrator()) return;
+
+			foreach (var section in SettingsStack.Children.OfType<Border>())
+			{
+				var sectionContent = section.Child as StackPanel;
+				if (sectionContent == null) continue;
+
+				var containsAdminOnlySetting = sectionContent.Children.OfType<FrameworkElement>()
+					.Any(element => element is ToggleButton toggle && RequiresAdministratorAccess(toggle.Tag as string));
+				if (!containsAdminOnlySetting) continue;
+
+				var headerIndex = -1;
+				for (var i = 0; i < sectionContent.Children.Count; i++)
+				{
+					if (sectionContent.Children[i] is TextBlock direct && !string.IsNullOrWhiteSpace(direct.Text))
+					{
+						headerIndex = i;
+						break;
+					}
+					if (sectionContent.Children[i] is Border headerBorder && headerBorder.Child is TextBlock headerText && !string.IsNullOrWhiteSpace(headerText.Text))
+					{
+						headerIndex = i;
+						break;
+					}
+				}
+				if (headerIndex < 0) continue;
+				if (sectionContent.Children.OfType<Border>().Any(x => x.Tag is string tag && tag == "AdminWarning")) continue;
+
+				var warning = new Border
+				{
+					Tag = "AdminWarning",
+					Background = new SolidColorBrush(Color.FromRgb(34, 16, 16)),
+					BorderBrush = new SolidColorBrush(Color.FromRgb(199, 74, 74)),
+					BorderThickness = new Thickness(1),
+					CornerRadius = new CornerRadius(8),
+					Padding = new Thickness(12, 8, 12, 8),
+					Margin = new Thickness(16, 0, 16, 10),
+					Child = new TextBlock
+					{
+						Text = "Для некоторых настроек потребуются права администратора.",
+						Foreground = new SolidColorBrush(Color.FromRgb(255, 206, 206)),
+						FontSize = 11,
+						FontWeight = FontWeights.SemiBold,
+						TextWrapping = TextWrapping.Wrap
+					}
+				};
+				sectionContent.Children.Insert(headerIndex + 1, warning);
+			}
+		}
+
+		private void UpdateCategoryAdminHints()
+		{
+			const string hint = "Для некоторых настроек требуются права администратора";
+			var visibility = IsAdministrator() ? Visibility.Collapsed : Visibility.Visible;
+			foreach (var textBlock in FindTextBlocks(SettingsStack))
+			{
+				if (string.Equals(textBlock.Text, hint, StringComparison.Ordinal))
+					textBlock.Visibility = visibility;
+			}
+		}
+
 		private static IEnumerable<TextBlock> FindTextBlocks(DependencyObject root)
 		{
 			if (root == null) yield break;
@@ -1242,6 +1321,23 @@ namespace Nexora.Pages
 				toggle.Cursor = isAdmin ? Cursors.Hand : Cursors.Arrow;
 			}
 			ApplyPowerShellScriptsAdminState();
+		}
+
+		private IEnumerable<ToggleButton> GetAllToggleButtons()
+		{
+			return GetAllToggleButtons(this);
+		}
+
+		private static IEnumerable<ToggleButton> GetAllToggleButtons(DependencyObject root)
+		{
+			if (root == null) yield break;
+			if (root is ToggleButton toggle) yield return toggle;
+
+			for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+			{
+				foreach (var nested in GetAllToggleButtons(VisualTreeHelper.GetChild(root, i)))
+					yield return nested;
+			}
 		}
 
 		private void SetManagedToggle(string tag, bool value)
