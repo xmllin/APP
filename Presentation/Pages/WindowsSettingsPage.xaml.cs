@@ -192,8 +192,7 @@ namespace Nexora.Pages
 			SettingsStack.Children.Insert(0, WindowsSettingsBanner);
 			MoveSecuritySettingsToBottom();
 			CreateInterfaceSettings();
-			MoveTaskbarSettings();
-			AttachMovedSettingsRows();
+				AttachMovedSettingsRows();
 			MoveAdditionalSettingsToBottom();
 			RemoveObsoleteSettingRows();
 			EnsureRestartHints();
