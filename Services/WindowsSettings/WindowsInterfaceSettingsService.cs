@@ -39,9 +39,9 @@ namespace WpfApp1.Services.WindowsSettings
         {
             switch (tag)
             {
-                case "ShowUserFiles": return ReadDword(DesktopIconsPath, "{59031a47-3f72-44a7-89c5-5595fe6b30ee}", 1) == 0;
-                case "ShowNetworkIcon": return ReadDword(DesktopIconsPath, "{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}", 1) == 0;
-                case "ShowControlPanel": return ReadDword(DesktopIconsPath, "{5399E694-6CE5-4D6C-8FCE-1D8870FDCBA0}", 1) == 0;
+                case "HideUserFiles": return ReadDword(DesktopIconsPath, "{59031a47-3f72-44a7-89c5-5595fe6b30ee}", 1) != 0;
+                case "HideNetworkIcon": return ReadDword(DesktopIconsPath, "{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}", 1) != 0;
+                case "HideControlPanel": return ReadDword(DesktopIconsPath, "{5399E694-6CE5-4D6C-8FCE-1D8870FDCBA0}", 1) != 0;
                 case "ShowDesktopIcons": return ReadDword(ExplorerAdvanced, "HideIcons", 0) == 0;
                 case "ShortcutArrow": return !IsShortcutArrowVisible();
                 case "ToastNotifications": return ReadDword(ToastPath, "ToastEnabled", 1) != 0;
@@ -102,9 +102,9 @@ namespace WpfApp1.Services.WindowsSettings
             {
                 switch (tag)
                 {
-                    case "ShowUserFiles": return SetUserDword("ShowUserFiles", DesktopIconsPath, "{59031a47-3f72-44a7-89c5-5595fe6b30ee}", enabled ? 0 : 1);
-                    case "ShowNetworkIcon": return SetUserDword("ShowNetworkIcon", DesktopIconsPath, "{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}", enabled ? 0 : 1);
-                    case "ShowControlPanel": return SetUserDword("ShowControlPanel", DesktopIconsPath, "{5399E694-6CE5-4D6C-8FCE-1D8870FDCBA0}", enabled ? 0 : 1);
+                    case "HideUserFiles": return SetUserDword("HideUserFiles", DesktopIconsPath, "{59031a47-3f72-44a7-89c5-5595fe6b30ee}", enabled ? 1 : 0);
+                    case "HideNetworkIcon": return SetUserDword("HideNetworkIcon", DesktopIconsPath, "{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}", enabled ? 1 : 0);
+                    case "HideControlPanel": return SetUserDword("HideControlPanel", DesktopIconsPath, "{5399E694-6CE5-4D6C-8FCE-1D8870FDCBA0}", enabled ? 1 : 0);
                     case "ShowDesktopIcons": return SetUserDword("ShowDesktopIcons", ExplorerAdvanced, "HideIcons", enabled ? 0 : 1);
                     case "ShortcutArrow": return SetShortcutArrow(!enabled);
                     case "ToastNotifications":
