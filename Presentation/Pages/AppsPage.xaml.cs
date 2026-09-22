@@ -262,12 +262,21 @@ namespace Nexora.Pages
 
         private void AppsSearchBox_GotFocus(object sender, RoutedEventArgs e)
         {
+            AppsSearchBox.Foreground = new SolidColorBrush(Color.FromRgb(241, 246, 255));
             if (AppsSearchBox.Text == "Поиск программ...") AppsSearchBox.Clear();
         }
 
         private void AppsSearchBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(AppsSearchBox.Text)) AppsSearchBox.Text = "Поиск программ...";
+            if (string.IsNullOrWhiteSpace(AppsSearchBox.Text))
+            {
+                AppsSearchBox.Text = "Поиск программ...";
+                AppsSearchBox.Foreground = new SolidColorBrush(Color.FromRgb(111, 137, 168));
+            }
+            else
+            {
+                AppsSearchBox.Foreground = new SolidColorBrush(Color.FromRgb(241, 246, 255));
+            }
         }
 
         private void AppsScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
