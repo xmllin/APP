@@ -157,7 +157,8 @@ namespace Nexora.Pages
                 }
 
                 var sortedPackages = _allPackages
-                    .OrderBy(item => item.DisplayName, StringComparer.CurrentCultureIgnoreCase)
+                    .OrderByDescending(item => item.IsInstalled)
+                    .ThenBy(item => item.DisplayName, StringComparer.CurrentCultureIgnoreCase)
                     .ToList();
                 _allPackages.Clear();
                 foreach (var package in sortedPackages)
