@@ -69,7 +69,7 @@ namespace Nexora.Models
                 {
                     case LibraryInstallStatus.Installed: return "Установлено";
                     case LibraryInstallStatus.UpdateAvailable: return "Доступно обновление";
-                    case LibraryInstallStatus.Manual: return "Ручная установка";
+                    case LibraryInstallStatus.Manual: return "Не установлено";
                     default: return "Не установлено";
                 }
             }
@@ -85,7 +85,7 @@ namespace Nexora.Models
                     case LibraryInstallStatus.UpdateAvailable:
                         return new SolidColorBrush(Color.FromRgb(255, 196, 90));
                     case LibraryInstallStatus.Manual:
-                        return new SolidColorBrush(Color.FromRgb(130, 165, 207));
+                        return new SolidColorBrush(Color.FromRgb(244, 92, 92));
                     default:
                         return new SolidColorBrush(Color.FromRgb(244, 92, 92));
                 }
