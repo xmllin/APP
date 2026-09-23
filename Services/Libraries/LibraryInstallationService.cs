@@ -162,11 +162,18 @@ namespace Nexora.Services.Libraries
                     else
                     {
                         if (TryClickButton(window, "Repair") || TryClickButton(window, "Восстановить"))
+                        {
+                            await Task.Delay(180, token);
+                            TryClickButton(window, "Next");
+                            TryClickButton(window, "Далее");
+                            TryClickButton(window, "Repair");
+                            TryClickButton(window, "Восстановить");
                             return;
+                        }
 
                         if (TryClickControl(window, "Repair") || TryClickControl(window, "Восстановить"))
                         {
-                            await Task.Delay(150, token);
+                            await Task.Delay(180, token);
                             TryClickButton(window, "Next");
                             TryClickButton(window, "Далее");
                             TryClickButton(window, "Repair");
