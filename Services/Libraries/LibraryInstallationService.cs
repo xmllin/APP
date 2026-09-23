@@ -186,7 +186,7 @@ namespace Nexora.Services.Libraries
             EnumWindows((window, _) =>
             {
                 GetWindowThreadProcessId(window, out var pid);
-                if (pid == processId && IsWindowVisible(window))
+                if ((int)pid == processId && IsWindowVisible(window))
                     windows.Add(window);
                 return true;
             }, IntPtr.Zero);
@@ -196,7 +196,9 @@ namespace Nexora.Services.Libraries
         private static bool TryClickButton(IntPtr root, string text)
         {
             var control = FindChildByText(root, text, "Button");
-            return control != IntPtr.Zero && SendMessage(control, BM_CLICK, IntPtr.Zero, IntPtr.Zero) != IntPtr.Zero;
+            if (control == IntPtr.Zero) return false;
+            SendMessage(control, BM_CLICK, IntPtr.Zero, IntPtr.Zero);
+            return true;
         }
 
         private static bool TryClickControl(IntPtr root, string text)
