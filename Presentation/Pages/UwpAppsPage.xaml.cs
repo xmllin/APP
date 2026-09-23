@@ -155,6 +155,14 @@ namespace Nexora.Pages
                         IsInstalled = package?.IsInstalled == true
                     });
                 }
+
+                var sortedPackages = _allPackages
+                    .OrderBy(item => item.DisplayName, StringComparer.CurrentCultureIgnoreCase)
+                    .ToList();
+                _allPackages.Clear();
+                foreach (var package in sortedPackages)
+                    _allPackages.Add(package);
+
                 RefreshColumns();
                 _hasLoaded = true;
                 SetProgress(100);
