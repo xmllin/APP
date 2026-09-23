@@ -171,17 +171,6 @@ namespace Nexora.Pages
             OpenFolder(folder);
         }
 
-        private void OpenLibraryFolder_Click(object sender, RoutedEventArgs e)
-        {
-            var item = (sender as MenuItem)?.Tag as LibraryItem;
-            if (item == null) return;
-
-            var folder = _installation.FindInstallLocation(item.Definition);
-            if (string.IsNullOrWhiteSpace(folder) && item.HasDownloadedFile)
-                folder = Path.GetDirectoryName(item.DownloadedFilePath);
-            OpenFolder(folder);
-        }
-
         private void MoreActions_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -195,12 +184,7 @@ namespace Nexora.Pages
         {
             var item = (sender as Button)?.Tag as LibraryItem;
             if (item == null) return;
-            var details = item.Definition.Purpose + "\n\nВерсия: " + (item.Definition.Version ?? item.Definition.VersionRule ?? "Актуальная") +
-                "\nАрхитектуры: " + item.Definition.ArchitectureText + "\nИсточник: " + item.Definition.SourceUrl +
-                "\nТребования: " + string.Join("; ", item.Definition.Requirements ?? new List<string>()) +
-                "\nНужно для: " + string.Join("; ", item.Definition.UsedBy ?? new List<string>());
-            if (item.Definition.Warnings != null && item.Definition.Warnings.Count > 0) details += "\n\nПредупреждение: " + string.Join("; ", item.Definition.Warnings);
-            AppDialog.ShowInfo(Window.GetWindow(this), item.Definition.Name, details);
+            LibraryDetailsDialog.Show(Window.GetWindow(this), item);
         }
 
         private async void Repair_Click(object sender, RoutedEventArgs e)
@@ -304,7 +288,7 @@ namespace Nexora.Pages
 
             var actionText = item.IsWindowsFeature
                 ? $"Отключить компонент \"{item.Definition.Name}\" в Windows?"
-                : $"Удалить компонент \"{item.Definition.Name}\" из системы?\nЭто удалит установленные файлы и запись из реестра Windows.";
+                : $"Удалить компонент \"{item.Definition.Name}\" из системы?\n\nЭто удалит установленные файлы и запись из реестра Windows.";
             if (!AppDialog.ShowConfirm(Window.GetWindow(this), item.IsWindowsFeature ? "Отключение компонента" : "Удаление компонента", actionText)) return;
 
             try
@@ -378,7 +362,7 @@ namespace Nexora.Pages
             var selected = _items.Where(x => x.IsSelected && x.Status != LibraryInstallStatus.Manual).ToList();
             if (selected.Count == 0)
             {
-                AppDialog.ShowInfo(Window.GetWindow(this), "Библиотеки", "Выберите устанавливаемые компоненты. Компоненты с ручной установкой можно открыть через кнопку «Описание».");
+                AppDialog.ShowInfo(Window.GetWindow(this), "Библиотеки", "Выберите устанавливаемые компоненты. Компоненты без автоматической установки отображаются как «Не установлено» и требуют установки вручную.");
                 return;
             }
             if (!AppDialog.ShowConfirm(Window.GetWindow(this), "Подтверждение", "Установить выбранные компоненты? Установщики будут запущены с правами администратора.")) return;
