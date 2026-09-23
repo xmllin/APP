@@ -30,6 +30,14 @@
             <Setter Property="Background" Value="#0B2035"/><Setter Property="BorderBrush" Value="#1D3B5A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="12"/><Setter Property="Padding" Value="13"/><Setter Property="Margin" Value="5"/><Setter Property="MinHeight" Value="104"/><Setter Property="Cursor" Value="Hand"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsInstalled}" Value="False"><Setter Property="Cursor" Value="Arrow"/><Setter Property="Background" Value="#18212B"/><Setter Property="BorderBrush" Value="#35414D"/></DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsInstalled}" Value="True"/>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Background" Value="#12304A"/>
+                    <Setter Property="BorderBrush" Value="#3B82C4"/>
+                </MultiDataTrigger>
                 <DataTrigger Binding="{Binding IsSelected}" Value="True"><Setter Property="BorderBrush" Value="#35E879"/><Setter Property="Background" Value="#103A28"/><Setter Property="BorderThickness" Value="2"/></DataTrigger>
             </Style.Triggers>
         </Style>
@@ -57,7 +65,7 @@
                 <Border x:Name="ProgressPanel" Background="#0B2035" BorderBrush="#1D3B5A" BorderThickness="1" CornerRadius="10" Padding="14,10" Margin="0,0,0,14" Visibility="Collapsed">
                     <StackPanel><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock x:Name="StatusText" Foreground="#DCEBFF" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Grid.Column="1" Text="UWP" Foreground="#6D9BCC" FontSize="11" VerticalAlignment="Center" Margin="12,0,0,0"/></Grid><ProgressBar x:Name="LoadingProgressBar" Height="7" Margin="0,10,0,0" Minimum="0" Maximum="100" Value="0" Foreground="#58AEFF" Background="#173A61"/></StackPanel>
                 </Border>
-                <Border Background="#081A2C" BorderBrush="#173A61" BorderThickness="1" CornerRadius="12" Padding="8" Margin="0,0,0,14">
+                <Border Margin="0,0,0,14">
                     <ItemsControl x:Name="PackagesList" ItemsSource="{Binding VisiblePackages}" Visibility="Collapsed">
                         <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="3"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
@@ -66,7 +74,20 @@
                                     <Grid>
                                         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                        <Border Grid.Row="0" Grid.RowSpan="2" Width="42" Height="42" CornerRadius="10" Background="#102B49" BorderBrush="#21496F" BorderThickness="1" Margin="0,0,11,0" VerticalAlignment="Top"><Image Source="{local:SvgImage Source=interface/white/app-window.svg}" Width="22" Height="22" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                                        <Border Grid.Row="0" Grid.RowSpan="2" Width="42" Height="42" CornerRadius="10" Background="#102B49" BorderBrush="#21496F" BorderThickness="1" Margin="0,0,11,0" VerticalAlignment="Top">
+                                            <Image Source="{local:SvgImage Source=interface/white/app-window.svg}" Width="22" Height="22" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Opacity" Value="1"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsInstalled}" Value="False">
+                                                                <Setter Property="Opacity" Value="0.55"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                        </Border>
                                         <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding DisplayName}" FontSize="15" FontWeight="SemiBold" Foreground="#F1F6FF" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Top" MaxHeight="42">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
