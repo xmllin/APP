@@ -110,7 +110,7 @@
             <Setter Property="MinWidth" Value="220"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="ItemTemplate" Value="{StaticResource LibraryFilterItemTemplate}"/>
-            <Setter Property="ItemContainerStyle" Value="{StaticResource LibraryFilterComboBoxItemStyle}"/>
+            <Setter Property="ItemContainerStyle" Value="{DynamicResource LibraryFilterComboBoxItemStyle}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
