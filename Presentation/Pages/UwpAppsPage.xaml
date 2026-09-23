@@ -70,7 +70,7 @@
                                         <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding DisplayName}" FontSize="15" FontWeight="SemiBold" Foreground="#F1F6FF" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Top" MaxHeight="42"/>
                                         <CheckBox Grid.Column="2" Grid.Row="0" IsChecked="{Binding IsSelected, Mode=TwoWay}" IsEnabled="{Binding IsInstalled}" Style="{StaticResource UwpSelectionBox}"/>
                                         <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Text="{Binding Version}" Foreground="#7FA7D1" FontSize="11" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"/>
-                                        <Border Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" Style="{StaticResource UwpStatusBadge}">
+                                        <Border Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2">
                                             <Border.Style>
                                                 <Style TargetType="Border" BasedOn="{StaticResource UwpStatusBadge}">
                                                     <Style.Triggers>
