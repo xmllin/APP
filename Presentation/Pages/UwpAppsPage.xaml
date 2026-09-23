@@ -18,7 +18,7 @@
                             <Path x:Name="Mark" Data="M 5,12 L 10,17 L 20,7" Stroke="#FFFFFF" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Visibility="Collapsed"/>
                         </Grid>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="True"><Setter TargetName="Box" Property="Background" Value="#1877F2"/><Setter TargetName="Box" Property="BorderBrush" Value="#63B1FF"/><Setter TargetName="Mark" Property="Visibility" Value="Visible"/></Trigger>
+                            <Trigger Property="IsChecked" Value="True"><Setter TargetName="Box" Property="Background" Value="#22C55E"/><Setter TargetName="Box" Property="BorderBrush" Value="#72FF9A"/><Setter TargetName="Mark" Property="Visibility" Value="Visible"/></Trigger>
                             <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Box" Property="BorderBrush" Value="#75B9FF"/></Trigger>
                             <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Box" Property="Opacity" Value="0.4"/><Setter TargetName="Mark" Property="Opacity" Value="0.4"/><Setter Property="Cursor" Value="Arrow"/></Trigger>
                         </ControlTemplate.Triggers>
@@ -29,8 +29,8 @@
         <Style x:Key="UwpAppCard" TargetType="Border">
             <Setter Property="Background" Value="#0B2035"/><Setter Property="BorderBrush" Value="#1D3B5A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="12"/><Setter Property="Padding" Value="13"/><Setter Property="Margin" Value="5"/><Setter Property="MinHeight" Value="104"/><Setter Property="Cursor" Value="Hand"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsInstalled}" Value="False"><Setter Property="Opacity" Value="0.62"/><Setter Property="Cursor" Value="Arrow"/></DataTrigger>
-                <DataTrigger Binding="{Binding IsSelected}" Value="True"><Setter Property="BorderBrush" Value="#1877F2"/><Setter Property="Background" Value="#0E2948"/><Setter Property="BorderThickness" Value="1.5"/></DataTrigger>
+                <DataTrigger Binding="{Binding IsInstalled}" Value="False"><Setter Property="Cursor" Value="Arrow"/></DataTrigger>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True"><Setter Property="BorderBrush" Value="#35E879"/><Setter Property="Background" Value="#103A28"/><Setter Property="BorderThickness" Value="2"/></DataTrigger>
             </Style.Triggers>
         </Style>
         <Style x:Key="UwpStatusBadge" TargetType="Border">
@@ -69,8 +69,37 @@
                                         <Border Grid.Row="0" Grid.RowSpan="2" Width="42" Height="42" CornerRadius="10" Background="#102B49" BorderBrush="#21496F" BorderThickness="1" Margin="0,0,11,0" VerticalAlignment="Top"><Image Source="{local:SvgImage Source=interface/white/app-window.svg}" Width="22" Height="22" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
                                         <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding DisplayName}" FontSize="15" FontWeight="SemiBold" Foreground="#F1F6FF" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Top" MaxHeight="42"/>
                                         <CheckBox Grid.Column="2" Grid.Row="0" IsChecked="{Binding IsSelected, Mode=TwoWay}" IsEnabled="{Binding IsInstalled}" Style="{StaticResource UwpSelectionBox}"/>
-                                        <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Text="{Binding Version, StringFormat=Версия {0}}" Foreground="#7FA7D1" FontSize="11" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"/>
-                                        <Border Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" Style="{StaticResource UwpStatusBadge}"><TextBlock FontSize="10" FontWeight="SemiBold"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="Не установлено"/><Setter Property="Foreground" Value="#91A7BE"/><Style.Triggers><DataTrigger Binding="{Binding IsInstalled}" Value="True"><Setter Property="Text" Value="Установлено"/><Setter Property="Foreground" Value="#77E6A6"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock></Border>
+                                        <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Text="{Binding Version}" Foreground="#7FA7D1" FontSize="11" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"/>
+                                        <Border Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" Style="{StaticResource UwpStatusBadge}">
+                                            <Border.Style>
+                                                <Style TargetType="Border" BasedOn="{StaticResource UwpStatusBadge}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsInstalled}" Value="False">
+                                                            <Setter Property="BorderBrush" Value="#8F2D35"/>
+                                                            <Setter Property="Background" Value="#3A151C"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsInstalled}" Value="True">
+                                                            <Setter Property="BorderBrush" Value="#25C968"/>
+                                                            <Setter Property="Background" Value="#123C27"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock FontSize="10" FontWeight="SemiBold">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="Не установлено"/>
+                                                        <Setter Property="Foreground" Value="#FF5C5C"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsInstalled}" Value="True">
+                                                                <Setter Property="Text" Value="Установлено"/>
+                                                                <Setter Property="Foreground" Value="#38F27A"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
