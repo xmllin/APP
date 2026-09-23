@@ -14,287 +14,70 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="CheckBox">
                         <Grid Width="26" Height="26">
-                            <Border x:Name="Box"
-                                    Width="22"
-                                    Height="22"
-                                    CornerRadius="6"
-                                    Background="#0B2035"
-                                    BorderBrush="#3A6087"
-                                    BorderThickness="1.5"/>
-                            <Path x:Name="Mark"
-                                  Data="M 5,12 L 10,17 L 20,7"
-                                  Stroke="#FFFFFF"
-                                  StrokeThickness="2"
-                                  StrokeStartLineCap="Round"
-                                  StrokeEndLineCap="Round"
-                                  Visibility="Collapsed"/>
+                            <Border x:Name="Box" Width="22" Height="22" CornerRadius="6" Background="#0B2035" BorderBrush="#3A6087" BorderThickness="1.5"/>
+                            <Path x:Name="Mark" Data="M 5,12 L 10,17 L 20,7" Stroke="#FFFFFF" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Visibility="Collapsed"/>
                         </Grid>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="Box" Property="Background" Value="#1877F2"/>
-                                <Setter TargetName="Box" Property="BorderBrush" Value="#63B1FF"/>
-                                <Setter TargetName="Mark" Property="Visibility" Value="Visible"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Box" Property="BorderBrush" Value="#75B9FF"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="Box" Property="Opacity" Value="0.4"/>
-                                <Setter TargetName="Mark" Property="Opacity" Value="0.4"/>
-                                <Setter Property="Cursor" Value="Arrow"/>
-                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True"><Setter TargetName="Box" Property="Background" Value="#1877F2"/><Setter TargetName="Box" Property="BorderBrush" Value="#63B1FF"/><Setter TargetName="Mark" Property="Visibility" Value="Visible"/></Trigger>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Box" Property="BorderBrush" Value="#75B9FF"/></Trigger>
+                            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Box" Property="Opacity" Value="0.4"/><Setter TargetName="Mark" Property="Opacity" Value="0.4"/><Setter Property="Cursor" Value="Arrow"/></Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-
         <Style x:Key="UwpAppCard" TargetType="Border">
-            <Setter Property="Background" Value="#0B2035"/>
-            <Setter Property="BorderBrush" Value="#1D3B5A"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="Padding" Value="13"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="MinHeight" Value="104"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="#0B2035"/><Setter Property="BorderBrush" Value="#1D3B5A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="12"/><Setter Property="Padding" Value="13"/><Setter Property="Margin" Value="5"/><Setter Property="MinHeight" Value="104"/><Setter Property="Cursor" Value="Hand"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsInstalled}" Value="False">
-                    <Setter Property="Opacity" Value="0.62"/>
-                    <Setter Property="Cursor" Value="Arrow"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                    <Setter Property="BorderBrush" Value="#1877F2"/>
-                    <Setter Property="Background" Value="#0E2948"/>
-                    <Setter Property="BorderThickness" Value="1.5"/>
-                </DataTrigger>
+                <DataTrigger Binding="{Binding IsInstalled}" Value="False"><Setter Property="Opacity" Value="0.62"/><Setter Property="Cursor" Value="Arrow"/></DataTrigger>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True"><Setter Property="BorderBrush" Value="#1877F2"/><Setter Property="Background" Value="#0E2948"/><Setter Property="BorderThickness" Value="1.5"/></DataTrigger>
             </Style.Triggers>
         </Style>
-
         <Style x:Key="UwpStatusBadge" TargetType="Border">
-            <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Padding" Value="7,3"/>
-            <Setter Property="Margin" Value="0,6,0,0"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Background" Value="#14304D"/>
-            <Setter Property="BorderBrush" Value="#285784"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="7,3"/><Setter Property="Margin" Value="0,6,0,0"/><Setter Property="HorizontalAlignment" Value="Left"/><Setter Property="Background" Value="#14304D"/><Setter Property="BorderBrush" Value="#285784"/><Setter Property="BorderThickness" Value="1"/>
         </Style>
-
-        <Style x:Key="UwpActionButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
-            <Setter Property="Height" Value="36"/>
-            <Setter Property="MinWidth" Value="190"/>
-            <Setter Property="Padding" Value="14,7"/>
-        </Style>
+        <Style x:Key="UwpActionButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}"><Setter Property="Height" Value="36"/><Setter Property="MinWidth" Value="190"/><Setter Property="Padding" Value="14,7"/></Style>
     </UserControl.Resources>
-
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0">
             <StackPanel Margin="36,28,36,42">
-                <Border Height="170"
-                        MinHeight="170"
-                        CornerRadius="16"
-                        BorderBrush="#174C8D"
-                        BorderThickness="1"
-                        Padding="20"
-                        Margin="0,0,0,18"
-                        HorizontalAlignment="Stretch">
-                    <Border.Background>
-                        <ImageBrush ImageSource="/interface/other/banner.jpg"
-                                    Stretch="UniformToFill"
-                                    AlignmentX="Center"
-                                    AlignmentY="Center"/>
-                    </Border.Background>
+                <Border Height="170" MinHeight="170" CornerRadius="16" BorderBrush="#174C8D" BorderThickness="1" Padding="20" Margin="0,0,0,18" HorizontalAlignment="Stretch">
+                    <Border.Background><ImageBrush ImageSource="/interface/other/banner.jpg" Stretch="UniformToFill" AlignmentX="Center" AlignmentY="Center"/></Border.Background>
                     <Grid VerticalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}"
-                               Width="72"
-                               Height="72"
-                               Stretch="Uniform"
-                               VerticalAlignment="Center"
-                               Margin="0,0,16,0"/>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="UWP-приложения Windows"
-                                       FontSize="30"
-                                       FontWeight="SemiBold"
-                                       TextWrapping="NoWrap"
-                                       TextTrimming="CharacterEllipsis"/>
-                            <TextBlock Text="Управляйте встроенными приложениями и удаляйте ненужные пакеты."
-                                       Foreground="#B9CAE2"
-                                       FontSize="15"
-                                       Margin="0,6,0,0"
-                                       TextWrapping="Wrap"/>
-                        </StackPanel>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <Image Source="{local:SvgImage Source=interface/other/windows-svgrepo-com.svg}" Width="72" Height="72" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="UWP-приложения Windows" FontSize="30" FontWeight="SemiBold" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/><TextBlock Text="Управляйте встроенными приложениями и удаляйте ненужные пакеты." Foreground="#B9CAE2" FontSize="15" Margin="0,6,0,0" TextWrapping="Wrap"/></StackPanel>
                     </Grid>
                 </Border>
-
                 <Grid Margin="0,0,0,14">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <TextBlock Text="Встроенные приложения"
-                                   FontSize="24"
-                                   FontWeight="Bold"/>
-                        <TextBlock Text="Установленные приложения доступны для выбора и удаления. Список обновляется после каждой операции."
-                                   Foreground="{StaticResource MutedBrush}"
-                                   FontSize="13"
-                                   Margin="0,5,0,0"
-                                   TextWrapping="Wrap"/>
-                    </StackPanel>
-                    <Button x:Name="RemoveButton"
-                            Grid.Column="1"
-                            Content="Удалить выбранные"
-                            Click="RemoveButton_Click"
-                            Style="{StaticResource UwpActionButton}"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Margin="18,0,0,0"/>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                    <StackPanel><TextBlock Text="Встроенные приложения" FontSize="24" FontWeight="Bold"/><TextBlock Text="Установленные приложения доступны для выбора и удаления. Список обновляется после каждой операции." Foreground="{StaticResource MutedBrush}" FontSize="13" Margin="0,5,0,0" TextWrapping="Wrap"/></StackPanel>
+                    <Button x:Name="RemoveButton" Grid.Column="1" Content="Удалить выбранные" Click="RemoveButton_Click" Style="{StaticResource UwpActionButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="18,0,0,0"/>
                 </Grid>
-
-                <Border x:Name="ProgressPanel"
-                        Background="#0B2035"
-                        BorderBrush="#1D3B5A"
-                        BorderThickness="1"
-                        CornerRadius="10"
-                        Padding="14,10"
-                        Margin="0,0,0,14"
-                        Visibility="Collapsed">
-                    <StackPanel>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock x:Name="StatusText"
-                                       Foreground="#DCEBFF"
-                                       FontSize="13"
-                                       FontWeight="SemiBold"
-                                       TextWrapping="Wrap"/>
-                            <TextBlock Grid.Column="1"
-                                       Text="UWP"
-                                       Foreground="#6D9BCC"
-                                       FontSize="11"
-                                       VerticalAlignment="Center"
-                                       Margin="12,0,0,0"/>
-                        </Grid>
-                        <ProgressBar x:Name="LoadingProgressBar"
-                                     Height="7"
-                                     Margin="0,10,0,0"
-                                     Minimum="0"
-                                     Maximum="100"
-                                     Value="0"
-                                     Foreground="#58AEFF"
-                                     Background="#173A61"/>
-                    </StackPanel>
+                <Border x:Name="ProgressPanel" Background="#0B2035" BorderBrush="#1D3B5A" BorderThickness="1" CornerRadius="10" Padding="14,10" Margin="0,0,0,14" Visibility="Collapsed">
+                    <StackPanel><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock x:Name="StatusText" Foreground="#DCEBFF" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Grid.Column="1" Text="UWP" Foreground="#6D9BCC" FontSize="11" VerticalAlignment="Center" Margin="12,0,0,0"/></Grid><ProgressBar x:Name="LoadingProgressBar" Height="7" Margin="0,10,0,0" Minimum="0" Maximum="100" Value="0" Foreground="#58AEFF" Background="#173A61"/></StackPanel>
                 </Border>
-
-                <Border Background="#081A2C"
-                        BorderBrush="#173A61"
-                        BorderThickness="1"
-                        CornerRadius="12"
-                        Padding="8"
-                        Margin="0,0,0,14">
-                    <ItemsControl x:Name="PackagesList" Visibility="Collapsed">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Columns="3"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
+                <Border Background="#081A2C" BorderBrush="#173A61" BorderThickness="1" CornerRadius="12" Padding="8" Margin="0,0,0,14">
+                    <ItemsControl x:Name="PackagesList" ItemsSource="{Binding VisiblePackages}" Visibility="Collapsed">
+                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="3"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border Style="{StaticResource UwpAppCard}" MouseLeftButtonUp="UwpAppCard_MouseLeftButtonUp">
                                     <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Border Grid.Row="0"
-                                                Grid.RowSpan="2"
-                                                Width="42"
-                                                Height="42"
-                                                CornerRadius="10"
-                                                Background="#102B49"
-                                                BorderBrush="#21496F"
-                                                BorderThickness="1"
-                                                Margin="0,0,11,0"
-                                                VerticalAlignment="Top">
-                                            <Image Source="{local:SvgImage Source=interface/white/app-window.svg}"
-                                                   Width="22"
-                                                   Height="22"
-                                                   Stretch="Uniform"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"/>
-                                        </Border>
-
-                                        <TextBlock Grid.Column="1"
-                                                   Grid.Row="0"
-                                                   Text="{Binding DisplayName}"
-                                                   FontSize="15"
-                                                   FontWeight="SemiBold"
-                                                   Foreground="#F1F6FF"
-                                                   TextWrapping="Wrap"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   VerticalAlignment="Top"
-                                                   MaxHeight="42"/>
-
-                                        <CheckBox Grid.Column="2"
-                                                  Grid.Row="0"
-                                                  IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                                  IsEnabled="{Binding IsInstalled}"
-                                                  Style="{StaticResource UwpSelectionBox}"/>
-
-                                        <TextBlock Grid.Column="1"
-                                                   Grid.ColumnSpan="2"
-                                                   Grid.Row="1"
-                                                   Text="{Binding Version, StringFormat=Версия {0}}"
-                                                   Foreground="#7FA7D1"
-                                                   FontSize="11"
-                                                   Margin="0,4,0,0"
-                                                   TextTrimming="CharacterEllipsis"/>
-
-                                        <Border Grid.Column="1"
-                                                Grid.ColumnSpan="2"
-                                                Grid.Row="2"
-                                                Style="{StaticResource UwpStatusBadge}">
-                                            <TextBlock FontSize="10"
-                                                       FontWeight="SemiBold">
-                                                <TextBlock.Style>
-                                                    <Style TargetType="TextBlock">
-                                                        <Setter Property="Text" Value="Не установлено"/>
-                                                        <Setter Property="Foreground" Value="#91A7BE"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsInstalled}" Value="True">
-                                                                <Setter Property="Text" Value="Установлено"/>
-                                                                <Setter Property="Foreground" Value="#77E6A6"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
-                                        </Border>
+                                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <Border Grid.Row="0" Grid.RowSpan="2" Width="42" Height="42" CornerRadius="10" Background="#102B49" BorderBrush="#21496F" BorderThickness="1" Margin="0,0,11,0" VerticalAlignment="Top"><Image Source="{local:SvgImage Source=interface/white/app-window.svg}" Width="22" Height="22" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding DisplayName}" FontSize="15" FontWeight="SemiBold" Foreground="#F1F6FF" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Top" MaxHeight="42"/>
+                                        <CheckBox Grid.Column="2" Grid.Row="0" IsChecked="{Binding IsSelected, Mode=TwoWay}" IsEnabled="{Binding IsInstalled}" Style="{StaticResource UwpSelectionBox}"/>
+                                        <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Text="{Binding Version, StringFormat=Версия {0}}" Foreground="#7FA7D1" FontSize="11" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"/>
+                                        <Border Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" Style="{StaticResource UwpStatusBadge}"><TextBlock FontSize="10" FontWeight="SemiBold"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Text" Value="Не установлено"/><Setter Property="Foreground" Value="#91A7BE"/><Style.Triggers><DataTrigger Binding="{Binding IsInstalled}" Value="True"><Setter Property="Text" Value="Установлено"/><Setter Property="Foreground" Value="#77E6A6"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock></Border>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Border>
-
-                <TextBlock Text="Нажмите на карточку, чтобы выбрать приложение для удаления."
-                           Foreground="#6888AB"
-                           FontSize="11"
-                           Margin="4,0,0,0"/>
+                <TextBlock Text="Нажмите на карточку, чтобы выбрать приложение для удаления." Foreground="#6888AB" FontSize="11" Margin="4,0,0,0"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>
