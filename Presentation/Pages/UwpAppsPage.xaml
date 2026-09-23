@@ -29,7 +29,7 @@
         <Style x:Key="UwpAppCard" TargetType="Border">
             <Setter Property="Background" Value="#0B2035"/><Setter Property="BorderBrush" Value="#1D3B5A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="12"/><Setter Property="Padding" Value="13"/><Setter Property="Margin" Value="5"/><Setter Property="MinHeight" Value="104"/><Setter Property="Cursor" Value="Hand"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsInstalled}" Value="False"><Setter Property="Cursor" Value="Arrow"/></DataTrigger>
+                <DataTrigger Binding="{Binding IsInstalled}" Value="False"><Setter Property="Cursor" Value="Arrow"/><Setter Property="Background" Value="#18212B"/><Setter Property="BorderBrush" Value="#35414D"/></DataTrigger>
                 <DataTrigger Binding="{Binding IsSelected}" Value="True"><Setter Property="BorderBrush" Value="#35E879"/><Setter Property="Background" Value="#103A28"/><Setter Property="BorderThickness" Value="2"/></DataTrigger>
             </Style.Triggers>
         </Style>
@@ -67,9 +67,31 @@
                                         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <Border Grid.Row="0" Grid.RowSpan="2" Width="42" Height="42" CornerRadius="10" Background="#102B49" BorderBrush="#21496F" BorderThickness="1" Margin="0,0,11,0" VerticalAlignment="Top"><Image Source="{local:SvgImage Source=interface/white/app-window.svg}" Width="22" Height="22" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-                                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding DisplayName}" FontSize="15" FontWeight="SemiBold" Foreground="#F1F6FF" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Top" MaxHeight="42"/>
+                                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding DisplayName}" FontSize="15" FontWeight="SemiBold" Foreground="#F1F6FF" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Top" MaxHeight="42">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#F1F6FF"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsInstalled}" Value="False">
+                                                            <Setter Property="Foreground" Value="#9AA5AF"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                         <CheckBox Grid.Column="2" Grid.Row="0" IsChecked="{Binding IsSelected, Mode=TwoWay}" IsEnabled="{Binding IsInstalled}" Style="{StaticResource UwpSelectionBox}"/>
-                                        <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Text="{Binding Version}" Foreground="#7FA7D1" FontSize="11" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Text="{Binding Version}" Foreground="#7FA7D1" FontSize="11" Margin="0,4,0,0" TextTrimming="CharacterEllipsis">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#7FA7D1"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsInstalled}" Value="False">
+                                                            <Setter Property="Foreground" Value="#707B85"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                         <Border Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2">
                                             <Border.Style>
                                                 <Style TargetType="Border" BasedOn="{StaticResource UwpStatusBadge}">
