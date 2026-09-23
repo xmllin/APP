@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using Nexora.Models;
 
@@ -110,11 +112,10 @@ namespace Nexora.Services.Libraries
             if (string.IsNullOrWhiteSpace(uninstallCommand))
                 throw new InvalidOperationException("Для этого компонента не найдено корректного удаления из системы.");
 
-            var psi = CreateUninstallStartInfo(uninstallCommand);
-
-            using (var process = Process.Start(psi))
+            using (var process = Process.Start(CreateUninstallStartInfo(uninstallCommand)))
             {
                 if (process == null) throw new InvalidOperationException("Не удалось запустить удаление компонента.");
+                _ = AutomateMaintenanceWindowAsync(process, MaintenanceAction.Uninstall, token);
                 await process.WaitForExitAsync(token);
                 if (process.ExitCode == 1602) throw new OperationCanceledException();
                 if (process.ExitCode != 0) throw new InvalidOperationException("Удаление завершилось с кодом " + process.ExitCode + ".");
@@ -132,11 +133,140 @@ namespace Nexora.Services.Libraries
             using (var process = Process.Start(CreateUninstallStartInfo(repairCommand)))
             {
                 if (process == null) throw new InvalidOperationException("Не удалось запустить восстановление компонента.");
+                _ = AutomateMaintenanceWindowAsync(process, MaintenanceAction.Repair, token);
                 await process.WaitForExitAsync(token);
                 if (process.ExitCode == 1602) throw new OperationCanceledException();
                 if (process.ExitCode != 0) throw new InvalidOperationException("Восстановление завершилось с кодом " + process.ExitCode + ".");
             }
         }
+
+        private enum MaintenanceAction
+        {
+            Uninstall,
+            Repair
+        }
+
+        private static async Task AutomateMaintenanceWindowAsync(Process process, MaintenanceAction action, CancellationToken token)
+        {
+            for (var attempt = 0; attempt < 120 && !process.HasExited; attempt++)
+            {
+                token.ThrowIfCancellationRequested();
+                foreach (var window in GetProcessWindows(process.Id))
+                {
+                    if (action == MaintenanceAction.Uninstall)
+                    {
+                        if (TryClickButton(window, "Uninstall") || TryClickButton(window, "Удалить") ||
+                            TryClickButton(window, "Remove") || TryClickButton(window, "Удаление"))
+                            return;
+                    }
+                    else
+                    {
+                        if (TryClickButton(window, "Repair") || TryClickButton(window, "Восстановить"))
+                            return;
+
+                        if (TryClickControl(window, "Repair") || TryClickControl(window, "Восстановить"))
+                        {
+                            await Task.Delay(150, token);
+                            TryClickButton(window, "Next");
+                            TryClickButton(window, "Далее");
+                            TryClickButton(window, "Repair");
+                            TryClickButton(window, "Восстановить");
+                            return;
+                        }
+                    }
+                }
+
+                await Task.Delay(250, token);
+            }
+        }
+
+        private static IEnumerable<IntPtr> GetProcessWindows(int processId)
+        {
+            var windows = new List<IntPtr>();
+            EnumWindows((window, _) =>
+            {
+                GetWindowThreadProcessId(window, out var pid);
+                if (pid == processId && IsWindowVisible(window))
+                    windows.Add(window);
+                return true;
+            }, IntPtr.Zero);
+            return windows;
+        }
+
+        private static bool TryClickButton(IntPtr root, string text)
+        {
+            var control = FindChildByText(root, text, "Button");
+            return control != IntPtr.Zero && SendMessage(control, BM_CLICK, IntPtr.Zero, IntPtr.Zero) != IntPtr.Zero;
+        }
+
+        private static bool TryClickControl(IntPtr root, string text)
+        {
+            var control = FindChildByText(root, text, null);
+            return control != IntPtr.Zero && SendMessage(control, BM_CLICK, IntPtr.Zero, IntPtr.Zero) != IntPtr.Zero;
+        }
+
+        private static IntPtr FindChildByText(IntPtr root, string text, string className)
+        {
+            IntPtr result = IntPtr.Zero;
+            EnumChildWindows(root, (window, _) =>
+            {
+                var value = GetWindowText(window);
+                var classValue = GetClassName(window);
+                if (!string.IsNullOrWhiteSpace(value) &&
+                    string.Equals(value.Trim(), text, StringComparison.OrdinalIgnoreCase) &&
+                    (className == null || string.Equals(classValue, className, StringComparison.OrdinalIgnoreCase)))
+                {
+                    result = window;
+                    return false;
+                }
+                return true;
+            }, IntPtr.Zero);
+            return result;
+        }
+
+        private static string GetWindowText(IntPtr window)
+        {
+            var length = GetWindowTextLength(window);
+            if (length <= 0) return string.Empty;
+            var buffer = new System.Text.StringBuilder(length + 1);
+            GetWindowText(window, buffer, buffer.Capacity);
+            return buffer.ToString();
+        }
+
+        private static string GetClassName(IntPtr window)
+        {
+            var buffer = new System.Text.StringBuilder(128);
+            GetClassName(window, buffer, buffer.Capacity);
+            return buffer.ToString();
+        }
+
+        private const uint BM_CLICK = 0x00F5;
+
+        private delegate bool EnumWindowsProc(IntPtr window, IntPtr parameter);
+
+        [DllImport("user32.dll")]
+        private static extern bool EnumWindows(EnumWindowsProc callback, IntPtr parameter);
+
+        [DllImport("user32.dll")]
+        private static extern bool EnumChildWindows(IntPtr parent, EnumWindowsProc callback, IntPtr parameter);
+
+        [DllImport("user32.dll")]
+        private static extern bool IsWindowVisible(IntPtr window);
+
+        [DllImport("user32.dll")]
+        private static extern uint GetWindowThreadProcessId(IntPtr window, out uint processId);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern int GetWindowText(IntPtr window, System.Text.StringBuilder text, int maxCount);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern int GetWindowTextLength(IntPtr window);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern int GetClassName(IntPtr window, System.Text.StringBuilder className, int maxCount);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr window, uint message, IntPtr wParam, IntPtr lParam);
 
         public string FindInstallLocation(LibraryDefinition definition)
         {
