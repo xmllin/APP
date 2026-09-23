@@ -1,4 +1,6 @@
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows.Documents;
 using System.Windows;
 using System.Windows.Media;
 
@@ -13,7 +15,7 @@ namespace Nexora.Services
             InitializeComponent();
 
             CaptionText.Text = string.IsNullOrWhiteSpace(caption) ? "Уведомление" : caption;
-            MessageText.Text = message ?? string.Empty;
+            SetMessage(message ?? string.Empty);
             _buttons = buttons;
 
             ApplyKind(image);
@@ -42,6 +44,29 @@ namespace Nexora.Services
         }
 
         private MessageBoxResult DialogResultValue { get; set; } = MessageBoxResult.None;
+
+        private void SetMessage(string message)
+        {
+            MessageText.Inlines.Clear();
+            var parts = Regex.Split(message, "(\\\"[^\\\"]+\\\")");
+            foreach (var part in parts)
+            {
+                if (string.IsNullOrEmpty(part)) continue;
+                if (part.Length >= 2 && part[0] == '\"' && part[part.Length - 1] == '\"')
+                {
+                    var name = part.Substring(1, part.Length - 2);
+                    MessageText.Inlines.Add(new Run(name)
+                    {
+                        Foreground = new SolidColorBrush(Color.FromRgb(88, 174, 255)),
+                        FontWeight = FontWeights.SemiBold
+                    });
+                }
+                else
+                {
+                    MessageText.Inlines.Add(new Run(part));
+                }
+            }
+        }
 
         private void ApplyKind(MessageBoxImage image)
         {
