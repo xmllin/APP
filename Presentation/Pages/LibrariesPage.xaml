@@ -203,19 +203,20 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Border Width="38" Height="38" Background="#173653" CornerRadius="7" VerticalAlignment="Top">
-                            <Image Width="22" Height="22" Stretch="Uniform">
-                                <Image.Style>
-                                    <Style TargetType="Image">
-                                        <Setter Property="Source" Value="{local:SvgImage Source=interface/white/package-off.svg}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsInstalled}" Value="True">
-                                                <Setter Property="Source" Value="{local:SvgImage Source=interface/white/package.svg}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Image.Style>
-                            </Image>
+                        <Border Width="38" Height="38" CornerRadius="7" VerticalAlignment="Top">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Background" Value="#173653"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsInstalled}" Value="False">
+                                            <Setter Property="Background" Value="#18212B"/>
+                                            <Setter Property="BorderBrush" Value="#35414D"/>
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <Image Source="{local:SvgImage Source=interface/white/package.svg}" Width="22" Height="22" Stretch="Uniform"/>
                         </Border>
                         <StackPanel Grid.Column="1" Margin="6,0,8,0">
                             <TextBlock Text="{Binding Definition.Name}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Justify"/>
